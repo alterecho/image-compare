@@ -1,20 +1,42 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
 
-export default function App() {
+import React, { useEffect, useState } from 'react';
+import { StatusBar } from 'expo-status-bar';
+import { Button, View, Text, StyleSheet, Dimensions, useWindowDimensions } from 'react-native';
+
+
+const App = () => {
+
+  const getRandomColor = () =>  {
+    let color = {
+      r: Math.random() * 256,
+      g: Math.random() * 256,
+      b: Math.random() * 256,
+    }
+    
+    console.log(`rgb: ${JSON.stringify(color)}`)
+    return `rgb(${color.r}, ${color.g}, ${color.b})`;
+  };
+  console.log("returning View")
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <View style={[styles.mainContainer]}>
+      <View style={[styles.container, { backgroundColor:  getRandomColor()}]}>
+      </View>
+      <View style={[styles.container, { backgroundColor: getRandomColor()}]}>
+
+      </View>
+    </View >
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+  mainContainer: {
+    flex: 1
   },
+  container: {
+    backgroundColor: `yellow`,
+    flex: 1
+  }
 });
+
+export default App;
