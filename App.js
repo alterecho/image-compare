@@ -1,10 +1,23 @@
 
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Button, View, Text, StyleSheet, Dimensions, useWindowDimensions } from 'react-native';
+import { Button, View, Text, StyleSheet, Dimensions, useWindowDimensions, SafeAreaView, Touchable, TouchableOpacity } from 'react-native';
 
 
 const App = () => {
+
+  const Toolbar = () => {
+    return (
+      <View style={styles.toolbar}>
+        <Button title='add'>
+        </Button>
+        <Button title='camera'>
+        </Button>
+        <Button title='compare'>
+        </Button>
+      </View>
+    )
+  }
 
   const getRandomColor = () =>  {
     let color = {
@@ -19,17 +32,27 @@ const App = () => {
   console.log("returning View")
 
   return (
-    <View style={[styles.mainContainer]}>
+    <SafeAreaView style={[styles.mainContainer]}>
       <View style={[styles.container, { backgroundColor:  getRandomColor()}]}>
+        <Toolbar />
       </View>
       <View style={[styles.container, { backgroundColor: getRandomColor()}]}>
-
+        <Toolbar />
       </View>
-    </View >
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  toolbar: {
+    backgroundColor: '#6200EE',
+    height: 56,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16, 
+   },
+
   mainContainer: {
     flex: 1
   },
