@@ -6,26 +6,35 @@ import { Button, View, Text, StyleSheet, Dimensions, useWindowDimensions, SafeAr
 
 const App = () => {
 
-  const Toolbar = () => {
+  const Toolbar = ({ onPressCameraButton, onPressAddPictureButton, onPressShowEXIFButton }) => {
     return (
       <View style={styles.toolbar}>
-        <Button title='add'>
-        </Button>
-        <Button title='camera'>
-        </Button>
-        <Button title='compare'>
-        </Button>
+        <Button title='add' onPress={onPressAddPictureButton}/>
+        <Button title='camera' onPress={onPressCameraButton}/>
+        <Button title='compare' onPress={onPressShowEXIFButton}/>
       </View>
-    )
+    );
   }
 
-  const getRandomColor = () =>  {
+  const ContainerView = ({ id, onPressAddPictureButton, onPressCameraButton, onPressShowEXIFButton }) => {
+    return (
+      <View style={[styles.container, { backgroundColor: getRandomColor() }]}>
+        <Toolbar
+          onPressAddPictureButton={onPressAddPictureButton}
+          onPressCameraButton={onPressCameraButton}
+          onPressShowEXIFButton={onPressShowEXIFButton}
+        />
+      </View>
+    );
+  }
+
+  const getRandomColor = () => {
     let color = {
       r: Math.random() * 256,
       g: Math.random() * 256,
       b: Math.random() * 256,
     }
-    
+
     console.log(`rgb: ${JSON.stringify(color)}`)
     return `rgb(${color.r}, ${color.g}, ${color.b})`;
   };
@@ -33,12 +42,18 @@ const App = () => {
 
   return (
     <SafeAreaView style={[styles.mainContainer]}>
-      <View style={[styles.container, { backgroundColor:  getRandomColor()}]}>
-        <Toolbar />
-      </View>
-      <View style={[styles.container, { backgroundColor: getRandomColor()}]}>
-        <Toolbar />
-      </View>
+      <ContainerView
+        id='1'
+        onPressAddPictureButton={() => {console.log("1 onPressAddPictureButton")}}
+        onPressCameraButton={() => {console.log("1 onPressCameraButton")}}
+        onPressShowEXIFButton={() => {console.log("1 onPressShowEXIFButton")}}
+      />
+      <ContainerView
+        id='2'
+        onPressAddPictureButton={() => {console.log("2 onPressAddPictureButton")}}
+        onPressCameraButton={() => {console.log("2 onPressCameraButton")}}
+        onPressShowEXIFButton={() => {console.log("2 onPressShowEXIFButton")}}
+      />
     </SafeAreaView>
   );
 };
@@ -50,8 +65,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16, 
-   },
+    paddingHorizontal: 16,
+  },
 
   mainContainer: {
     flex: 1
