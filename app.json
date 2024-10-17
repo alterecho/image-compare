@@ -1,5 +1,14 @@
 {
   "expo": {
+      "plugins": [
+          [
+              "expo-image-picker",
+              {
+                  "photosPermission": "The app accesses your photos to let you share them with your friends."
+              }
+          ]
+          
+      ],
     "name": "image-compare",
     "slug": "image-compare",
     "version": "1.0.0",
@@ -12,13 +21,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.imagecompare"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.imagecompare"
     },
     "web": {
       "favicon": "./assets/favicon.png"

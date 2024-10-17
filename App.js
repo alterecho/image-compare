@@ -1,19 +1,19 @@
-
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Button, View, Text, StyleSheet, Dimensions, useWindowDimensions, SafeAreaView, Touchable, TouchableOpacity } from 'react-native';
-
+import * as ImagePicker from 'expo-image-picker';
 
 const App = () => {
 
   const Toolbar = ({ onPressCameraButton, onPressAddPictureButton, onPressShowEXIFButton }) => {
     return (
       <View style={styles.toolbar}>
-        <Button title='add' onPress={onPressAddPictureButton}/>
-        <Button title='camera' onPress={onPressCameraButton}/>
-        <Button title='compare' onPress={onPressShowEXIFButton}/>
+        <Button title='add' onPress={onPressAddPictureButton} />
+        <Button title='camera' onPress={onPressCameraButton} />
+        <Button title='compare' onPress={onPressShowEXIFButton} />
       </View>
     );
+
   }
 
   const ContainerView = ({ id, onPressAddPictureButton, onPressCameraButton, onPressShowEXIFButton }) => {
@@ -40,19 +40,46 @@ const App = () => {
   };
   console.log("returning View")
 
+  const handleAddPictureButtonClick = async () => {
+    try {
+      const options = {
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      }
+      let result = await ImagePicker.launchImageLibraryAsync(options)
+      if (result.cancelled) {
+        console.log(`handleAddPictureButtonClick: cancelled`)
+      } else {
+        console.log(`handleAddPictureButtonClick: ${result}`)
+      }
+    } catch (error) {
+      console.log(`handleAddPictureButtonClick: ${error}`);
+    }
+  };
+
+  function handleCameraButtonClick() {
+    console.log("1 onPressCameraButton")
+  }
+
+  function handleCompareButtonClick() {
+    console.log("1 onPressShowEXIFButton")
+  }
+
   return (
     <SafeAreaView style={[styles.mainContainer]}>
       <ContainerView
         id='1'
-        onPressAddPictureButton={() => {console.log("1 onPressAddPictureButton")}}
-        onPressCameraButton={() => {console.log("1 onPressCameraButton")}}
-        onPressShowEXIFButton={() => {console.log("1 onPressShowEXIFButton")}}
+        onPressAddPictureButton={() => { handleAddPictureButtonClick() }}
+        onPressCameraButton={handleCameraButtonClick()}
+        onPressShowEXIFButton={handleCompareButtonClick()}
       />
       <ContainerView
         id='2'
-        onPressAddPictureButton={() => {console.log("2 onPressAddPictureButton")}}
-        onPressCameraButton={() => {console.log("2 onPressCameraButton")}}
-        onPressShowEXIFButton={() => {console.log("2 onPressShowEXIFButton")}}
+        onPressAddPictureButton={() => { console.log("2 onPressAddPictureButton") }}
+        onPressCameraButton={() => { console.log("2 onPressCameraButton") }}
+        onPressShowEXIFButton={() => { console.log("2 onPressShowEXIFButton") }}
       />
     </SafeAreaView>
   );
