@@ -1,9 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Image, Button, View, Text, StyleSheet, Dimensions, useWindowDimensions, SafeAreaView } from 'react-native';
+import { Image, Button, View, Text, StyleSheet, Dimensions, useWindowDimensions, SafeAreaView, PanResponder } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 const App = () => {
+  
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: Animated.event(
+        [ 
+          null, 
+          { dx: pan.x, dy: pan.y }
+        ],
+        { useNativeDriver: false }
+      ),
+      onPanResponderRelease: () => {
+        Animated.spring(pan, {
+          toValue: { x: 0, y: 0},
+          useNativeDriver: false
+        }).start();
+      },
+    })
+  ).current
+  
   const [imageUri, setImageUri] = useState(null);
   const Toolbar = ({ onPressCameraButton, onPressAddPictureButton, onPressShowEXIFButton }) => {
     return (
