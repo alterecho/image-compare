@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Button, View, Text, StyleSheet, Dimensions, useWindowDimensions, SafeAreaView, Touchable, TouchableOpacity } from 'react-native';
+import { Image, Button, View, Text, StyleSheet, Dimensions, useWindowDimensions, SafeAreaView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 const App = () => {
-
+  const [imageUri, setImageUri] = useState(null);
   const Toolbar = ({ onPressCameraButton, onPressAddPictureButton, onPressShowEXIFButton }) => {
     return (
       <View style={styles.toolbar}>
@@ -13,10 +13,15 @@ const App = () => {
         <Button title='compare' onPress={onPressShowEXIFButton} />
       </View>
     );
-
   }
 
-  const ContainerView = ({ id, onPressAddPictureButton, onPressCameraButton, onPressShowEXIFButton }) => {
+  const ImageDisplayView = ( { imageUri }) => {
+    return (
+      imageUri ? <Image source={{ uri: imageUri }} style={styles.image} /> : null
+    )
+  }
+
+  const ContainerView = ({ id, imageUri, onPressAddPictureButton, onPressCameraButton, onPressShowEXIFButton }) => {
     return (
       <View style={[styles.container, { backgroundColor: getRandomColor() }]}>
         <Toolbar
@@ -24,15 +29,16 @@ const App = () => {
           onPressCameraButton={onPressCameraButton}
           onPressShowEXIFButton={onPressShowEXIFButton}
         />
+        <ImageDisplayView imageUri={imageUri}></ImageDisplayView>
       </View>
     );
   }
 
   const getRandomColor = () => {
     let color = {
-      r: Math.random() * 256,
-      g: Math.random() * 256,
-      b: Math.random() * 256,
+      r: Math.floor(Math.random() * 256),
+      g: Math.floor(Math.random() * 256),
+      b: Math.floor(Math.random() * 256),
     }
 
     console.log(`rgb: ${JSON.stringify(color)}`)
@@ -40,6 +46,7 @@ const App = () => {
   };
   console.log("returning View")
 
+  
   const handleAddPictureButtonClick = async () => {
     try {
       const options = {
@@ -52,7 +59,8 @@ const App = () => {
       if (result.cancelled) {
         console.log(`handleAddPictureButtonClick: cancelled`)
       } else {
-        console.log(`handleAddPictureButtonClick: ${result}`)
+        console.log(`handleAddPictureButtonClick: ${result.uri}`)
+        setImageUri(result.assets[0].uri)
       }
     } catch (error) {
       console.log(`handleAddPictureButtonClick: ${error}`);
@@ -71,15 +79,17 @@ const App = () => {
     <SafeAreaView style={[styles.mainContainer]}>
       <ContainerView
         id='1'
+        imageUri={imageUri}
         onPressAddPictureButton={() => { handleAddPictureButtonClick() }}
-        onPressCameraButton={handleCameraButtonClick()}
-        onPressShowEXIFButton={handleCompareButtonClick()}
+        onPressCameraButton={() => handleCameraButtonClick()}
+        onPressShowEXIFButton={() => handleCompareButtonClick()}
       />
       <ContainerView
         id='2'
+        imageUri={imageUri}
         onPressAddPictureButton={() => { console.log("2 onPressAddPictureButton") }}
-        onPressCameraButton={() => { console.log("2 onPressCameraButton") }}
-        onPressShowEXIFButton={() => { console.log("2 onPressShowEXIFButton") }}
+        onPressCameraButton={() => { console.log("2 onPressCameraButton") } }
+        onPressShowEXIFButton={() => { console.log("2 onPressShowEXIFButton") } }
       />
     </SafeAreaView>
   );
@@ -99,9 +109,12 @@ const styles = StyleSheet.create({
     flex: 1
   },
   container: {
-    backgroundColor: `yellow`,
     flex: 1
-  }
+  },
+  image: {
+    width: 200,
+    height: 200,
+  },
 });
 
 export default App;
