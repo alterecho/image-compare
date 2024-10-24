@@ -5,24 +5,24 @@ import * as ImagePicker from 'expo-image-picker';
 
 const App = () => {
   
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: Animated.event(
-        [ 
-          null, 
-          { dx: pan.x, dy: pan.y }
-        ],
-        { useNativeDriver: false }
-      ),
-      onPanResponderRelease: () => {
-        Animated.spring(pan, {
-          toValue: { x: 0, y: 0},
-          useNativeDriver: false
-        }).start();
-      },
-    })
-  ).current
+  // const panResponder = useRef(
+  //   PanResponder.create({
+  //     onStartShouldSetPanResponder: () => true,
+  //     onPanResponderMove: Animated.event(
+  //       [ 
+  //         null, 
+  //         { dx: pan.x, dy: pan.y }
+  //       ],
+  //       { useNativeDriver: false }
+  //     ),
+  //     onPanResponderRelease: () => {
+  //       Animated.spring(pan, {
+  //         toValue: { x: 0, y: 0},
+  //         useNativeDriver: false
+  //       }).start();
+  //     },
+  //   })
+  // ).current
   
   const [imageUri, setImageUri] = useState(null);
   const Toolbar = ({ onPressCameraButton, onPressAddPictureButton, onPressShowEXIFButton }) => {
@@ -74,16 +74,26 @@ const App = () => {
         allowsEditing: true,
         aspect: [4, 3],
         quality: 1,
-      }
-      let result = await ImagePicker.launchImageLibraryAsync(options)
+        exif: true
+      };
+      
+      let result = await ImagePicker.launchImageLibraryAsync(options);
+  
       if (result.cancelled) {
-        console.log(`handleAddPictureButtonClick: cancelled`)
-      } else {
-        console.log(`handleAddPictureButtonClick: ${result.uri}`)
-        setImageUri(result.assets[0].uri)
+        console.log(`handleAddPictureButtonClick: cancelled`);
+        return; // Exit if cancelled
       }
+      
+      let pickedImageURI = result.assets[0].uri;
+      setImageUri(pickedImageURI);
+      console.log(`Picked Image URI: ${pickedImageURI}`);
+
+      let exif = result.assets[0].exif
+      console.log(`${JSON.stringify(exif, null, 2)}`);
+      console.log(`Picked Image EXIF: ${exif}`);
+        
     } catch (error) {
-      console.log(`handleAddPictureButtonClick: ${error}`);
+      console.log(`handleAddPictureButtonClick error: ${error.message}`);
     }
   };
 
@@ -92,7 +102,7 @@ const App = () => {
   }
 
   function handleCompareButtonClick() {
-    console.log("1 onPressShowEXIFButton")
+    console.log("1 onPressShow`EXIFButton")
   }
 
   return (
