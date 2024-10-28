@@ -2,28 +2,21 @@ import React, { useEffect, useRef, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Image, Button, View, Text, StyleSheet, Dimensions, useWindowDimensions, SafeAreaView, PanResponder } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
 
-const App = () => {
-  
-  // const panResponder = useRef(
-  //   PanResponder.create({
-  //     onStartShouldSetPanResponder: () => true,
-  //     onPanResponderMove: Animated.event(
-  //       [ 
-  //         null, 
-  //         { dx: pan.x, dy: pan.y }
-  //       ],
-  //       { useNativeDriver: false }
-  //     ),
-  //     onPanResponderRelease: () => {
-  //       Animated.spring(pan, {
-  //         toValue: { x: 0, y: 0},
-  //         useNativeDriver: false
-  //       }).start();
-  //     },
-  //   })
-  // ).current
-  
+
+const Stack = createNativeStackNavigator();
+
+const CompareMetaDataScreen = () => {
+  return (
+    <View style={styles.container}>
+
+    </View>
+  )
+}
+
+const CompareScreen = ({ navigation }) => {
   const [imageUri, setImageUri] = useState(null);
   const Toolbar = ({ onPressCameraButton, onPressAddPictureButton, onPressShowEXIFButton }) => {
     return (
@@ -35,7 +28,7 @@ const App = () => {
     );
   }
 
-  const ImageDisplayView = ( { imageUri }) => {
+  const ImageDisplayView = ({ imageUri }) => {
     return (
       imageUri ? <Image source={{ uri: imageUri }} style={styles.image} /> : null
     )
@@ -64,9 +57,8 @@ const App = () => {
     console.log(`rgb: ${JSON.stringify(color)}`)
     return `rgb(${color.r}, ${color.g}, ${color.b})`;
   };
-  console.log("returning View")
 
-  
+
   const handleAddPictureButtonClick = async () => {
     try {
       const options = {
@@ -76,14 +68,14 @@ const App = () => {
         quality: 1,
         exif: true
       };
-      
+
       let result = await ImagePicker.launchImageLibraryAsync(options);
-  
+
       if (result.cancelled) {
         console.log(`handleAddPictureButtonClick: cancelled`);
         return; // Exit if cancelled
       }
-      
+
       let pickedImageURI = result.assets[0].uri;
       setImageUri(pickedImageURI);
       console.log(`Picked Image URI: ${pickedImageURI}`);
@@ -91,7 +83,7 @@ const App = () => {
       let exif = result.assets[0].exif
       console.log(`${JSON.stringify(exif, null, 2)}`);
       console.log(`Picked Image EXIF: ${exif}`);
-        
+
     } catch (error) {
       console.log(`handleAddPictureButtonClick error: ${error.message}`);
     }
@@ -103,10 +95,11 @@ const App = () => {
 
   function handleCompareButtonClick() {
     console.log("1 onPressShow`EXIFButton")
+    navigation.navigate('meta')
   }
 
   return (
-    <SafeAreaView style={[styles.mainContainer]}>
+    <View style={{ flex: 1 }}>
       <ContainerView
         id='1'
         imageUri={imageUri}
@@ -118,10 +111,21 @@ const App = () => {
         id='2'
         imageUri={imageUri}
         onPressAddPictureButton={() => { console.log("2 onPressAddPictureButton") }}
-        onPressCameraButton={() => { console.log("2 onPressCameraButton") } }
-        onPressShowEXIFButton={() => { console.log("2 onPressShowEXIFButton") } }
+        onPressCameraButton={() => { console.log("2 onPressCameraButton") }}
+        onPressShowEXIFButton={() => { console.log("2 onPressShowEXIFButton") }}
       />
-    </SafeAreaView>
+    </View>
+  )
+}
+
+const App = () => {
+  return (
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName='home'>
+          <Stack.Screen name='home' component={CompareScreen} />
+          <Stack.Screen name='meta' component={CompareMetaDataScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
   );
 };
 
