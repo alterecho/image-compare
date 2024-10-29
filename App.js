@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Image, Button, View, Text, StyleSheet, Dimensions, useWindowDimensions, SafeAreaView, PanResponder } from 'react-native';
+import { Image, Button, View, Text, StyleSheet, Dimensions, useWindowDimensions, SafeAreaView, PanResponder, FlatList } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
@@ -9,9 +9,26 @@ import { NavigationContainer } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 
 const CompareMetaDataScreen = () => {
+  const metaDataArray = [
+    { title: '1', value: 'Apple' },
+    { title: '2', value: 'Banana' },
+    { title: '3', value: 'Cherry' },
+    { title: '4', value: 'Date' },
+    { title: '5', value: 'Elderberry' },
+  ];
+
+  const MetaDataCell = ({metaData}) => (
+    <View>
+      <Text>{metaData.title}</Text>
+      <Text>{metaData.value}</Text>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
-
+      <FlatList data={metaDataArray}
+        keyExtractor={(metaData) => metaData.title}
+        renderItem={({ item }) => <MetaDataCell metaData={item} />} />
     </View>
   )
 }
