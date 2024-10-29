@@ -8,22 +8,16 @@ import { NavigationContainer } from '@react-navigation/native';
 
 const Stack = createNativeStackNavigator();
 
-const CompareMetaDataScreen = () => {
-  const metaDataArray = [
-    { title: '1', value: 'Apple' },
-    { title: '2', value: 'Banana' },
-    { title: '3', value: 'Cherry' },
-    { title: '4', value: 'Date' },
-    { title: '5', value: 'Elderberry' },
-  ];
+const CompareMetaDataScreen = ({ route }) => {
 
+  const metaDataArray = route.params.selectedImageMetaDataArray
   const MetaDataCell = ({metaData}) => (
     <View>
       <Text>{metaData.title}</Text>
       <Text>{metaData.value}</Text>
     </View>
   );
-
+  console.log(`CompareMetaDataScreen: ${metaDataArray} (${JSON.stringify(route)})`);
   return (
     <View style={styles.container}>
       <FlatList data={metaDataArray}
@@ -33,7 +27,8 @@ const CompareMetaDataScreen = () => {
   )
 }
 
-const CompareScreen = ({ navigation }) => {
+const CompareImageScreen = ({ navigation }) => {
+  const selectedImageMetaDataArray = useRef(null)
   const [imageUri, setImageUri] = useState(null);
   const Toolbar = ({ onPressCameraButton, onPressAddPictureButton, onPressShowEXIFButton }) => {
     return (
@@ -97,11 +92,12 @@ const CompareScreen = ({ navigation }) => {
       setImageUri(pickedImageURI);
       console.log(`Picked Image URI: ${pickedImageURI}`);
 
-      let exif = result.assets[0].exif
-      console.log(`${JSON.stringify(exif, null, 2)}`);
-      console.log(`Picked Image EXIF: ${exif}`);
-
+      const exifData = result.assets[0].exif
+      selectedImageMetaDataArray.current = Object.keys(exifData).map(key => ({ title: key, value: exifData[key] }));
+      console.log(`${JSON.stringify(selectedImageMetaDataArray, null, 2)}`);
+      console.log(`Picked Image EXIF: ${selectedImageMetaDataArray}`);
     } catch (error) {
+      selectedImageMetaDataArray.current = null
       console.log(`handleAddPictureButtonClick error: ${error.message}`);
     }
   };
@@ -111,8 +107,8 @@ const CompareScreen = ({ navigation }) => {
   }
 
   function handleCompareButtonClick() {
-    console.log("1 onPressShow`EXIFButton")
-    navigation.navigate('meta')
+    console.log(`1 onPressShow EXIFButton, ${selectedImageMetaDataArray.current}`)
+    navigation.navigate('meta', { selectedImageMetaDataArray: selectedImageMetaDataArray.current });
   }
 
   return (
@@ -139,7 +135,7 @@ const App = () => {
   return (
       <NavigationContainer>
         <Stack.Navigator initialRouteName='home'>
-          <Stack.Screen name='home' component={CompareScreen} />
+          <Stack.Screen name='home' component={CompareImageScreen} />
           <Stack.Screen name='meta' component={CompareMetaDataScreen} />
         </Stack.Navigator>
       </NavigationContainer>
