@@ -10,19 +10,33 @@ const Stack = createNativeStackNavigator();
 
 const CompareMetaDataScreen = ({ route }) => {
 
+  const MetaDataTableView = ({ metaDataArray }) => {
+    const MetaDataCell = ({ metaData }) => {
+      return (
+        <View>
+          <Text>{metaData.title}</Text>
+          <Text>{metaData.value}</Text>
+        </View >
+      )
+    }
+
+    return (
+      <View style={styles.container}>
+        <FlatList
+          data={ metaDataArray }
+          keyExtractor={(dataItem) => dataItem.title}
+          renderItem={({ item }) => <MetaDataCell metaData={item} />}
+        />
+      </View >
+    )
+  }
+
   const metaDataArray = route.params.selectedImageMetaDataArray
-  const MetaDataCell = ({metaData}) => (
-    <View>
-      <Text>{metaData.title}</Text>
-      <Text>{metaData.value}</Text>
-    </View>
-  );
   console.log(`CompareMetaDataScreen: ${metaDataArray} (${JSON.stringify(route)})`);
   return (
     <View style={styles.container}>
-      <FlatList data={metaDataArray}
-        keyExtractor={(metaData) => metaData.title}
-        renderItem={({ item }) => <MetaDataCell metaData={item} />} />
+      <MetaDataTableView style={ { flex: 1 } } metaDataArray={metaDataArray} />
+      <MetaDataTableView style={ { flex: 1 } } metaDataArray={metaDataArray} />
     </View>
   )
 }
@@ -133,12 +147,12 @@ const CompareImageScreen = ({ navigation }) => {
 
 const App = () => {
   return (
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName='home'>
-          <Stack.Screen name='home' component={CompareImageScreen} />
-          <Stack.Screen name='meta' component={CompareMetaDataScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName='home'>
+        <Stack.Screen name='home' component={CompareImageScreen} />
+        <Stack.Screen name='meta' component={CompareMetaDataScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
