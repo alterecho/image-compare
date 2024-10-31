@@ -21,7 +21,7 @@ const CompareMetaDataScreen = ({ route }) => {
     }
 
     return (
-      <View style={styles.container}>
+      <View style={{ flex: 1 }}>
         <FlatList
           data={ metaDataArray }
           keyExtractor={(dataItem) => dataItem.title}
@@ -35,21 +35,22 @@ const CompareMetaDataScreen = ({ route }) => {
   console.log(`CompareMetaDataScreen: ${metaDataArray} (${JSON.stringify(route)})`);
   return (
     <View style={styles.container}>
-      <MetaDataTableView style={ { flex: 1 } } metaDataArray={metaDataArray} />
-      <MetaDataTableView style={ { flex: 1 } } metaDataArray={metaDataArray} />
+      <MetaDataTableView style={{ flex: 0.25 }} metaDataArray={metaDataArray} />
+      <MetaDataTableView style={{ flex: 0.75 }} metaDataArray={metaDataArray} />
     </View>
   )
 }
 
 const CompareImageScreen = ({ navigation }) => {
-  const selectedImageMetaDataArray = useRef(null)
+  const [selectedImageMetaDataArray, setSelectedImageMetaDataArray] = useState(null)
   const [imageUri, setImageUri] = useState(null);
   const Toolbar = ({ onPressCameraButton, onPressAddPictureButton, onPressShowEXIFButton }) => {
+    console.log(`>>>>> render toolbar onPressShowEXIFButton: ${onPressShowEXIFButton}`)
     return (
       <View style={styles.toolbar}>
         <Button title='add' onPress={onPressAddPictureButton} />
         <Button title='camera' onPress={onPressCameraButton} />
-        <Button title='compare' onPress={onPressShowEXIFButton} />
+        <Button title='compare' onPress={onPressShowEXIFButton} disabled={!onPressShowEXIFButton} />
       </View>
     );
   }
@@ -107,11 +108,19 @@ const CompareImageScreen = ({ navigation }) => {
       console.log(`Picked Image URI: ${pickedImageURI}`);
 
       const exifData = result.assets[0].exif
-      selectedImageMetaDataArray.current = Object.keys(exifData).map(key => ({ title: key, value: exifData[key] }));
+      setSelectedImageMetaDataArray(
+        Object.keys(exifData)
+        .map(
+          key => ({
+             title: key, value: exifData[key] 
+            }
+          )
+        )
+      );
       console.log(`${JSON.stringify(selectedImageMetaDataArray, null, 2)}`);
       console.log(`Picked Image EXIF: ${selectedImageMetaDataArray}`);
     } catch (error) {
-      selectedImageMetaDataArray.current = null
+      setSelectedImageMetaDataArray(null)
       console.log(`handleAddPictureButtonClick error: ${error.message}`);
     }
   };
@@ -121,10 +130,11 @@ const CompareImageScreen = ({ navigation }) => {
   }
 
   function handleCompareButtonClick() {
-    console.log(`1 onPressShow EXIFButton, ${selectedImageMetaDataArray.current}`)
-    navigation.navigate('meta', { selectedImageMetaDataArray: selectedImageMetaDataArray.current });
+    console.log(`1 onPressShow EXIFButton, ${selectedImageMetaDataArray}`)
+    navigation.navigate('meta', { selectedImageMetaDataArray: selectedImageMetaDataArray });
   }
 
+  console.log(`onPressShowEXIFButton selectedImageMetaDataArray: ${selectedImageMetaDataArray}`)
   return (
     <View style={{ flex: 1 }}>
       <ContainerView
@@ -132,14 +142,14 @@ const CompareImageScreen = ({ navigation }) => {
         imageUri={imageUri}
         onPressAddPictureButton={() => { handleAddPictureButtonClick() }}
         onPressCameraButton={() => handleCameraButtonClick()}
-        onPressShowEXIFButton={() => handleCompareButtonClick()}
+        onPressShowEXIFButton={selectedImageMetaDataArray ? () => { handleCompareButtonClick() } : null }
       />
       <ContainerView
         id='2'
         imageUri={imageUri}
         onPressAddPictureButton={() => { console.log("2 onPressAddPictureButton") }}
         onPressCameraButton={() => { console.log("2 onPressCameraButton") }}
-        onPressShowEXIFButton={() => { console.log("2 onPressShowEXIFButton") }}
+        onPressShowEXIFButton={selectedImageMetaDataArray ? () => { console.log("2 onPressShowEXIFButton") } : null }
       />
     </View>
   )
@@ -170,7 +180,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   container: {
-    flex: 1
+    flex: 1,
+    flexDirection: 'column',
   },
   image: {
     width: 200,
