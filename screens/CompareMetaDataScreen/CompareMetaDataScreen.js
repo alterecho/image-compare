@@ -1,5 +1,7 @@
-import React, { View, useState } from "react";
+import React, { useState } from "react";
+import { View } from "react-native";
 import styles from "../../styles";
+import { MetaDataTableView } from "./CompareMetaDataScreen+Components";
 
 const CompareMetaDataScreen = ({ route }) => {
   const metaDataArray = route.params.selectedImageMetaDataArray

@@ -1,4 +1,4 @@
-import { View, FlatList } from "react-native"
+import { View, Text, FlatList } from "react-native"
 
 const MetaDataCell = ({ metaData }) => {
   return (
