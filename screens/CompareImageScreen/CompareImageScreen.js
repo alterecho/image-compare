@@ -9,7 +9,7 @@ const CompareImageScreen = ({ navigation }) => {
   const [imageInfo1, setImageInfo1] = useState(null);
   const [imageInfo2, setImageInfo2] = useState(null);
   
-  const handleAddPictureButtonClick = async () => {
+  const handleAddPictureButtonClick = async (id) => {
     try {
       const options = {
         mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -27,7 +27,7 @@ const CompareImageScreen = ({ navigation }) => {
       }
 
       let pickedImageURI = result.assets[0].uri;
-      console.log(`Picked Image URI: ${pickedImageURI}`);
+      console.log(`Picked Image URI (for ${id}): ${pickedImageURI}`);
 
       const exifData = result.assets[0].exif;
       const exifDataArray = Object
@@ -36,39 +36,46 @@ const CompareImageScreen = ({ navigation }) => {
           title: key, value: exifData[key]
         })
         )
-      let imageInfo1 = ImageInfo(pickedImageURI, exifDataArray);
-      setImageInfo1(imageInfo1);
-
+      let imageInfo = ImageInfo(pickedImageURI, exifDataArray);
+      if (id == 1) {
+        setImageInfo1(imageInfo);
+      } else {
+        setImageInfo2(imageInfo);
+      }
       console.log(`${JSON.stringify(imageInfo1, null, 2)}`);
     } catch (error) {
-      setImageInfo1(null)
+      if (id == 1) {
+        setImageInfo1(null)
+      } else {
+        setImageInfo2(null)
+      }
+      
       console.log(`handleAddPictureButtonClick error: ${error.message}`);
     }
   };
 
-  function handleCameraButtonClick() {
-    console.log("1 onPressCameraButton")
+  function handleCameraButtonClick(id) {
+    console.log(`${id} onPressCameraButton`)
   }
 
-  function handleCompareButtonClick() {
+  function handleCompareButtonClicked(id) {
+    console.log(`${id} onPressCameraButton`)
     navigation.navigate('meta', { selectedImageMetaDataArray: imageInfo1.metaDataArray });
   }
 
   return (
     <View style={{ flex: 1 }}>
       <ContainerView
-        id='1'
         imageUri={imageInfo1?.uri}
-        onPressAddPictureButton={() => { handleAddPictureButtonClick() }}
-        onPressCameraButton={() => handleCameraButtonClick()}
-        onPressShowEXIFButton={imageInfo1 ? () => { handleCompareButtonClick() } : null }
+        onPressAddPictureButton={() => { handleAddPictureButtonClick(1) }}
+        onPressCameraButton={() => handleCameraButtonClick(1)}
+        onPressShowEXIFButton={imageInfo1 ? () => { handleCompareButtonClick(1) } : null }
       />
       <ContainerView
-        id='2'
-        imageUri={imageInfo1?.uri}
-        onPressAddPictureButton={() => { console.log("2 onPressAddPictureButton") }}
-        onPressCameraButton={() => { console.log("2 onPressCameraButton") }}
-        onPressShowEXIFButton={imageInfo1 ? () => { console.log("2 onPressShowEXIFButton") } : null }
+        imageUri={imageInfo2?.uri}
+        onPressAddPictureButton={() => { handleAddPictureButtonClick(2) }}
+        onPressCameraButton={() => handleCameraButtonClick(2)}
+        onPressShowEXIFButton={imageInfo1 ? () => { handleCompareButtonClick(2) } : null }
       />
     </View>
   )

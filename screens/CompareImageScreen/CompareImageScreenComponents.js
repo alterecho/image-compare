@@ -20,7 +20,8 @@
     );
   }
 
-  export const ContainerView = ({ id, imageUri, onPressAddPictureButton, onPressCameraButton, onPressShowEXIFButton }) => {
+  export const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton, onPressShowEXIFButton }) => {
+    
     return (
       <View style={[styles.container, { backgroundColor: getRandomColor() }]}>
         <Toolbar
