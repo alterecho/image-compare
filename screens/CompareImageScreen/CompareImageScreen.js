@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import {View, Button, StyleSheet } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
-import styles from "../../styles";
-import { ContainerView } from "./CompareImageScreenComponents"
+import { ContainerView } from "./CompareImageScreen+Components"
 import { ImageInfo } from "../../structs";
 
 const CompareImageScreen = ({ navigation }) => {
@@ -58,7 +57,7 @@ const CompareImageScreen = ({ navigation }) => {
     console.log(`${id} onPressCameraButton`)
   }
 
-  function handleCompareButtonClicked(id) {
+  function handleCompareButtonClick(id) {
     console.log(`${id} onPressCameraButton`)
     navigation.navigate('meta', { selectedImageMetaDataArray: imageInfo1.metaDataArray });
   }
