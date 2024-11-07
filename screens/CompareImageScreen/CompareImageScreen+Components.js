@@ -1,12 +1,61 @@
-  import React from "react";
-  import { View, Image, Button, StyleSheet } from "react-native";
+  import React, { useRef } from "react";
+  import { View, Image, Button, StyleSheet, Animated } from "react-native";
   import { getRandomColor } from "../../Utils";
+  import {
+    GestureHandlerRootView,
+    PanGestureHandler,
+    RotationGestureHandler
+  } from 'react-native-gesture-handler'
+  import Aminated, {
+    useAnimatedGestureHandler,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring
+  } from 'react-native-reanimated'
 
   const ImageDisplayView = ({ imageUri }) => {
+    const translateX = useRef(new Animated.Value(0)).current
+    const translateY = useRef(new Animated.Value(0)).current
+    const handleOnGestureEvent = Animated.event([
+      {
+        nativeEvent: {
+          translationX: translateX,
+          translationY: translateY
+        },
+      },
+    ],
+    {
+      useNativeDriver: true
+    }
+  )
+
+    const handlePanGestureStatChange = (event) => {
+      console.log(event)
+    };
+
     return (
-      imageUri ? <Image source={{ uri: imageUri }} style={styles.image} /> : null
-    )
-  }
+      imageUri ?
+      <GestureHandlerRootView>
+        <PanGestureHandler
+          onGestureEvent={handleOnGestureEvent}
+          onHandlerStateChange={handlePanGestureStatChange}
+        >
+          <Animated.Image
+           source={{ uri: imageUri }} 
+          style={
+                [styles.image,
+                  {
+                    transform: [
+                      { translateX },
+                      { translateY }
+                    ]
+                  }
+                  ]} />
+          </PanGestureHandler>
+      </GestureHandlerRootView>
+      : null
+    );
+  };
 
   const Toolbar = ({ onPressCameraButton, onPressAddPictureButton, onPressShowEXIFButton }) => {
     console.log(`>>>>> render toolbar onPressShowEXIFButton: ${onPressShowEXIFButton}`)
@@ -37,7 +86,9 @@ const styles = StyleSheet.create(
     containerView: {
       flex: 1,
       flexDirection: "row",
-      backgroundColor: 'clear'
+      backgroundColor: 'clear',
+      justifyContent: 'center',
+      alignContent: 'center'
     },
     toolbar: {
       flex: 1,
@@ -49,8 +100,15 @@ const styles = StyleSheet.create(
       paddingHorizontal: 16,
     },
     image: {
+      flex: 1,
       width: 200,
       height: 200,
+      backgroundColor: '#6200EE',
+      height: 56,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 50,
+      paddingVertical: 500
     },
   }
 )
