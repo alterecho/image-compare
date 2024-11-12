@@ -2,23 +2,33 @@ import React from 'react';
 import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView, PanGestureHandler } from 'react-native-gesture-handler';
-import Animated from 'react-native-reanimated';
+import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { transform } from 'typescript';
 
 const ImageDisplayView = ({ imageUri }) => {
-    const translateX = useRef(new Animated.Value(0)).current
-    const translateY = useRef(new Animated.Value(0)).current
-    const handleOnGestureEvent = Animated.event([
-        {
-            nativeEvent: {
-                translationX: translateX,
-                translationY: translateY
-            },
+    const translateX = useSharedValue(0);
+    const translateY = useSharedValue(0);
+
+    const handleOnGestureEvent = useAnimatedGestureHandler({
+        onStart:  (_, context) => {
+            context.startX = translateX.value,
+            context.startY = translateY.value
         },
-    ],
+        onActive: (event, context) => {
+            translateX.value = context.startX + event.translationX
+            translateY.value = context.startY + event.translationY
+        }
+    });
+
+    const animatedStyle = useAnimatedStyle(() => (
         {
-            useNativeDriver: true
+            transform: [
+                { translateX: translateX.value },
+                { translateY: translateY.value }
+            ]
         }
     )
+    );
 
     const handlePanGestureStatChange = (event) => {
         console.log(event)
@@ -37,12 +47,7 @@ const ImageDisplayView = ({ imageUri }) => {
                         style={
                             [
                                 styles.image,
-                                {
-                                    transform: [
-                                        { translateX },
-                                        { translateY }
-                                    ]
-                                }
+                                animatedStyle
                             ]}
                     />
                 </PanGestureHandler>
