@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {View, Button, StyleSheet } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
-import { ContainerView } from "./CompareImageScreen+Components"
+import ContainerView from "./ContainerView"
 import { ImageInfo } from "../../structs";
 
 const CompareImageScreen = ({ navigation }) => {
