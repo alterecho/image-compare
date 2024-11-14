@@ -8,11 +8,23 @@ import Animated, { useSharedValue, useAnimatedStyle } from "react-native-reanima
 const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton, onPressShowEXIFButton }) => {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
-  const panGestureHandler = Gesture.Pan().onUpdate(
+  const startX = useSharedValue(0);
+  const startY = useSharedValue(0);
+
+  const panGestureHandler = Gesture.Pan()
+  .onStart((event) => {
+    
+    startX.value = translateX.value
+    startY.value = translateY.value
+    console.log(`>>>>> onStart, ${startX.value} ${startY.value}`);
+    console.log(`>>>>> onStart, ${translateX.value} ${translateY.value}`);
+  })
+  .onUpdate(
     (event) => {
-      console.log(event);
-      translateX.value = event.translationX
-      translateY.value = event.translationY
+      console.log(`>>>>> onUpdate, ${startX.value} ${startY.value}`);
+      console.log(`>>>>> onUpdate, ${translateX.value} ${translateY.value}`);  
+      translateX.value = startX.value + event.translationX
+      translateY.value = startY.value + event.translationY
     }
   )
   const panGestureStyle = useAnimatedStyle(() => (
@@ -31,10 +43,12 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
         onPressCameraButton={onPressCameraButton}
         onPressShowEXIFButton={onPressShowEXIFButton}
       />
-      <GestureHandlerRootView style={[ {flex: 1}, Utils.makeBorderStyle(null, 'yellow', 10)]}>
+      <GestureHandlerRootView style={[{ flex: 1 }, Utils.makeBorderStyle(null, 'yellow', 10)]}>
         <GestureDetector gesture={panGestureHandler}>
-          <Animated.View style={[Utils.makeBorderStyle({flex : 1}, 'blue', 10), panGestureStyle]}>
-            <Image source={{ uri: imageUri }} style={[styles.image]} />
+          <Animated.View style={[Utils.makeBorderStyle({ flex: 1 }, 'blue', 10)]}>
+            <Animated.View style={[Utils.makeBorderStyle({ flex: 1 }, 'yellow', 10), panGestureStyle]}>
+              <Image source={{ uri: imageUri }} style={[styles.image]} />
+            </Animated.View>
           </Animated.View>
         </GestureDetector>
       </GestureHandlerRootView>
