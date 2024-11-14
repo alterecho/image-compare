@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { View, Image, Button, StyleSheet, useAnimatedValue } from "react-native";
-import { getRandomColor } from "../../Utils";
+import * as Utils from "../../common/utilities/Utils";
 import Toolbar from "./Toolbar";
 import { GestureHandlerRootView, Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useSharedValue, useAnimatedStyle } from "react-native-reanimated";
@@ -10,6 +10,7 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
   const translateY = useSharedValue(0);
   const panGestureHandler = Gesture.Pan().onUpdate(
     (event) => {
+      console.log(event);
       translateX.value = event.translationX
       translateY.value = event.translationY
     }
@@ -24,15 +25,15 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
   ))
 
   return (
-    <View style={[styles.containerView, { backgroundColor: getRandomColor() }]}>
+    <View style={[styles.containerView, { backgroundColor: Utils.getRandomColor() }]}>
       <Toolbar
         onPressAddPictureButton={onPressAddPictureButton}
         onPressCameraButton={onPressCameraButton}
         onPressShowEXIFButton={onPressShowEXIFButton}
       />
-      <GestureHandlerRootView style={[styles.imageContainerView]}>
+      <GestureHandlerRootView style={[ {flex: 1}, Utils.makeBorderStyle(null, 'yellow', 10)]}>
         <GestureDetector gesture={panGestureHandler}>
-          <Animated.View style={[panGestureStyle]}>
+          <Animated.View style={[Utils.makeBorderStyle({flex : 1}, 'blue', 10), panGestureStyle]}>
             <Image source={{ uri: imageUri }} style={[styles.image]} />
           </Animated.View>
         </GestureDetector>

@@ -8,3 +8,12 @@
     console.log(`rgb: ${JSON.stringify(color)}`)
     return `rgb(${color.r}, ${color.g}, ${color.b})`;
   };
+
+  export const makeBorderStyle = (existingStyle = {}, color = 'green', width = 1) => {
+    const style = {
+      ...existingStyle,
+      borderColor: color,
+      borderWidth: width 
+    }
+    return style
+  }
