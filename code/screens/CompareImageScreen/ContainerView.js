@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, Image, Button, StyleSheet, useAnimatedValue } from "react-native";
 import * as Utils from "../../common/utilities/Utils";
 import Toolbar from "./Toolbar";
@@ -6,27 +6,39 @@ import { GestureHandlerRootView, Gesture, GestureDetector } from "react-native-g
 import Animated, { useSharedValue, useAnimatedStyle } from "react-native-reanimated";
 
 const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton, onPressShowEXIFButton }) => {
+  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+  useEffect(() => {
+    console.log(`useEffect getSize for ${imageUri}`);
+    if (imageUri) {
+      Image.getSize(imageUri, (width, height) => {
+        console.log(" for size:", imageSize);
+        setImageSize({ width, height });
+      }, error => {
+        console.log(`error: ${error}`)
+      })  
+    }
+  }, [imageUri]);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const startX = useSharedValue(0);
   const startY = useSharedValue(0);
 
   const panGestureHandler = Gesture.Pan()
-  .onStart((event) => {
-    
-    startX.value = translateX.value
-    startY.value = translateY.value
-    console.log(`>>>>> onStart, ${startX.value} ${startY.value}`);
-    console.log(`>>>>> onStart, ${translateX.value} ${translateY.value}`);
-  })
-  .onUpdate(
-    (event) => {
-      console.log(`>>>>> onUpdate, ${startX.value} ${startY.value}`);
-      console.log(`>>>>> onUpdate, ${translateX.value} ${translateY.value}`);  
-      translateX.value = startX.value + event.translationX
-      translateY.value = startY.value + event.translationY
-    }
-  )
+    .onStart((event) => {
+
+      startX.value = translateX.value
+      startY.value = translateY.value
+      console.log(`>>>>> onStart, ${startX.value} ${startY.value}`);
+      console.log(`>>>>> onStart, ${translateX.value} ${translateY.value}`);
+    })
+    .onUpdate(
+      (event) => {
+        console.log(`>>>>> onUpdate, ${startX.value} ${startY.value}`);
+        console.log(`>>>>> onUpdate, ${translateX.value} ${translateY.value}`);
+        translateX.value = startX.value + event.translationX
+        translateY.value = startY.value + event.translationY
+      }
+    )
   const panGestureStyle = useAnimatedStyle(() => (
     {
       transform: [
@@ -46,8 +58,8 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
       <GestureHandlerRootView style={[{ flex: 1 }, Utils.makeBorderStyle(null, 'yellow', 10)]}>
         <GestureDetector gesture={panGestureHandler}>
           <Animated.View style={[Utils.makeBorderStyle({ flex: 1 }, 'blue', 10)]}>
-            <Animated.View style={[Utils.makeBorderStyle({ flex: 1 }, 'yellow', 10), panGestureStyle]}>
-              <Image source={{ uri: imageUri }} style={[styles.image]} />
+            <Animated.View style={[Utils.makeBorderStyle(null, 'yellow', 10), panGestureStyle]}>
+              <Image source={{ uri: imageUri }} style={[imageSize]} />
             </Animated.View>
           </Animated.View>
         </GestureDetector>
@@ -73,9 +85,8 @@ const styles = StyleSheet.create(
       overflow: 'hidden'
     },
     image: {
-      width: 200,
-      height: 200,
-      backgroundColor: '#ff0000',
+      flex: 1,
+      backgroundColor: '#ff0000'
     }
   }
 )
