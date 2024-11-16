@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, View, Button } from 'react-native';
 
 const Toolbar = ({ onPressCameraButton, onPressAddPictureButton, onPressShowEXIFButton }) => {
-    console.log(`>>>>> render toolbar onPressShowEXIFButton: ${onPressShowEXIFButton}`)
     return (
         <View style={styles.toolbar}>
             <Button title='add' onPress={onPressAddPictureButton} />
