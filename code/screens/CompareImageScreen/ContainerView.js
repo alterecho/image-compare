@@ -15,39 +15,58 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
         setImageSize({ width, height });
       }, error => {
         console.log(`error: ${error}`)
-      })  
+      })
     }
   }, [imageUri]);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const startX = useSharedValue(0);
   const startY = useSharedValue(0);
+  const scale = useSharedValue(1.0);
 
-  const panGestureHandler = Gesture.Pan()
+  const panGestureHandler = Gesture
+    .Pan()
     .onStart((event) => {
 
       startX.value = translateX.value
       startY.value = translateY.value
-      console.log(`>>>>> onStart, ${startX.value} ${startY.value}`);
+      // console.log(`>>>>> onStart, ${startX.value} ${startY.value}`);
       console.log(`>>>>> onStart, ${translateX.value} ${translateY.value}`);
     })
     .onUpdate(
       (event) => {
-        console.log(`>>>>> onUpdate, ${startX.value} ${startY.value}`);
+        // console.log(`>>>>> onUpdate, ${startX.value} ${startY.value}`);
         console.log(`>>>>> onUpdate, ${translateX.value} ${translateY.value}`);
         translateX.value = startX.value + event.translationX
         translateY.value = startY.value + event.translationY
       }
-    )
-  const panGestureStyle = useAnimatedStyle(() => (
+    );
+
+  const gestureStyle = useAnimatedStyle(() => (
     {
       transform: [
         { translateX: translateX.value },
-        { translateY: translateY.value }
+        { translateY: translateY.value },
+        { scale: scale.value },
+
       ]
     }
   ))
 
+  const tapGestureHandler = Gesture.Tap()
+    .numberOfTaps(2)
+    .onEnd(() => {
+      console.log("tapGestureHandler: ");
+      translateX.value = 0.0
+      translateY.value = 0.0
+      scale.value = scale.value === 1.0 ? 0.75 : 1.0;
+
+      console.log("tapGestureHandler: ", scale.value);
+    });
+
+  const combinedGestureHandlers = Gesture.Simultaneous(panGestureHandler, tapGestureHandler)
+
+  const scl = 0.125
   return (
     <View style={[styles.containerView, { backgroundColor: Utils.getRandomColor() }]}>
       <Toolbar
@@ -55,11 +74,22 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
         onPressCameraButton={onPressCameraButton}
         onPressShowEXIFButton={onPressShowEXIFButton}
       />
-      <GestureHandlerRootView style={[{ flex: 1 }, Utils.makeBorderStyle(null, 'yellow', 10)]}>
-        <GestureDetector gesture={panGestureHandler}>
+      <GestureHandlerRootView style={[{ flex: 1 }, Utils.makeBorderStyle(null, 'yellow', 10), styles.imageContainerView]}>
+        <GestureDetector gesture={combinedGestureHandlers}>
           <Animated.View style={[Utils.makeBorderStyle({ flex: 1 }, 'blue', 10)]}>
-            <Animated.View style={[Utils.makeBorderStyle(null, 'yellow', 10), panGestureStyle]}>
-              <Image source={{ uri: imageUri }} style={[imageSize]} />
+            <Animated.View style={[Utils.makeBorderStyle(null, 'red', 10), {
+              overflow: "hidden",
+              alignContent: 'center',
+              justifyContent: 'center'
+            }, gestureStyle]}>
+              <Image
+                source={{ uri: imageUri }}
+                style={{
+                  height: imageSize.height * scl,
+                  width: imageSize.width * scl
+              }}
+              resizeMode="stretch"
+                          />
             </Animated.View>
           </Animated.View>
         </GestureDetector>
@@ -73,8 +103,8 @@ const styles = StyleSheet.create(
     containerView: {
       flex: 1,
       flexDirection: "column",
-      backgroundColor: 'clear',
-      justifyContent: 'flex-start',
+      backgroundColor: 'clear'
+      // justifyContent: 'flex-start',
       // alignContent: 'flex-start'
     },
     imageContainerView: {
@@ -85,7 +115,7 @@ const styles = StyleSheet.create(
       overflow: 'hidden'
     },
     image: {
-      flex: 1,
+
       backgroundColor: '#ff0000'
     }
   }
