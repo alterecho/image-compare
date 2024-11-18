@@ -47,9 +47,10 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
 
         console.log(`>>>>> onUpdate,
            ${startX.value}, ${startY.value} 
-          (${translateX.value}, ${translateY.value})
-           ${event.x}, ${event.y}
-           ${JSON.stringify(viewSize)}
+           event.translate --  (${event.translationX}, ${event.translationY})
+           translate --  (${translateX.value}, ${translateY.value})
+           x, y --  ${event.x}, ${event.y}
+           viewSize --  ${JSON.stringify(viewSize)}
            imageSize: (${JSON.stringify(imageSize)}), scale: ${scale}
            `);
       }
@@ -65,12 +66,28 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
     }
   ))
 
+  const toggleScale = () => {
+    if (!(imageSize) || !(viewSize)) {
+      return
+    }
+    let newScale = scale
+    if (scale === 1.0) {
+      newScale = viewSize.height / imageSize.height
+      if (imageSize.width * newScale > viewSize.width) {
+        newScale *= viewSize.width / (imageSize.width * newScale)
+      }
+    } else {
+      newScale = 1.0
+    }
+    setScale(newScale)
+  }
+
   const tapGestureHandler = Gesture.Tap()
     .numberOfTaps(2)
     .onEnd(() => {
       translateX.value = 0.0
       translateY.value = 0.0
-      runOnJS(setScale)(scale === 1.0 ? 0.1 : 1.0)
+      runOnJS(toggleScale)();
     });
 
   const combinedGestureHandlers = Gesture.Simultaneous(panGestureHandler, tapGestureHandler)
@@ -86,18 +103,18 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
       <GestureHandlerRootView style={
         [
           { flex: 1 },
-          Utils.makeBorderStyle(null, 'yellow', 10),
+          Utils.makeBorderStyle('yellow'),
           styles.imageContainerView
         ]
       }>
         <GestureDetector gesture={combinedGestureHandlers}>
           <Animated.View
             style={[
-              Utils.makeBorderStyle(
-                { flex: 1 },
-                'blue',
-                10
-              )
+              {
+                flex: 1,
+                justifyContent: 'center'
+              },
+              Utils.makeBorderStyle('blue')
             ]}
             onLayout={(event) => {
               const { width, height } = event.nativeEvent.layout;
@@ -106,7 +123,7 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
             }}
           >
             <Animated.View
-              style={[Utils.makeBorderStyle(null, 'red', 10), {
+              style={[Utils.makeBorderStyle('red'), {
                 width: imageSize.width * scale,
                 height: imageSize.height * scale,
                 overflow: 'hidden'
