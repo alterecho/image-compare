@@ -103,20 +103,18 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
       <GestureHandlerRootView style={
         [
           { flex: 1 },
-          Utils.makeBorderStyle(null, 'yellow'),
+          Utils.makeBorderStyle('yellow'),
           styles.imageContainerView
         ]
       }>
         <GestureDetector gesture={combinedGestureHandlers}>
           <Animated.View
             style={[
-              Utils.makeBorderStyle(
-                {
-                  flex: 1,
-                  justifyContent: 'center'
-                },
-                'blue'
-              )
+              {
+                flex: 1,
+                justifyContent: 'center'
+              },
+              Utils.makeBorderStyle('blue')
             ]}
             onLayout={(event) => {
               const { width, height } = event.nativeEvent.layout;
@@ -125,7 +123,7 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
             }}
           >
             <Animated.View
-              style={[Utils.makeBorderStyle(null, 'red'), {
+              style={[Utils.makeBorderStyle('red'), {
                 width: imageSize.width * scale,
                 height: imageSize.height * scale,
                 overflow: 'hidden'
