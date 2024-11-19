@@ -6,7 +6,7 @@ const Toolbar = ({ onPressCameraButton, onPressAddPictureButton, onPressShowEXIF
         <View style={styles.toolbar}>
             <Button title='add' onPress={onPressAddPictureButton} />
             <Button title='camera' onPress={onPressCameraButton} />
-            <Button title='compare' onPress={onPressShowEXIFButton} disabled={!onPressShowEXIFButton} />
+            <Button title='metadata' onPress={onPressShowEXIFButton} disabled={!onPressShowEXIFButton} />
         </View>
     );
 }

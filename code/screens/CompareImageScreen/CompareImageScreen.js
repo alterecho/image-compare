@@ -57,7 +57,7 @@ const CompareImageScreen = ({ navigation }) => {
     console.log(`${id} onPressCameraButton`)
   }
 
-  function handleCompareButtonClick(id) {
+  function handleShowMetaDataButtonClick(id) {
     console.log(`${id} onPressCameraButton`)
     navigation.navigate('meta', { selectedImageMetaDataArray: imageInfo1.metaDataArray });
   }
@@ -68,13 +68,13 @@ const CompareImageScreen = ({ navigation }) => {
         imageUri={imageInfo1?.uri}
         onPressAddPictureButton={() => { handleAddPictureButtonClick(1) }}
         onPressCameraButton={() => handleCameraButtonClick(1)}
-        onPressShowEXIFButton={imageInfo1 ? () => { handleCompareButtonClick(1) } : null }
+        onPressShowEXIFButton={imageInfo1 ? () => { handleShowMetaDataButtonClick(1) } : null }
       />
       <ContainerView
         imageUri={imageInfo2?.uri}
         onPressAddPictureButton={() => { handleAddPictureButtonClick(2) }}
         onPressCameraButton={() => handleCameraButtonClick(2)}
-        onPressShowEXIFButton={imageInfo1 ? () => { handleCompareButtonClick(2) } : null }
+        onPressShowEXIFButton={imageInfo1 ? () => { handleShowMetaDataButtonClick(2) } : null }
       />
     </View>
   )
