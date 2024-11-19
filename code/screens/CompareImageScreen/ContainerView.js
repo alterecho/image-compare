@@ -11,11 +11,11 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
   const translateY = useSharedValue(0);
   const startX = useSharedValue(0);
   const startY = useSharedValue(0);
+  const startScale = useSharedValue(0)
   const [scale, setScale] = useState(1.0);
   const [viewSize, setViewSize] = useState({ width: 0, height: 0 })
 
   useEffect(() => {
-    console.log(`useEffect getSize for ${imageUri}`);
     if (imageUri) {
       Image.getSize(imageUri, (width, height) => {
         console.log(" for size:", imageSize);
@@ -26,42 +26,25 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
     }
   }, [imageUri]);
 
-  const panGestureHandler = Gesture
-    .Pan()
-    .onStart((event) => {
-      startX.value = translateX.value
-      startY.value = translateY.value
-    })
-    .onUpdate(
-      (event) => {
-
-        const finalX = startX.value + event.translationX
-        const finalY = startY.value + event.translationY
-        if (finalX < viewSize.width && finalX + imageSize.width * scale > 0) {
-          translateX.value = finalX
-        }
-
-        if (finalY < viewSize.height && finalY + imageSize.height * scale > 0) {
-          translateY.value = finalY
-        }
-
-        console.log(`>>>>> onUpdate,
-           ${startX.value}, ${startY.value} 
-           event.translate --  (${event.translationX}, ${event.translationY})
-           translate --  (${translateX.value}, ${translateY.value})
-           x, y --  ${event.x}, ${event.y}
-           viewSize --  ${JSON.stringify(viewSize)}
-           imageSize: (${JSON.stringify(imageSize)}), scale: ${scale}
-           `);
-      }
-    );
+  const panGestureHandler = Gesture.Pan().onStart((event) => {
+    startX.value = translateX.value
+    startY.value = translateY.value
+  }).onUpdate((event) => {
+    const finalX = startX.value + event.translationX
+    const finalY = startY.value + event.translationY
+    if (finalX < viewSize.width && finalX + imageSize.width * scale > 0) {
+      translateX.value = finalX
+    }
+    if (finalY < viewSize.height && finalY + imageSize.height * scale > 0) {
+      translateY.value = finalY
+    }
+  });
 
   const gestureStyle = useAnimatedStyle(() => (
     {
       transform: [
         { translateX: translateX.value },
         { translateY: translateY.value }
-
       ]
     }
   ))
@@ -90,7 +73,22 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
       runOnJS(toggleScale)();
     });
 
-  const combinedGestureHandlers = Gesture.Simultaneous(panGestureHandler, tapGestureHandler)
+  const pinchGestureHandler = Gesture.Pinch().onStart((event) => {
+    startScale.current = scale
+  }).onUpdate((event) => {
+    let newScale = startScale.current * event.scale
+    if (newScale < 0.2) {
+      newScale = 0.2
+    }
+    runOnJS(setScale)(newScale)
+  })
+
+
+  const combinedGestureHandlers = Gesture.Simultaneous(
+    panGestureHandler,
+    tapGestureHandler,
+    pinchGestureHandler
+  )
 
   const scl = 1.0
   return (
