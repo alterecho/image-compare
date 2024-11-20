@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Button, StyleSheet } from 'react-native'
+import { SafeAreaView, Button, StyleSheet } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import ContainerView from "../../common/components/ContainerView";
 import { ImageInfo } from "../../../structs";
@@ -78,7 +78,7 @@ const CompareImageScreen = ({ navigation }) => {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <ContainerView
         imageUri={imageInfo1?.uri}
         onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[0]) }}
@@ -91,7 +91,7 @@ const CompareImageScreen = ({ navigation }) => {
         onPressCameraButton={() => handleCameraButtonClick(ContainerID[1])}
         onPressShowMetaDataButton={imageInfo2 ? () => { handleShowMetaDataButtonClick(ContainerID[1]) } : null}
       />
-    </View>
+    </SafeAreaView>
   )
 }
 

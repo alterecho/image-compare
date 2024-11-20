@@ -11,7 +11,9 @@ const App = () => {
   const Stack = createNativeStackNavigator();
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={Pages.COMPARE_IMAGE_SCREEN}>
+      <Stack.Navigator
+        initialRouteName={Pages.COMPARE_IMAGE_SCREEN}
+        screenOptions={{ headerShown: false }}>
         <Stack.Screen name={Pages.COMPARE_IMAGE_SCREEN} component={CompareImageScreen} />
         <Stack.Screen name={Pages.COMPARE_META_DATA_PAGE} component={CompareMetaDataScreen} />
         <Stack.Screen name={Pages.META_DATA_PAGE} component={MetaDataScreen} />
