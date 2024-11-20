@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View, Button, StyleSheet } from 'react-native'
+import { View, Button } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import ContainerView from "../../common/components/ContainerView";
 import { ImageInfo } from "../../../structs";
 import CompareMetaDataScreen from "../CompareMetaDataScreen/CompareMetaDataScreen";
 import { Pages, ContainerID } from "../Constants";
+import CompareButton from "./CompareButton";
 
 const CompareImageScreen = ({ navigation }) => {
   const [imageInfo1, setImageInfo1] = useState(null);
@@ -85,6 +86,7 @@ const CompareImageScreen = ({ navigation }) => {
         onPressCameraButton={() => handleCameraButtonClick(ContainerID[0])}
         onPressShowMetaDataButton={imageInfo1 ? () => { handleShowMetaDataButtonClick(ContainerID[0]) } : null}
       />
+      <CompareButton ></CompareButton>
       <ContainerView
         imageUri={imageInfo2?.uri}
         onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[1]) }}
