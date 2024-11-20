@@ -5,7 +5,7 @@ import Toolbar from "./Toolbar";
 import { GestureHandlerRootView, Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useSharedValue, useAnimatedStyle, runOnJS } from "react-native-reanimated";
 
-const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton, onPressShowEXIFButton }) => {
+const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton, onPressShowMetaDataButton }) => {
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -83,7 +83,6 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
     runOnJS(setScale)(newScale)
   })
 
-
   const combinedGestureHandlers = Gesture.Simultaneous(
     panGestureHandler,
     tapGestureHandler,
@@ -96,7 +95,7 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
       <Toolbar
         onPressAddPictureButton={onPressAddPictureButton}
         onPressCameraButton={onPressCameraButton}
-        onPressShowEXIFButton={onPressShowEXIFButton}
+        onPressShowMetaDataButton={onPressShowMetaDataButton}
       />
       <GestureHandlerRootView style={
         [

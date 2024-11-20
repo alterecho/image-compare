@@ -1,13 +1,5 @@
-import { View, Text, FlatList } from "react-native"
-
-const MetaDataCell = ({ metaData }) => {
-  return (
-    <View>
-      <Text>{metaData.title}</Text>
-      <Text>{metaData.value}</Text>
-    </View >
-  )
-}
+import { View, FlatList } from "react-native"
+import MetaDataCell from "./MetaDataCell";
 
 export const MetaDataTableView = ({ metaDataArray }) => {
   return (
@@ -20,3 +12,5 @@ export const MetaDataTableView = ({ metaDataArray }) => {
     </View >
   )
 }
+
+export default MetaDataTableView;
