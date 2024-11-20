@@ -5,9 +5,14 @@ const MetaDataScreen = ({ route }) => {
     const metaDataArray = route.params.metaDataArray
     console.log(`MetaDataScreen: ${JSON.stringify(metaDataArray)}`);
     return (
-        <View style={{ flex: 1, flexDirection: 'column', backgroundColor:'red' }}>
+        <SafeAreaView
+            style={{
+                flex: 1,
+                flexDirection: 'column',
+                backgroundColor: 'red'
+            }}>
             <MetaDataTableView style={{ flex: 1 }} metaDataArray={metaDataArray} />
-        </View>
+        </SafeAreaView>
     )
 }
 
