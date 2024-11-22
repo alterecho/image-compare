@@ -3,7 +3,6 @@ import { SafeAreaView, Button, StyleSheet } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import ContainerView from "../../common/components/ContainerView";
 import { ImageInfo } from "../../../structs";
-import CompareMetaDataScreen from "../CompareMetaDataScreen/CompareMetaDataScreen";
 import { Pages, ContainerID } from "../Constants";
 import CompareButton from "./CompareButton";
 
@@ -24,12 +23,10 @@ const CompareImageScreen = ({ navigation }) => {
       let result = await ImagePicker.launchImageLibraryAsync(options);
 
       if (result.cancelled) {
-        console.log(`handleAddPictureButtonClick: cancelled`);
-        return; // Exit if cancelled
+        return;
       }
 
       let pickedImageURI = result.assets[0].uri;
-      console.log(`Picked Image URI (for ${containerID}): ${pickedImageURI}`);
 
       const exifData = result.assets[0].exif;
       const exifDataArray = Object
@@ -51,28 +48,23 @@ const CompareImageScreen = ({ navigation }) => {
       } else {
         setImageInfo2(null)
       }
-
-      console.log(`handleAddPictureButtonClick error: ${error.message}`);
     }
   };
 
   function handleCameraButtonClick(containerID) {
-    console.log(`${containerID} onPressCameraButton`)
+
   }
 
   function handleShowMetaDataButtonClick(containerID) {
     let imageInfoToUse = null
     switch (containerID) {
       case ContainerID[0]:
-        console.log("ContainerID[0]")
         imageInfoToUse = imageInfo1
         break;
       case ContainerID[1]:
-        console.log("ContainerID[1]")
         imageInfoToUse = imageInfo2
         break;
       default:
-        console.log("default")
         break;
     }
     navigation.navigate(Pages.META_DATA_PAGE, { metaDataArray: imageInfoToUse.metaDataArray });
