@@ -1,3 +1,3 @@
-export function MetaDataItem(uri, metaDataArray) {
+export function ImageInfo(uri, metaDataArray) {
     return Object.freeze({ uri, metaDataArray })
 }
