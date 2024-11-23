@@ -10,11 +10,20 @@ const CompareMetaDataScreen = ({ route }) => {
   const tableView1Ref = useRef(null)
   const tableView2Ref = useRef(null)
 
-  console.log(`CompareMetaDataScreen: ${JSON.stringify(metaDataArray1)}`);
-  console.log(`CompareMetaDataScreen: ${JSON.stringify(metaDataArray2)}`);
+  const exif1 = require('../../../tests/data/metadata-sample1.json').exif
+  const exif2 = require('../../../tests/data/metadata-sample2.json').exif
 
-  const metaDataArray1 = require('../../../tests/data/metadata-sample1.json')
-  const metaDataArray2 = require('../../../tests/data/metadata-sample1.json')
+  const metaDataArray1 = Object.keys(exif1).map((key) => {
+    return ({
+      title: key, value: exif1[key]
+    })
+  })
+  const metaDataArray2 = Object.keys(exif2).map((key) => {
+    return ({
+      title: key, value: exif2[key]
+    })
+  })
+
 
   const handleSelectMetaDataCell = (containerID, selectedItem) => {
     console.log(`containerID: ${containerID} selectedItem: ${selectedItem}`)
@@ -35,15 +44,14 @@ const CompareMetaDataScreen = ({ route }) => {
       return item.title == selectedItem.title
     })
 
-    console.log("tableViewToScrollManually: ", tableViewToScrollManually, tableView1Ref.current, tableView2Ref.current)
     if (index !== -1 && metaDataToQuery) {
       tableViewToScrollManually.scrollToIndex({ index, animated: true });
     }
   };
   return (
     <SafeAreaView style={{ flex: 1, flexDirection: 'column' }}>
-      <MetaDataTableView ref={tableView1Ref} style={{ flex: 0.25 }} metaDataArray={metaDataArray1} onSelectMetaData={(item) => { handleSelectMetaDataCell(ContainerID[0], item)}} />
-      <MetaDataTableView ref={tableView2Ref} style={{ flex: 0.75 }} metaDataArray={metaDataArray2} onSelectMetaData={(item) => { handleSelectMetaDataCell(ContainerID[1], item)}} />
+      <MetaDataTableView ref={tableView1Ref} style={{ flex: 0.25 }} metaDataArray={metaDataArray1} onSelectMetaData={(item) => { handleSelectMetaDataCell(ContainerID[0], item) }} />
+      <MetaDataTableView ref={tableView2Ref} style={{ flex: 0.75 }} metaDataArray={metaDataArray2} onSelectMetaData={(item) => { handleSelectMetaDataCell(ContainerID[1], item) }} />
     </SafeAreaView>
   );
 }
