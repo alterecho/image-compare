@@ -1,11 +1,11 @@
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 
-const MetaDataCell = ({ metaData }) => {
+const MetaDataCell = ({ metaData, onSelectMetaData }) => {
   return (
-    <View>
+    <TouchableOpacity onPress={() => onSelectMetaData(metaData)}>
       <Text>{metaData.title}</Text>
       <Text>{metaData.value}</Text>
-    </View >
+    </TouchableOpacity >
   )
 }
 
