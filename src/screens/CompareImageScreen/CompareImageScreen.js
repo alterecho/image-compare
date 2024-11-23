@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { SafeAreaView, Button, StyleSheet } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import ContainerView from "../../common/components/ContainerView";
-import { ImageInfo } from "../../structs";
+import { MetaDataItem } from "../../structs";
 import { Pages, ContainerID } from "../Constants";
 import CompareButton from "./CompareButton";
 
 const CompareImageScreen = ({ navigation }) => {
-  const [imageInfo1, setImageInfo1] = useState(null);
-  const [imageInfo2, setImageInfo2] = useState(null);
+  const [metaDataItem1, setMetaDataItem1] = useState(null);
+  const [metaDataItem2, setMetaDataItem2] = useState(null);
 
   const handleAddPictureButtonClick = async (containerID) => {
     try {
@@ -29,24 +29,25 @@ const CompareImageScreen = ({ navigation }) => {
       let pickedImageURI = result.assets[0].uri;
 
       const exifData = result.assets[0].exif;
+      console.log("exifData:\n", JSON.stringify(result.assets))
       const exifDataArray = Object
         .keys(exifData)
         .map(key => ({
           title: key, value: exifData[key]
         })
         )
-      let imageInfo = ImageInfo(pickedImageURI, exifDataArray);
+      let metaDataItem = MetaDataItem(pickedImageURI, exifDataArray);
       if (containerID == ContainerID[0]) {
-        setImageInfo1(imageInfo);
+        setMetaDataItem1(metaDataItem);
       } else {
-        setImageInfo2(imageInfo);
+        setMetaDataItem2(metaDataItem);
       }
-      console.log(`${JSON.stringify(imageInfo1, null, 2)}`);
+      console.log(`${JSON.stringify(metaDataItem1, null, 2)}`);
     } catch (error) {
       if (containerID == ContainerID[1]) {
-        setImageInfo1(null)
+        setMetaDataItem1(null)
       } else {
-        setImageInfo2(null)
+        setMetaDataItem2(null)
       }
     }
   };
@@ -56,24 +57,24 @@ const CompareImageScreen = ({ navigation }) => {
   }
 
   function handleShowMetaDataButtonClick(containerID) {
-    let imageInfoToUse = null
+    let metaDataItemToUse = null
     switch (containerID) {
       case ContainerID[0]:
-        imageInfoToUse = imageInfo1
+        metaDataItemToUse = metaDataItem1
         break;
       case ContainerID[1]:
-        imageInfoToUse = imageInfo2
+        metaDataItemToUse = metaDataItem2
         break;
       default:
         break;
     }
-    navigation.navigate(Pages.META_DATA_PAGE, { metaDataArray: imageInfoToUse.metaDataArray });
+    navigation.navigate(Pages.META_DATA_PAGE, { metaDataArray: metaDataItemToUse.metaDataArray });
   }
 
   function handleCompareButtonClick() {
     console.log("handleCompareButtonClick")
-    let metaDataArrayFor1stImage = imageInfo1?.metaDataArray
-    let metaDataArrayFor2ndImage = imageInfo2?.metaDataArray
+    let metaDataArrayFor1stImage = metaDataItem1?.metaDataArray
+    let metaDataArrayFor2ndImage = metaDataItem2?.metaDataArray
     if (metaDataArrayFor1stImage == null || metaDataArrayFor2ndImage == null) {
       return
     }
@@ -90,17 +91,17 @@ const CompareImageScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ContainerView
-        imageUri={imageInfo1?.uri}
+        imageUri={metaDataItem1?.uri}
         onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[0]) }}
         onPressCameraButton={() => handleCameraButtonClick(ContainerID[0])}
-        onPressShowMetaDataButton={imageInfo1 ? () => { handleShowMetaDataButtonClick(ContainerID[0]) } : null}
+        onPressShowMetaDataButton={metaDataItem1 ? () => { handleShowMetaDataButtonClick(ContainerID[0]) } : null}
       />
-      <CompareButton onPress={ imageInfo1 && imageInfo2 ?  handleCompareButtonClick : null}></CompareButton>
+      <CompareButton onPress={ metaDataItem1 && metaDataItem2 ?  handleCompareButtonClick : null}></CompareButton>
       <ContainerView
-        imageUri={imageInfo2?.uri}
+        imageUri={metaDataItem2?.uri}
         onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[1]) }}
         onPressCameraButton={() => handleCameraButtonClick(ContainerID[1])}
-        onPressShowMetaDataButton={imageInfo2 ? () => { handleShowMetaDataButtonClick(ContainerID[1]) } : null}
+        onPressShowMetaDataButton={metaDataItem2 ? () => { handleShowMetaDataButtonClick(ContainerID[1]) } : null}
       />
     </SafeAreaView>
   )
