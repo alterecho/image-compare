@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { View } from "react-native";
 import MetaDataTableView from "../../common/components/MetaDataTable/MetaDataTableView";
 import { ContainerID } from "../Constants";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const CompareMetaDataScreen = ({ route }) => {
   const metaDataArray1 = route.params.metaDataArray1
@@ -37,10 +38,10 @@ const CompareMetaDataScreen = ({ route }) => {
     }
   };
   return (
-    <View style={{ flex: 1, flexDirection: 'column' }}>
+    <SafeAreaView style={{ flex: 1, flexDirection: 'column' }}>
       <MetaDataTableView ref={tableView1Ref} style={{ flex: 0.25 }} metaDataArray={metaDataArray1} onSelectMetaData={(item) => { handleSelectMetaDataCell(ContainerID[0], item)}} />
       <MetaDataTableView ref={tableView2Ref} style={{ flex: 0.75 }} metaDataArray={metaDataArray2} onSelectMetaData={(item) => { handleSelectMetaDataCell(ContainerID[1], item)}} />
-    </View>
+    </SafeAreaView>
   );
 }
 
