@@ -5,13 +5,16 @@ import { ContainerID } from "../Constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const CompareMetaDataScreen = ({ route }) => {
-  const metaDataArray1 = route.params.metaDataArray1
-  const metaDataArray2 = route.params.metaDataArray2
+  // const metaDataArray1 = route.params.metaDataArray1
+  // const metaDataArray2 = route.params.metaDataArray2
   const tableView1Ref = useRef(null)
   const tableView2Ref = useRef(null)
 
   console.log(`CompareMetaDataScreen: ${JSON.stringify(metaDataArray1)}`);
   console.log(`CompareMetaDataScreen: ${JSON.stringify(metaDataArray2)}`);
+
+  const metaDataArray1 = require('../../../tests/data/metadata-sample1.json')
+  const metaDataArray2 = require('../../../tests/data/metadata-sample1.json')
 
   const handleSelectMetaDataCell = (containerID, selectedItem) => {
     console.log(`containerID: ${containerID} selectedItem: ${selectedItem}`)

@@ -1,0 +1,84 @@
+[
+    {
+        "mimeType": "image/jpeg",
+        "base64": null,
+        "exif": {
+            "FocalPlaneXResolution": 204.840206185567,
+            "Flash": 16,
+            "ExposureBiasValue": 0,
+            "GPSAltitude": 107.46666666666667,
+            "FlashPixVersion": [
+                1,
+                0
+            ],
+            "FocalPlaneResolutionUnit": 4,
+            "MeteringMode": 5,
+            "FocalLenIn35mmFilm": 16,
+            "PixelXDimension": 3000,
+            "ShutterSpeedValue": -4.321927997619756,
+            "FNumber": 10,
+            "DateTimeOriginal": "2012:08:08 14:55:30",
+            "WhiteBalance": 0,
+            "DateTimeDigitized": "2012:08:08 14:55:30",
+            "GPSImgDirectionRef": "T",
+            "GPSSpeedRef": "K",
+            "ExifVersion": [
+                2,
+                3
+            ],
+            "GPSLatitudeRef": "N",
+            "GPSMapDatum": "WGS-84",
+            "FocalPlaneYResolution": 204.840206185567,
+            "Orientation": 1,
+            "SubsecTimeDigitized": "4",
+            "ExposureTime": 20,
+            "ColorSpace": 1,
+            "GPSSpeed": 2.0533344256922823,
+            "Sharpness": 0,
+            "ISOSpeedRatings": [
+                200
+            ],
+            "SubjectDistRange": 0,
+            "FileSource": 3,
+            "SensingMethod": 2,
+            "GainControl": 0,
+            "CustomRendered": 0,
+            "ExposureMode": 1,
+            "PixelYDimension": 2002,
+            "Contrast": 0,
+            "GPSGPSVersion": [
+                2,
+                3,
+                0,
+                0
+            ],
+            "DigitalZoomRatio": 1,
+            "ApertureValue": 6.643855776306108,
+            "GPSLatitude": 63.5314,
+            "ComponentsConfiguration": [
+                1,
+                2,
+                3,
+                0
+            ],
+            "FocalLength": 16,
+            "MaxApertureValue": 4,
+            "GPSImgDirection": 265.8132992327366,
+            "LightSource": 0,
+            "SubsecTimeOriginal": "4",
+            "GPSLongitudeRef": "W",
+            "ExposureProgram": 1,
+            "GPSLongitude": 19.5112,
+            "SceneCaptureType": 0,
+            "Saturation": 0
+        },
+        "duration": null,
+        "assetId": "ED7AC36B-A150-4C38-BB8C-B6D696F4F2ED/L0/001",
+        "fileSize": 3423408,
+        "uri": "file:///Users/vijay/Library/Developer/CoreSimulator/Devices/0A544B3F-C968-4E44-B4C0-6753935DC556/data/Containers/Data/Application/9CAE7499-6907-4BAE-8E99-C3CCC58DA513/Library/Caches/ExponentExperienceData/@anonymous/image-compare-54b143ab-9489-4399-8722-d6479897b5b9/ImagePicker/ADAA9F2E-DCE6-4314-B599-1DFBB7B806B7.jpg",
+        "type": "image",
+        "fileName": "IMG_0005.JPG",
+        "width": 3000,
+        "height": 2002
+    }
+]
