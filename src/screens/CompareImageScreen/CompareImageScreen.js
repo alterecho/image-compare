@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { SafeAreaView, Button, StyleSheet } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import ContainerView from "../../common/components/ContainerView";
-import { ImageInfo } from "../../../structs";
+import { ImageInfo } from "../../structs";
 import { Pages, ContainerID } from "../Constants";
 import CompareButton from "./CompareButton";
 
@@ -71,6 +71,7 @@ const CompareImageScreen = ({ navigation }) => {
   }
 
   function handleCompareButtonClick() {
+    console.log("handleCompareButtonClick")
     let metaDataArrayFor1stImage = imageInfo1?.metaDataArray
     let metaDataArrayFor2ndImage = imageInfo2?.metaDataArray
     if (metaDataArrayFor1stImage == null || metaDataArrayFor2ndImage == null) {
@@ -94,7 +95,7 @@ const CompareImageScreen = ({ navigation }) => {
         onPressCameraButton={() => handleCameraButtonClick(ContainerID[0])}
         onPressShowMetaDataButton={imageInfo1 ? () => { handleShowMetaDataButtonClick(ContainerID[0]) } : null}
       />
-      <CompareButton onPress={ imageInfo1 && imageInfo2 ? () => handleCompareButtonClick() : null}></CompareButton>
+      <CompareButton onPress={ imageInfo1 && imageInfo2 ?  handleCompareButtonClick : null}></CompareButton>
       <ContainerView
         imageUri={imageInfo2?.uri}
         onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[1]) }}

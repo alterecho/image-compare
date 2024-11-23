@@ -4031,10 +4031,10 @@ flipper-common@0.212.0:
   dependencies:
     uuid "^8.3.2"
 
-flipper-common@0.240.0, flipper-common@0.272.0:
-  version "0.272.0"
-  resolved "https://registry.yarnpkg.com/flipper-common/-/flipper-common-0.272.0.tgz#f85a9b5aeb680b0abcd148596b7cafbe329fdbfd"
-  integrity sha512-Cy3UDfKH6dmEvKx5yTXPhBJmTQ6z0SkjSIshGqpA4YeAXnYKgbsYynN7FYekHxy2zYUf7aWXDaxP4tYZqLLZ4g==
+flipper-common@0.240.0, flipper-common@0.273.0:
+  version "0.273.0"
+  resolved "https://registry.yarnpkg.com/flipper-common/-/flipper-common-0.273.0.tgz#8a227daf86500fd3be02125d5ea68520aa1fd532"
+  integrity sha512-MTtneDiYI9W/Mmm8pImmUSnNFaad+rxaJEGifmh7iALRjzmUIzjAY6yRy1MXYy2KNM1+OOwUs8y49Ss1IHnB5g==
   dependencies:
     uuid "^8.3.2"
 
@@ -4093,12 +4093,12 @@ flipper-plugin-lib@0.212.0:
     tmp "^0.2.1"
 
 flipper-server-client@0.240.0:
-  version "0.272.0"
-  resolved "https://registry.yarnpkg.com/flipper-server-client/-/flipper-server-client-0.272.0.tgz#a2ad64d1a17e9d1fb6625fa57956f2498d8e5363"
-  integrity sha512-5WZRW6r4Uq9vAacRFR8QUxzqexSIzmE5SXHtmmewea5ODOaJrvXQle91lE3/OFHi4XkBEV/GCpBnXwgBdoCxEA==
+  version "0.273.0"
+  resolved "https://registry.yarnpkg.com/flipper-server-client/-/flipper-server-client-0.273.0.tgz#54d479878b2dd9478a24d00f597b3ae81f6bbff7"
+  integrity sha512-9v6sly59LgOfdMKQVcVHkiGYcGs1xTrtZz7A9ATKP8HMG3OXYGDNuk9P6bUMY+QY2T+8E29FeXTgLDMfM2fQow==
   dependencies:
     eventemitter3 "^4.0.7"
-    flipper-common "0.272.0"
+    flipper-common "0.273.0"
     reconnecting-websocket "^4.4.0"
 
 flipper-server-companion@0.212.0, flipper-server-companion@0.240.0:
