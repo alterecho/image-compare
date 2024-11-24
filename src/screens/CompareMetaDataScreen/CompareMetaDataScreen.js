@@ -24,9 +24,7 @@ const CompareMetaDataScreen = ({ route }) => {
     })
   })
 
-
   const handleSelectMetaDataCell = (containerID, selectedItem) => {
-    console.log(`containerID: ${containerID} selectedItem: ${selectedItem}`)
     let metaDataToQuery = undefined;
     tableViewToScrollManually = undefined;
     switch (containerID) {

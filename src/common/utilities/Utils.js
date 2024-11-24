@@ -5,7 +5,6 @@
       b: Math.floor(Math.random() * 256),
     }
 
-    console.log(`rgb: ${JSON.stringify(color)}`)
     return `rgb(${color.r}, ${color.g}, ${color.b})`;
   };
 

@@ -18,10 +18,9 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
   useEffect(() => {
     if (imageUri) {
       Image.getSize(imageUri, (width, height) => {
-        console.log(" for size:", imageSize);
         setImageSize({ width, height });
       }, error => {
-        console.log(`error: ${error}`)
+        // handle error
       })
     }
   }, [imageUri]);
@@ -115,7 +114,6 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
             ]}
             onLayout={(event) => {
               const { width, height } = event.nativeEvent.layout;
-              console.log("onlayout: ", width, height);
               setViewSize({ width, height })
             }}
           >
