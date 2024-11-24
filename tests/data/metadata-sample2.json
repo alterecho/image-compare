@@ -1,0 +1,52 @@
+{
+    "duration": null,
+    "fileSize": 4572526,
+    "fileName": "IMG_0001.JPG",
+    "exif": {
+        "FlashPixVersion": [
+            1,
+            0
+        ],
+        "GPSLongitudeRef": "W",
+        "Flash": 0,
+        "ExposureProgram": 3,
+        "ExposureBiasValue": 0,
+        "SensingMethod": 2,
+        "GPSLatitudeRef": "N",
+        "DateTimeDigitized": "2011:03:12 16:17:25",
+        "ColorSpace": 1,
+        "ExifVersion": [
+            2,
+            2
+        ],
+        "PixelXDimension": 4288,
+        "GPSLongitude": 122.80317833333334,
+        "ExposureTime": 0.000625,
+        "PixelYDimension": 2848,
+        "FNumber": 4,
+        "MaxApertureValue": 4,
+        "SceneCaptureType": 0,
+        "LightSource": 14,
+        "Orientation": 1,
+        "MeteringMode": 5,
+        "ISOSpeedRatings": [
+            200
+        ],
+        "DateTimeOriginal": "2011:03:12 16:17:25",
+        "GPSLatitude": 38.0374445,
+        "FocalLength": 26,
+        "ComponentsConfiguration": [
+            1,
+            2,
+            3,
+            0
+        ]
+    },
+    "uri": "file:///Users/vijay/Library/Developer/CoreSimulator/Devices/0A544B3F-C968-4E44-B4C0-6753935DC556/data/Containers/Data/Application/9CAE7499-6907-4BAE-8E99-C3CCC58DA513/Library/Caches/ExponentExperienceData/@anonymous/image-compare-54b143ab-9489-4399-8722-d6479897b5b9/ImagePicker/2012B73E-CA80-4002-8490-C4A59E25B759.jpg",
+    "type": "image",
+    "assetId": "106E99A1-4F6A-45A2-B320-B0AD4A8E8473/L0/001",
+    "mimeType": "image/jpeg",
+    "base64": null,
+    "height": 2848,
+    "width": 4288
+}
