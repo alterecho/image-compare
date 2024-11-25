@@ -1,24 +1,39 @@
-import { StyleSheet, View, Button } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import Strings from '../../assets/strings.en'
+import Theme from "../../Theme";
+import { useContext } from "react";
 
 const CompareButton = ({ onPress, style }) => {
-    console.log(`style: ${JSON.stringify(style)}`)
+    const { theme, toggleTheme } = useContext(Theme.context)
+    const styles = createStyleSheet(theme)
+    console.log(`CompareButton createStyleSheet: ${JSON.stringify(styles)}`)
     return (
-        <View style={{ ...style }}>
-            <Button
-                style={ [style, styles.button] }
-                title={ Strings.button.compare }
+        <View style={ [style] }>
+            <TouchableOpacity
+                style={styles.button}
                 onPress={onPress}
                 disabled={!onPress}>
-            </Button>
+                <Text style={styles.buttonText}>
+                   {Strings.button.compare}
+                </Text>
+            </TouchableOpacity>
         </View>
     )
 };
 
-const styles = StyleSheet.create({
-    button: {
-        flex: 1
-    }
-});
+const createStyleSheet = (theme) => {
+    return StyleSheet.create({
+        button: {
+            backgroundColor: theme.secondaryColor,
+            height: 40,
+            justifyContent: 'center',
+            alignContent: 'center'
+        },
+        buttonText: {
+            color: theme.primaryColor,
+            textAlign: 'center'
+        }
+    });
+}
 
 export default CompareButton;
