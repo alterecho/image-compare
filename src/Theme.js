@@ -3,8 +3,8 @@ import { createContext } from "react"
 const themeContext = createContext();
 
 const lightTheme = {
-    primaryColor: 'white',
-    secondaryColor: 'grey'
+    primaryColor: '#FFFFFF',
+    secondaryColor: '#A9A9A9'
 };
 
 const darkTheme = {
