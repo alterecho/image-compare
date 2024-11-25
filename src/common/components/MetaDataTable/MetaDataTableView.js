@@ -1,8 +1,12 @@
-import { View, FlatList } from "react-native"
-import { forwardRef } from "react";
+import { View, FlatList, StyleSheet } from "react-native"
+import { forwardRef, useContext } from "react";
 import MetaDataCell from "./MetaDataCell";
+import Theme from "../../../Theme";
 
 export const MetaDataTableView = forwardRef(({ metaDataArray, onSelectMetaData }, ref) => {
+  const { theme, toggleTheme } = useContext(Theme.context);
+  const styles = makeStyleSheet(theme);
+
   return (
     <View style={{ flex: 1 }}>
       <FlatList
@@ -14,5 +18,11 @@ export const MetaDataTableView = forwardRef(({ metaDataArray, onSelectMetaData }
     </View >
   )
 });
+
+const makeStyleSheet = (theme) => {
+  return StyleSheet.create({
+
+  });
+}
 
 export default MetaDataTableView;

@@ -1,14 +1,19 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
+import { StyleSheet } from "react-native";
 import { View } from "react-native";
 import MetaDataTableView from "../../common/components/MetaDataTable/MetaDataTableView";
 import { ContainerID } from "../Constants";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Theme from "../../Theme";
 
 const CompareMetaDataScreen = ({ route }) => {
   // const metaDataArray1 = route.params.metaDataArray1
   // const metaDataArray2 = route.params.metaDataArray2
   const tableView1Ref = useRef(null)
   const tableView2Ref = useRef(null)
+
+  const { theme, toggleTheme } = useContext(Theme.context);
+  const styles = makeStyleSheet(theme)
 
   const exif1 = require('../../../tests/data/metadata-sample1.json').exif
   const exif2 = require('../../../tests/data/metadata-sample2.json').exif
@@ -52,6 +57,12 @@ const CompareMetaDataScreen = ({ route }) => {
       <MetaDataTableView ref={tableView2Ref} style={{ flex: 0.75 }} metaDataArray={metaDataArray2} onSelectMetaData={(item) => { handleSelectMetaDataCell(ContainerID[1], item) }} />
     </SafeAreaView>
   );
+}
+
+const makeStyleSheet = (event) => {
+  return StyleSheet.create( {
+    backgroundColor: Theme.secondaryColor
+  });
 }
 
 export default CompareMetaDataScreen;
