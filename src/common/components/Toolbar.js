@@ -25,7 +25,7 @@ const createStyleSheet = (theme) => {
         toolbar: {
             backgroundColor: theme.secondaryColor,
             flexDirection: 'row',
-            justifyContent: 'space-between',
+            justifyContent: 'space-around',
             alignItems: 'center',
             paddingHorizontal: 16,
             height: 44
