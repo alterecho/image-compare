@@ -35,9 +35,9 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
   const gestureStyle = useAnimatedStyle(() => (
     {
       transform: [
+        { scale: scale.value },
         { translateX: translateX.value },
-        { translateY: translateY.value },
-        { scale: scale.value }
+        { translateY: translateY.value }
       ]
     }
   ))
@@ -53,27 +53,26 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
     return newScale
   }
 
+  const recenter = (newScale = null) => {
+    translateX.value = 0.0
+    translateY.value = 0.0
+    if (newScale) {
+      scale.value = newScale
+    }
+    
+  }
+
   const toggleScale = () => {
     if (!(imageSize) || !(viewSize)) {
       return
     }
     let newScale = scale.value
     if (newScale === 1.0) {
-      newScale = 0.5//calculateImageScaleToFitInContainer()
+      newScale = calculateImageScaleToFitInContainer()
     } else {
       newScale = 1.0
     }
-
-
-    let scaledSize = {
-      width: imageSize.width * newScale,
-      height: imageSize.height * newScale
-    }
-
-    console.log("toggleScale: ", JSON.stringify(viewSize), JSON.stringify(imageSize), newScale)
-    translateX.value = viewSize.width * 0.5 - imageSize.width * newScale * 0.5
-    translateY.value = viewSize.height * 0.5 - imageSize.height * newScale * 0.5
-    scale.value = newScale
+    recenter(newScale);
   }
 
   const tapGestureHandler = Gesture.Tap()
@@ -150,7 +149,8 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
           <Animated.View
             style={[
               {
-                flex: 1, justifyContent: 'center', alignItems: 'center'
+                flex: 1, justifyContent: 'center', alignItems: 'center',
+                overflow: "hidden"
               },
               Utils.makeBorderStyle('blue', 4.0)
             ]}
