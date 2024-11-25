@@ -3,7 +3,6 @@ import { MetaDataTableView } from "../../common/components/MetaDataTable/MetaDat
 
 const MetaDataScreen = ({ route }) => {
     const metaDataArray = route.params.metaDataArray
-    console.log(`MetaDataScreen: ${JSON.stringify(metaDataArray)}`);
     return (
         <SafeAreaView
             style={{

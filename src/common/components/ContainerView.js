@@ -4,83 +4,98 @@ import * as Utils from "../../common/utilities/Utils";
 import Toolbar from "./Toolbar";
 import { GestureHandlerRootView, Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useSharedValue, useAnimatedStyle, runOnJS } from "react-native-reanimated";
+import AnimatedImage from "./AnimatedImage";
+import { Size } from "../../structs";
 
 const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton, onPressShowMetaDataButton }) => {
-  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+  const [imageSize, setImageSize] = useState(Size(0, 0));
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
+  const scale = useSharedValue(1.0);
   const startX = useSharedValue(0);
   const startY = useSharedValue(0);
-  const startScale = useSharedValue(0)
-  const [scale, setScale] = useState(1.0);
-  const [viewSize, setViewSize] = useState({ width: 0, height: 0 })
+  const startScale = useSharedValue(0);
+
+  const [viewSize, setViewSize] = useState(Size(0, 0))
 
   useEffect(() => {
     if (imageUri) {
       Image.getSize(imageUri, (width, height) => {
-        console.log(" for size:", imageSize);
-        setImageSize({ width, height });
+        setImageSize(Size(width, height));
       }, error => {
-        console.log(`error: ${error}`)
+        // handle error
       })
     }
   }, [imageUri]);
 
-  const panGestureHandler = Gesture.Pan().onStart((event) => {
-    startX.value = translateX.value
-    startY.value = translateY.value
-  }).onUpdate((event) => {
-    const finalX = startX.value + event.translationX
-    const finalY = startY.value + event.translationY
-    if (finalX < viewSize.width && finalX + imageSize.width * scale > 0) {
-      translateX.value = finalX
-    }
-    if (finalY < viewSize.height && finalY + imageSize.height * scale > 0) {
-      translateY.value = finalY
-    }
-  });
+  useEffect(() => {
+    fitInContainer()
+  }, [imageSize]);
 
   const gestureStyle = useAnimatedStyle(() => (
     {
       transform: [
+        { scale: scale.value },
         { translateX: translateX.value },
         { translateY: translateY.value }
       ]
     }
   ))
 
+  const fitInContainer = (newScale = null) => {
+    if (!viewSize.width || !viewSize.height) {
+      return 1.0
+    }
+    newScale = newScale ?? viewSize.height / imageSize.height
+    if (imageSize.width * newScale > viewSize.width) {
+      newScale *= viewSize.width / (imageSize.width * newScale)
+    }
+    recenterWithScale(newScale)
+  }
+
+  const recenterWithScale = (newScale = null) => {
+    translateX.value = 0.0
+    translateY.value = 0.0
+    if (newScale) {
+      scale.value = newScale
+    }
+  }
+
   const toggleScale = () => {
     if (!(imageSize) || !(viewSize)) {
       return
     }
-    let newScale = scale
-    if (scale === 1.0) {
-      newScale = viewSize.height / imageSize.height
-      if (imageSize.width * newScale > viewSize.width) {
-        newScale *= viewSize.width / (imageSize.width * newScale)
-      }
+    let newScale = scale.value
+    if (newScale === 1.0) {
+      fitInContainer()
     } else {
-      newScale = 1.0
+      recenterWithScale(1.0)
     }
-    setScale(newScale)
   }
 
   const tapGestureHandler = Gesture.Tap()
     .numberOfTaps(2)
     .onEnd(() => {
-      translateX.value = 0.0
-      translateY.value = 0.0
       runOnJS(toggleScale)();
     });
 
+  const panGestureHandler = Gesture.Pan().onStart((event) => {
+    startX.value = translateX.value
+    startY.value = translateY.value
+  }).onUpdate((event) => {
+    translateX.value = startX.value + event.translationX
+    translateY.value = startY.value + event.translationY
+    console.log("translation, scale", translateX.value, translateY.value, scale.value, imageSize.width * scale.value, imageSize.height * scale.value, JSON.stringify(viewSize))
+  });
+
   const pinchGestureHandler = Gesture.Pinch().onStart((event) => {
-    startScale.current = scale
+    startScale.current = scale.value
   }).onUpdate((event) => {
     let newScale = startScale.current * event.scale
     if (newScale < 0.2) {
       newScale = 0.2
     }
-    runOnJS(setScale)(newScale)
+    scale.value = newScale
   })
 
   const combinedGestureHandlers = Gesture.Simultaneous(
@@ -108,35 +123,23 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
           <Animated.View
             style={[
               {
-                flex: 1,
-                justifyContent: 'center'
+                flex: 1, justifyContent: 'center', alignItems: 'center',
+                overflow: "hidden"
               },
-              Utils.makeBorderStyle('blue')
+              Utils.makeBorderStyle('blue', 4.0)
             ]}
             onLayout={(event) => {
               const { width, height } = event.nativeEvent.layout;
-              console.log("onlayout: ", width, height);
               setViewSize({ width, height })
-            }}
-          >
-            <Animated.View
-              style={[Utils.makeBorderStyle('red'), {
-                width: imageSize.width * scale,
-                height: imageSize.height * scale,
-                overflow: 'hidden'
-              },
-                gestureStyle
-              ]}
-            >
-              <Image
-                source={{ uri: imageUri }}
-                style={{
-                  height: imageSize.height * scale,
-                  width: imageSize.width * scale
-                }}
-                resizeMode="contain"
-              />
-            </Animated.View>
+            }}>
+            <AnimatedImage
+              source={{ uri: imageUri }}
+              style={[{
+                height: imageSize.height,
+                width: imageSize.width
+              }, gestureStyle]}
+              resizeMode="contain"
+            />
           </Animated.View>
         </GestureDetector>
       </GestureHandlerRootView>
@@ -150,14 +153,11 @@ const styles = StyleSheet.create(
       flex: 1,
       flexDirection: "column",
       backgroundColor: 'clear'
-      // justifyContent: 'flex-start',
-      // alignContent: 'flex-start'
     },
     imageContainerView: {
       flex: 1,
       height: '100%',
       width: '100%',
-      justifyContent: "center",
       overflow: 'hidden'
     },
     image: {

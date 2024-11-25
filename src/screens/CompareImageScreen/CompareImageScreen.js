@@ -41,7 +41,6 @@ const CompareImageScreen = ({ navigation }) => {
       } else {
         setImageInfo2(imageInfo);
       }
-      console.log(`${JSON.stringify(imageInfo1, null, 2)}`);
     } catch (error) {
       if (containerID == ContainerID[1]) {
         setImageInfo1(null)
@@ -71,7 +70,6 @@ const CompareImageScreen = ({ navigation }) => {
   }
 
   function handleCompareButtonClick() {
-    console.log("handleCompareButtonClick")
     let metaDataArrayFor1stImage = imageInfo1?.metaDataArray
     let metaDataArrayFor2ndImage = imageInfo2?.metaDataArray
     if (metaDataArrayFor1stImage == null || metaDataArrayFor2ndImage == null) {
