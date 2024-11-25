@@ -2,6 +2,6 @@ export function ImageInfo(uri, metaDataArray) {
     return Object.freeze({ uri, metaDataArray })
 }
 
-export function Point(x, y) {
-    return Object.freeze({ x, y })
+export function Size(width, height) {
+    return Object.freeze({ width, height})
 }

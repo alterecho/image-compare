@@ -4,11 +4,11 @@ import * as Utils from "../../common/utilities/Utils";
 import Toolbar from "./Toolbar";
 import { GestureHandlerRootView, Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useSharedValue, useAnimatedStyle, runOnJS } from "react-native-reanimated";
-import { Point } from "../../structs";
+import AnimatedImage from "./AnimatedImage";
+import { Size } from "../../structs";
 
-const AnimatedImage = Animated.createAnimatedComponent(Image);
 const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton, onPressShowMetaDataButton }) => {
-  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+  const [imageSize, setImageSize] = useState(Size(0, 0));
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const scale = useSharedValue(1.0);
@@ -16,12 +16,12 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
   const startY = useSharedValue(0);
   const startScale = useSharedValue(0);
 
-  const [viewSize, setViewSize] = useState({ width: 0, height: 0 })
+  const [viewSize, setViewSize] = useState(Size(0, 0))
 
   useEffect(() => {
     if (imageUri) {
       Image.getSize(imageUri, (width, height) => {
-        setImageSize({ width, height });
+        setImageSize(Size(width, height));
       }, error => {
         // handle error
       })
@@ -29,7 +29,7 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
   }, [imageUri]);
 
   useEffect(() => {
-    scale.value = calculateImageScaleToFitInContainer()
+    fitInContainer()
   }, [imageSize]);
 
   const gestureStyle = useAnimatedStyle(() => (
@@ -42,24 +42,23 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
     }
   ))
 
-  const calculateImageScaleToFitInContainer = () => {
+  const fitInContainer = (newScale = null) => {
     if (!viewSize.width || !viewSize.height) {
       return 1.0
     }
-    let newScale = viewSize.height / imageSize.height
+    newScale = newScale ?? viewSize.height / imageSize.height
     if (imageSize.width * newScale > viewSize.width) {
       newScale *= viewSize.width / (imageSize.width * newScale)
     }
-    return newScale
+    recenterWithScale(newScale)
   }
 
-  const recenter = (newScale = null) => {
+  const recenterWithScale = (newScale = null) => {
     translateX.value = 0.0
     translateY.value = 0.0
     if (newScale) {
       scale.value = newScale
     }
-    
   }
 
   const toggleScale = () => {
@@ -68,11 +67,10 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
     }
     let newScale = scale.value
     if (newScale === 1.0) {
-      newScale = calculateImageScaleToFitInContainer()
+      fitInContainer()
     } else {
-      newScale = 1.0
+      recenterWithScale(1.0)
     }
-    recenter(newScale);
   }
 
   const tapGestureHandler = Gesture.Tap()
@@ -81,37 +79,13 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
       runOnJS(toggleScale)();
     });
 
-  // const repositionToPreventPanOutOfBounds = () => {
-  //   let x = translateX.value
-  //   let y = translateY.value
-  //   let scaleValue = scale.value
-  //   // if point exceeds right
-  //   if (x > viewSize.width) {
-  //     x = viewSize.width
-  //     // if point exceeds left
-  //   } else if (x + imageSize.width * scalreValue < 0) {
-  //     x = 0
-  //   }
-
-  //   // if point exceeds top
-  //   if (y > viewSize.height) {
-  //     y = viewSize.height
-  //     // if point exceeds bottom
-  //   } else if (y + imageSize.height * scaleValue < 0) {
-  //     y = 0
-  //   }
-  //   translateX.value = x
-  //   translateY.value = y
-  // }
-
-
   const panGestureHandler = Gesture.Pan().onStart((event) => {
     startX.value = translateX.value
     startY.value = translateY.value
   }).onUpdate((event) => {
     translateX.value = startX.value + event.translationX
     translateY.value = startY.value + event.translationY
-    console.log("translation, scale", translateX.value, translateY.value, scale.value, imageSize.width * scale.value, imageSize.height * scale.value)
+    console.log("translation, scale", translateX.value, translateY.value, scale.value, imageSize.width * scale.value, imageSize.height * scale.value, JSON.stringify(viewSize))
   });
 
   const pinchGestureHandler = Gesture.Pinch().onStart((event) => {
@@ -158,14 +132,14 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
               const { width, height } = event.nativeEvent.layout;
               setViewSize({ width, height })
             }}>
-                <AnimatedImage
-                  source={{ uri: imageUri }}
-                  style={[{
-                    height: imageSize.height,
-                    width: imageSize.width
-                  }, gestureStyle]}
-                  resizeMode="contain"
-                />
+            <AnimatedImage
+              source={{ uri: imageUri }}
+              style={[{
+                height: imageSize.height,
+                width: imageSize.width
+              }, gestureStyle]}
+              resizeMode="contain"
+            />
           </Animated.View>
         </GestureDetector>
       </GestureHandlerRootView>
