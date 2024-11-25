@@ -50,10 +50,6 @@ const CompareImageScreen = ({ navigation }) => {
     }
   };
 
-  function handleCameraButtonClick(containerID) {
-
-  }
-
   function handleShowMetaDataButtonClick(containerID) {
     let imageInfoToUse = null
     switch (containerID) {
@@ -90,14 +86,12 @@ const CompareImageScreen = ({ navigation }) => {
       <ContainerView
         imageUri={imageInfo1?.uri}
         onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[0]) }}
-        onPressCameraButton={() => handleCameraButtonClick(ContainerID[0])}
         onPressShowMetaDataButton={imageInfo1 ? () => { handleShowMetaDataButtonClick(ContainerID[0]) } : null}
       />
       <CompareButton onPress={ imageInfo1 && imageInfo2 ?  handleCompareButtonClick : null}></CompareButton>
       <ContainerView
         imageUri={imageInfo2?.uri}
         onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[1]) }}
-        onPressCameraButton={() => handleCameraButtonClick(ContainerID[1])}
         onPressShowMetaDataButton={imageInfo2 ? () => { handleShowMetaDataButtonClick(ContainerID[1]) } : null}
       />
     </SafeAreaView>
