@@ -7,7 +7,7 @@ import Animated, { useSharedValue, useAnimatedStyle, runOnJS } from "react-nativ
 import AnimatedImage from "./AnimatedImage";
 import { Size } from "../../structs";
 
-const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton, onPressShowMetaDataButton }) => {
+const ContainerView = ({ imageUri, onPressAddPictureButton, onPressShowMetaDataButton }) => {
   const [imageSize, setImageSize] = useState(Size(0, 0));
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -109,7 +109,6 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressCameraButton,
     <View style={[styles.containerView, { backgroundColor: Utils.getRandomColor() }]}>
       <Toolbar
         onPressAddPictureButton={onPressAddPictureButton}
-        onPressCameraButton={onPressCameraButton}
         onPressShowMetaDataButton={onPressShowMetaDataButton}
       />
       <GestureHandlerRootView style={

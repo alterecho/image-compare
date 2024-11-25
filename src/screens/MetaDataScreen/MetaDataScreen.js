@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { SafeAreaView } from "react-native";
 import { MetaDataTableView } from "../../common/components/MetaDataTable/MetaDataTableView";
 
 const MetaDataScreen = ({ route }) => {
