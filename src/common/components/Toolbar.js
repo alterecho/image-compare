@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View, Button, Pressable, Image } from 'react-native';
+import Theme from '../../Theme';
 
 const Toolbar = ({ onPressAddPictureButton, onPressShowMetaDataButton }) => {
+    const { theme, toggleTheme } = useContext(Theme.context);
+    const styles = createStyleSheet(theme);
+
     const imagesPath = "../../assets/images";
     return (
 
@@ -16,21 +20,23 @@ const Toolbar = ({ onPressAddPictureButton, onPressShowMetaDataButton }) => {
     );
 }
 
-const styles = StyleSheet.create({
-    toolbar: {
-        backgroundColor: '#00ff00',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        paddingHorizontal: 16,
-        height: 44
-    },
-    buttonImage: {
-        width: 30,
-        height: 30,
-        resizeMode: 'contain'
-    }
-
-});
+const createStyleSheet = (theme) => {
+    return StyleSheet.create({
+        toolbar: {
+            backgroundColor: theme.secondaryColor,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingHorizontal: 16,
+            height: 44
+        },
+        buttonImage: {
+            width: 30,
+            height: 30,
+            resizeMode: 'contain',
+            tintColor: theme.primaryColor
+        }
+    });
+};
 
 export default Toolbar;
