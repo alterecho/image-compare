@@ -20,14 +20,19 @@ const CompareMetaDataScreen = ({ route }) => {
   const exif1 = require('../../../tests/data/metadata-sample1.json').exif
   const exif2 = require('../../../tests/data/metadata-sample2.json').exif
 
+  const [selectedItems, setSelectedItems] = useState([])
 
   const makeMetaData = (exif) => {
     return Object.keys(exif).map((key) => MetaDataItem(key, exif[key]))
   }
 
   const makeMetaDataCellModelArray = (metaData) => {
+    
     const mp = metaData.map((metaDataItem) => {
-      return MetaDataCellModel(metaDataItem, false)
+      
+      let itemFound = selectedItems.find( item => item.title === metaDataItem.title)
+      console.log("metaData.map", JSON.stringify(selectedItems), JSON.stringify(itemFound))
+      return MetaDataCellModel(metaDataItem, itemFound)
     });
     return mp
   }
@@ -40,6 +45,7 @@ const CompareMetaDataScreen = ({ route }) => {
   const metaDataCellModelArray2 = makeMetaDataCellModelArray(metaData2)
 
   const handleSelectMetaDataCell = (containerID, selectedItem) => {
+    setSelectedItems([selectedItem])
     let metaDataToQuery = undefined;
     tableViewToScrollManually = undefined;
     switch (containerID) {
