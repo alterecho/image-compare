@@ -29,10 +29,8 @@ const CompareMetaDataScreen = ({ route }) => {
   const makeMetaDataCellModelArray = (metaData) => {
     
     const mp = metaData.map((metaDataItem) => {
-      
-      let itemFound = selectedItems.find( item => item.title === metaDataItem.title)
-      console.log("metaData.map", JSON.stringify(selectedItems), JSON.stringify(itemFound))
-      return MetaDataCellModel(metaDataItem, itemFound)
+      let isSelected = selectedItems.some( item => item.title === metaDataItem.title)
+      return MetaDataCellModel(metaDataItem, isSelected)
     });
     return mp
   }

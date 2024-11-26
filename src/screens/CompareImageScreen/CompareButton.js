@@ -6,7 +6,6 @@ import { useContext } from "react";
 const CompareButton = ({ onPress, style }) => {
     const { theme, toggleTheme } = useContext(Theme.context)
     const styles = createStyleSheet(theme)
-    console.log(`CompareButton createStyleSheet: ${JSON.stringify(styles)}`)
     return (
         <View style={ [style] }>
             <TouchableOpacity

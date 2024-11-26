@@ -12,7 +12,7 @@ const MetaDataCell = ({ model, onSelectMetaData }) => {
   const styles = makeStyleSheet(theme)
 
   return (
-    <TouchableOpacity style={[styles.container, model.isSelected && styles.selected]} onPress={() => onSelectMetaData(model.metaDataItem)}>
+    <TouchableOpacity style={[styles.container, model.isSelected ? styles.selected : {backgroundColor: 'transparent'}]} onPress={() => onSelectMetaData(model.metaDataItem)}>
       <Text style={styles.title}>{model.metaDataItem.title}</Text>
       <Text style={styles.value}>{model.metaDataItem.value}</Text>
     </TouchableOpacity >
