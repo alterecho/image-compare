@@ -3,7 +3,7 @@ import { forwardRef, useContext } from "react";
 import MetaDataCell from "./MetaDataCell";
 import Theme from "../../../Theme";
 
-export const MetaDataTableView = forwardRef(({ metaDataArray, onSelectMetaData }, ref) => {
+export const MetaDataTableView = forwardRef(({ metaDataCellModelArray, onSelectMetaData }, ref) => {
   const { theme, toggleTheme } = useContext(Theme.context);
   const styles = makeStyleSheet(theme);
 
@@ -11,9 +11,9 @@ export const MetaDataTableView = forwardRef(({ metaDataArray, onSelectMetaData }
     <View style={styles.container}>
       <FlatList
         ref={ref}
-        data={metaDataArray}
-        keyExtractor={(dataItem) => dataItem.title}
-        renderItem={({ item }) => <MetaDataCell metaData={item} onSelectMetaData={onSelectMetaData} />}
+        data={metaDataCellModelArray}
+        keyExtractor={(dataItem) => dataItem.metaDataItem.title}
+        renderItem={({ item: model }) => <MetaDataCell model={model} onSelectMetaData={onSelectMetaData} />}
       />
     </View >
   )
