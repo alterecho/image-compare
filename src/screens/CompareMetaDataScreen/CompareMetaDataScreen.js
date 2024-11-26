@@ -5,6 +5,7 @@ import MetaDataTableView from "../../common/components/MetaDataTable/MetaDataTab
 import { ContainerID } from "../Constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Theme from "../../Theme";
+import { MetaDataItem } from "../../structs";
 
 const CompareMetaDataScreen = ({ route }) => {
   // const metaDataArray1 = route.params.metaDataArray1
@@ -18,16 +19,16 @@ const CompareMetaDataScreen = ({ route }) => {
   const exif1 = require('../../../tests/data/metadata-sample1.json').exif
   const exif2 = require('../../../tests/data/metadata-sample2.json').exif
 
-  const metaDataArray1 = Object.keys(exif1).map((key) => {
-    return ({
-      title: key, value: exif1[key]
+
+  const makeMetaDataItem = (exif) => {
+    return Object.keys(exif).map((key) => {
+      return ({
+        title: key, value: exif[key]
+      })
     })
-  })
-  const metaDataArray2 = Object.keys(exif2).map((key) => {
-    return ({
-      title: key, value: exif2[key]
-    })
-  })
+  }
+  const metaDataArray1 = makeMetaDataItem(exif1)
+  const metaDataArray2 = makeMetaDataItem(exif2)
 
   const handleSelectMetaDataCell = (containerID, selectedItem) => {
     let metaDataToQuery = undefined;

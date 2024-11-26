@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { SafeAreaView, Button, StyleSheet } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import ContainerView from "../../common/components/ContainerView";
-import { ImageInfo } from "../../structs";
+import { ImageInfo, MetaDataItem } from "../../structs";
 import { Pages, ContainerID } from "../Constants";
 import CompareButton from "./CompareButton";
 
@@ -31,10 +31,7 @@ const CompareImageScreen = ({ navigation }) => {
       const exifData = result.assets[0].exif;
       const exifDataArray = Object
         .keys(exifData)
-        .map(key => ({
-          title: key, value: exifData[key]
-        })
-        )
+        .map(key => MetaDataItem(key, exifData[key]))
       let imageInfo = ImageInfo(pickedImageURI, exifDataArray);
       if (containerID == ContainerID[0]) {
         setImageInfo1(imageInfo);
