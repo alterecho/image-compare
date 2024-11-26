@@ -52,17 +52,23 @@ const CompareMetaDataScreen = ({ route }) => {
     }
   };
   return (
-    <SafeAreaView style={{ flex: 1, flexDirection: 'column' }}>
+    <SafeAreaView style={styles.container}>
       <MetaDataTableView ref={tableView1Ref} style={{ flex: 0.25 }} metaDataArray={metaDataArray1} onSelectMetaData={(item) => { handleSelectMetaDataCell(ContainerID[0], item) }} />
       <MetaDataTableView ref={tableView2Ref} style={{ flex: 0.75 }} metaDataArray={metaDataArray2} onSelectMetaData={(item) => { handleSelectMetaDataCell(ContainerID[1], item) }} />
     </SafeAreaView>
   );
 }
 
-const makeStyleSheet = (event) => {
-  return StyleSheet.create( {
-    backgroundColor: Theme.secondaryColor
-  });
+const makeStyleSheet = (theme) => {
+  return StyleSheet.create(
+    {
+      container: {
+        flex: 1, 
+        flexDirection: 'column',
+        backgroundColor: theme.secondaryColor
+      }
+    }
+  );
 }
 
 export default CompareMetaDataScreen;
