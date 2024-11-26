@@ -8,7 +8,7 @@ const MetaDataScreen = ({ route }) => {
             style={{
                 flex: 1,
                 flexDirection: 'column',
-                backgroundColor: 'red'
+                backgroundColor: 'green'
             }}>
             <MetaDataTableView style={{ flex: 1 }} metaDataArray={metaDataArray} />
         </SafeAreaView>
