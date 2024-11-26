@@ -104,9 +104,8 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressShowMetaDataB
     pinchGestureHandler
   )
 
-  const scl = 1.0
   return (
-    <View style={[styles.containerView, { backgroundColor: Utils.getRandomColor() }]}>
+    <View style={[styles.containerView]}>
       <Toolbar
         onPressAddPictureButton={onPressAddPictureButton}
         onPressShowMetaDataButton={onPressShowMetaDataButton}
@@ -150,8 +149,8 @@ const styles = StyleSheet.create(
   {
     containerView: {
       flex: 1,
-      flexDirection: "column",
-      backgroundColor: 'clear'
+      flexDirection: 'column',
+      backgroundColor: 'lightGray'
     },
     imageContainerView: {
       flex: 1,
