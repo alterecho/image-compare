@@ -8,7 +8,7 @@ export const MetaDataTableView = forwardRef(({ metaDataArray, onSelectMetaData }
   const styles = makeStyleSheet(theme);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <FlatList
         ref={ref}
         data={metaDataArray}
@@ -21,7 +21,10 @@ export const MetaDataTableView = forwardRef(({ metaDataArray, onSelectMetaData }
 
 const makeStyleSheet = (theme) => {
   return StyleSheet.create({
-
+    container: {
+      flex: 1,
+      backgroundColor: 'clear'
+    }
   });
 }
 
