@@ -1,6 +1,7 @@
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { MetaDataTableView } from "../../common/components/MetaDataTable/MetaDataTableView";
 import { useContext } from "react";
+import { StyleSheet } from "react-native";
 import Theme from "../../Theme";
 
 const MetaDataScreen = ({ route }) => {
@@ -23,7 +24,7 @@ const MetaDataScreen = ({ route }) => {
 }
 
 const makeStyleSheet = (theme) => {
-    StyleSheet.create({
+    return StyleSheet.create({
         screen: {
             flex: 1
         }
