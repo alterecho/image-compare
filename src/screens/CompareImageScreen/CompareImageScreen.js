@@ -1,14 +1,18 @@
-import React, { useState } from "react";
-import { SafeAreaView, Button, StyleSheet } from 'react-native'
+import React, { useContext, useState } from "react";
+import { Button, StyleSheet, Platform } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import ContainerView from "../../common/components/ContainerView";
 import { ImageInfo, MetaDataItem } from "../../structs";
 import { Pages, ContainerID } from "../Constants";
 import CompareButton from "./CompareButton";
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import Theme from "../../Theme";
 
 const CompareImageScreen = ({ navigation }) => {
   const [imageInfo1, setImageInfo1] = useState(null);
   const [imageInfo2, setImageInfo2] = useState(null);
+  const { theme, toggleTheme } = useContext(Theme.context);
+  const styles = makeStyleSheet(theme);
 
   const handleAddPictureButtonClick = async (containerID) => {
     try {
@@ -77,22 +81,32 @@ const CompareImageScreen = ({ navigation }) => {
       }
     );
   }
-
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ContainerView
-        imageUri={imageInfo1?.uri}
-        onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[0]) }}
-        onPressShowMetaDataButton={imageInfo1 ? () => { handleShowMetaDataButtonClick(ContainerID[0]) } : null}
-      />
-      <CompareButton onPress={ imageInfo1 && imageInfo2 ?  handleCompareButtonClick : null}></CompareButton>
-      <ContainerView
-        imageUri={imageInfo2?.uri}
-        onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[1]) }}
-        onPressShowMetaDataButton={imageInfo2 ? () => { handleShowMetaDataButtonClick(ContainerID[1]) } : null}
-      />
-    </SafeAreaView>
+    <SafeAreaProvider style={styles.screen}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ContainerView
+          imageUri={imageInfo1?.uri}
+          onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[0]) }}
+          onPressShowMetaDataButton={imageInfo1 ? () => { handleShowMetaDataButtonClick(ContainerID[0]) } : null}
+        />
+        <CompareButton onPress={imageInfo1 && imageInfo2 ? handleCompareButtonClick : null}></CompareButton>
+        <ContainerView
+          imageUri={imageInfo2?.uri}
+          onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[1]) }}
+          onPressShowMetaDataButton={imageInfo2 ? () => { handleShowMetaDataButtonClick(ContainerID[1]) } : null}
+        />
+      </SafeAreaView>
+    </SafeAreaProvider>
   )
+}
+
+const makeStyleSheet = (theme) => {
+  return StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: theme.primaryColor
+    }
+  })
 }
 
 export default CompareImageScreen;

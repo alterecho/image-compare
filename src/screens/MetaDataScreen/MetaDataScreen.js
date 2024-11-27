@@ -1,18 +1,34 @@
-import { SafeAreaView } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { MetaDataTableView } from "../../common/components/MetaDataTable/MetaDataTableView";
+import { useContext } from "react";
+import { StyleSheet } from "react-native";
+import Theme from "../../Theme";
 
 const MetaDataScreen = ({ route }) => {
+    const { theme, toggleTheme } = useContext(Theme.context)
+    const styles = makeStyleSheet(theme)
+
     const metaDataArray = route.params.metaDataArray
     return (
-        <SafeAreaView
-            style={{
-                flex: 1,
-                flexDirection: 'column',
-                backgroundColor: 'green'
-            }}>
-            <MetaDataTableView style={{ flex: 1 }} metaDataArray={metaDataArray} />
-        </SafeAreaView>
+        <SafeAreaProvider theme={styles.screen}>
+            <SafeAreaView
+                style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    backgroundColor: 'green'
+                }}>
+                <MetaDataTableView style={{ flex: 1 }} metaDataArray={metaDataArray} />
+            </SafeAreaView>
+        </SafeAreaProvider>
     )
+}
+
+const makeStyleSheet = (theme) => {
+    return StyleSheet.create({
+        screen: {
+            flex: 1
+        }
+    })
 }
 
 export default MetaDataScreen;

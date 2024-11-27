@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { View } from "react-native";
 import MetaDataTableView from "../../common/components/MetaDataTable/MetaDataTableView";
 import { ContainerID } from "../Constants";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Theme from "../../Theme";
 import { MetaDataItem } from "../../structs";
 import { Model as MetaDataCellModel } from "../../common/components/MetaDataTable/MetaDataCell";
@@ -27,9 +27,9 @@ const CompareMetaDataScreen = ({ route }) => {
   }
 
   const makeMetaDataCellModelArray = (metaData) => {
-    
+
     const mp = metaData.map((metaDataItem) => {
-      let isSelected = selectedItems.some( item => item.title === metaDataItem.title)
+      let isSelected = selectedItems.some(item => item.title === metaDataItem.title)
       return MetaDataCellModel(metaDataItem, isSelected)
     });
     return mp
@@ -67,22 +67,24 @@ const CompareMetaDataScreen = ({ route }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <MetaDataTableView
-        ref={tableView1Ref}
-        style={{ flex: 0.25 }}
-        metaDataCellModelArray={metaDataCellModelArray1}
-        onSelectMetaData={(item) => {
-          handleSelectMetaDataCell(ContainerID[0], item)
-        }} />
-      <MetaDataTableView
-        ref={tableView2Ref}
-        style={{ flex: 0.75 }}
-        metaDataCellModelArray={metaDataCellModelArray2}
-        onSelectMetaData={(item) => {
-          handleSelectMetaDataCell(ContainerID[1], item)
-        }} />
-    </SafeAreaView>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <MetaDataTableView
+          ref={tableView1Ref}
+          style={{ flex: 0.25 }}
+          metaDataCellModelArray={metaDataCellModelArray1}
+          onSelectMetaData={(item) => {
+            handleSelectMetaDataCell(ContainerID[0], item)
+          }} />
+        <MetaDataTableView
+          ref={tableView2Ref}
+          style={{ flex: 0.75 }}
+          metaDataCellModelArray={metaDataCellModelArray2}
+          onSelectMetaData={(item) => {
+            handleSelectMetaDataCell(ContainerID[1], item)
+          }} />
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

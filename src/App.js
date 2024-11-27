@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import CompareImageScreen from './screens/CompareImageScreen/CompareImageScreen';
@@ -12,14 +11,25 @@ const App = () => {
   const [isDarkMode, setIsDarkMode] = useState(false)
   const Stack = createNativeStackNavigator();
   return (
-    <Theme.context.Provider value={{ theme: isDarkMode ? Theme.darkTheme : Theme.lightTheme , toggleTheme: () => setIsDarkMode(!isDarkMode) }}>
+    <Theme.context.Provider value={{ theme: isDarkMode ? Theme.darkTheme : Theme.lightTheme, toggleTheme: () => setIsDarkMode(!isDarkMode) }}>
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName={Pages.COMPARE_IMAGE_SCREEN}
           screenOptions={{ headerShown: false }}>
-          <Stack.Screen name={Pages.COMPARE_IMAGE_SCREEN} component={CompareImageScreen} />
-          <Stack.Screen name={Pages.COMPARE_META_DATA_PAGE} component={CompareMetaDataScreen} />
-          <Stack.Screen name={Pages.META_DATA_PAGE} component={MetaDataScreen} />
+          <Stack.Screen
+            name={Pages.COMPARE_IMAGE_SCREEN}
+            component={CompareImageScreen}
+          />
+          <Stack.Screen
+            name={Pages.COMPARE_META_DATA_PAGE}
+            component={CompareMetaDataScreen}
+            screenOptions={{ headerShown: true }}
+          />
+          <Stack.Screen
+            name={Pages.META_DATA_PAGE}
+            component={MetaDataScreen}
+            screenOptions={{ headerShown: true }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </Theme.context.Provider>
