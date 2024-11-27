@@ -13,7 +13,9 @@ export const MetaDataTableView = forwardRef(({ metaDataCellModelArray, onSelectM
         ref={ref}
         data={metaDataCellModelArray}
         keyExtractor={(dataItem) => dataItem.metaDataItem.title}
-        renderItem={({ item: model }) => <MetaDataCell model={model} onSelectMetaData={onSelectMetaData} />}
+        renderItem={
+          ({ item: model }) => <MetaDataCell model={model} onSelectMetaData={onSelectMetaData} />
+        }
       />
     </View >
   )

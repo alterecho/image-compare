@@ -1,12 +1,10 @@
 import React, { useState, useRef, useContext } from "react";
 import { StyleSheet } from "react-native";
-import { View } from "react-native";
 import MetaDataTableView from "../../common/components/MetaDataTable/MetaDataTableView";
 import { ContainerID } from "../Constants";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Theme from "../../Theme";
-import { MetaDataItem } from "../../structs";
-import { Model as MetaDataCellModel } from "../../common/components/MetaDataTable/MetaDataCell";
+import * as Utils from "../../common/utilities/Utils";
 
 const CompareMetaDataScreen = ({ route }) => {
   // const metaDataArray1 = route.params.metaDataArray1
@@ -22,30 +20,16 @@ const CompareMetaDataScreen = ({ route }) => {
 
   const [selectedItems, setSelectedItems] = useState([])
 
-  const makeMetaData = (exif) => {
-    return Object.keys(exif).map((key) => MetaDataItem(key, exif[key]))
-  }
+  const metaData1 = Utils.makeMetaDataFromExifData(exif1)
+  const metaData2 = Utils.makeMetaDataFromExifData(exif2)
 
-  const makeMetaDataCellModelArray = (metaData) => {
-
-    const mp = metaData.map((metaDataItem) => {
-      let isSelected = selectedItems.some(item => item.title === metaDataItem.title)
-      return MetaDataCellModel(metaDataItem, isSelected)
-    });
-    return mp
-  }
-
-  const metaData1 = makeMetaData(exif1)
-  const metaData2 = makeMetaData(exif2)
-
-
-  const metaDataCellModelArray1 = makeMetaDataCellModelArray(metaData1)
-  const metaDataCellModelArray2 = makeMetaDataCellModelArray(metaData2)
+  const metaDataCellModelArray1 = Utils.makeMetaDataCellModelArrayFromMetaData(metaData1, selectedItems)
+  const metaDataCellModelArray2 = Utils.makeMetaDataCellModelArrayFromMetaData(metaData2, selectedItems)
 
   const handleSelectMetaDataCell = (containerID, selectedItem) => {
     setSelectedItems([selectedItem])
     let metaDataToQuery = undefined;
-    tableViewToScrollManually = undefined;
+    let tableViewToScrollManually = undefined;
     switch (containerID) {
       case ContainerID[0]:
         metaDataToQuery = metaData2

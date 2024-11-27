@@ -10,7 +10,6 @@ export function Model(metaDataItem, isSelected) {
 const MetaDataCell = ({ model, onSelectMetaData }) => {
   const theme = useContext(Theme.context)
   const styles = makeStyleSheet(theme)
-
   return (
     <TouchableOpacity style={[styles.container, model.isSelected ? styles.selected : {backgroundColor: 'transparent'}]} onPress={() => onSelectMetaData(model.metaDataItem)}>
       <Text style={styles.title}>{model.metaDataItem.title}</Text>

@@ -6,6 +6,7 @@ import { ImageInfo, MetaDataItem } from "../../structs";
 import { Pages, ContainerID } from "../Constants";
 import CompareButton from "./CompareButton";
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import  * as Utils from "../../common/utilities/Utils";
 import Theme from "../../Theme";
 
 const CompareImageScreen = ({ navigation }) => {
@@ -25,18 +26,15 @@ const CompareImageScreen = ({ navigation }) => {
       };
 
       let result = await ImagePicker.launchImageLibraryAsync(options);
-
       if (result.cancelled) {
         return;
       }
 
       let pickedImageURI = result.assets[0].uri;
-
       const exifData = result.assets[0].exif;
-      const exifDataArray = Object
-        .keys(exifData)
-        .map(key => MetaDataItem(key, exifData[key]))
-      let imageInfo = ImageInfo(pickedImageURI, exifDataArray);
+      
+      const metaData = Utils.makeMetaDataFromExifData(exifData)
+      let imageInfo = ImageInfo(pickedImageURI, metaData);
       if (containerID == ContainerID[0]) {
         setImageInfo1(imageInfo);
       } else {
@@ -63,7 +61,7 @@ const CompareImageScreen = ({ navigation }) => {
       default:
         break;
     }
-    navigation.navigate(Pages.META_DATA_PAGE, { metaDataArray: imageInfoToUse.metaDataArray });
+    navigation.navigate(Pages.META_DATA_PAGE, { imageInfo: imageInfoToUse });
   }
 
   function handleCompareButtonClick() {
