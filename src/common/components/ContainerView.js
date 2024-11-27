@@ -85,7 +85,6 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressShowMetaDataB
   }).onUpdate((event) => {
     translateX.value = startX.value + event.translationX
     translateY.value = startY.value + event.translationY
-    console.log("translation, scale", translateX.value, translateY.value, scale.value, imageSize.width * scale.value, imageSize.height * scale.value, JSON.stringify(viewSize))
   });
 
   const pinchGestureHandler = Gesture.Pinch().onStart((event) => {
@@ -112,9 +111,7 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressShowMetaDataB
       />
       <GestureHandlerRootView style={
         [
-          { flex: 1 },
-          Utils.makeBorderStyle('yellow'),
-          styles.imageContainerView
+          { flex: 1 }
         ]
       }>
         <GestureDetector gesture={combinedGestureHandlers}>
@@ -123,8 +120,7 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressShowMetaDataB
               {
                 flex: 1, justifyContent: 'center', alignItems: 'center',
                 overflow: "hidden"
-              },
-              Utils.makeBorderStyle('blue', 4.0)
+              }
             ]}
             onLayout={(event) => {
               const { width, height } = event.nativeEvent.layout;
