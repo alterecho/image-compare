@@ -1,5 +1,5 @@
-export function ImageInfo(uri, metaDataArray) {
-    return Object.freeze({ uri, metaDataArray })
+export function ImageInfo(uri, metaData) {
+    return Object.freeze({ uri, metaData })
 }
 
 export function MetaDataItem(title, value) {
