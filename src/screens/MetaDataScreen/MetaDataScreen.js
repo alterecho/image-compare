@@ -1,14 +1,17 @@
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { MetaDataTableView } from "../../common/components/MetaDataTable/MetaDataTableView";
 import { useContext, useState } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Theme from "../../Theme";
+import { useHeaderHeight } from '@react-navigation/elements';
 import * as Utils from "../../common/utilities/Utils";
+import { StatusBar } from "expo-status-bar";
 
 const MetaDataScreen = ({ route }) => {
     const { theme, toggleTheme } = useContext(Theme.context)
     const [ selectedItems, setSelectedItems ] = useState([])
-    const styles = makeStyleSheet(theme)
+    const headerHeight = useHeaderHeight();
+    const styles = makeStyleSheet(theme, headerHeight)
     const metaData = route.params.imageInfo.metaData
     const metaDataCellModelArray = Utils.makeMetaDataCellModelArrayFromMetaData(metaData, selectedItems)
 
@@ -16,19 +19,20 @@ const MetaDataScreen = ({ route }) => {
         setSelectedItems([metaDataItem])
     }
 
+    console.log("header", headerHeight, StatusBar.currentHeight)
+
     return (
-        <SafeAreaProvider style={styles.screen}>
-            <SafeAreaView style={ {flex: 1} }>
-                <MetaDataTableView style={{ flex: 1 }} metaDataCellModelArray={metaDataCellModelArray} onSelectMetaData={handleSelectMetaDataItem}/>
-            </SafeAreaView>
-        </SafeAreaProvider>
-    )
+        <View style={ [ styles.screen, {flex: 1} ]}>
+        <MetaDataTableView style={{ flex: 1 }} metaDataCellModelArray={metaDataCellModelArray} onSelectMetaData={handleSelectMetaDataItem}/>
+        </View>
+)
 }
 
-const makeStyleSheet = (theme) => {
+const makeStyleSheet = (theme, headerHeight) => {
     return StyleSheet.create({
         screen: {
             flex: 1,
+            paddingTop: headerHeight,
             backgroundColor: theme.secondaryColor,
             flexDirection: 'column'
         }

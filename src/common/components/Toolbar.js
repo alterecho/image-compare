@@ -7,14 +7,27 @@ const Toolbar = ({ onPressAddPictureButton, onPressShowMetaDataButton }) => {
     const styles = createStyleSheet(theme);
 
     const imagesPath = "../../assets/images";
-    return (
 
+    const isAddPictureButtonEnabled = onPressAddPictureButton != null
+    const isShowMetaDateButtonEnabled = onPressShowMetaDataButton != null
+
+    return (
         <View style={styles.toolbar}>
-            <Pressable onPress={onPressAddPictureButton} disabled={!onPressAddPictureButton}>
-                <Image source={require(`${imagesPath}/ic_add.png`)} style={styles.buttonImage}></Image>
+            <Pressable
+                onPress={onPressAddPictureButton}
+                disabled={!isAddPictureButtonEnabled}>
+                <Image
+                    source={require(`${imagesPath}/ic_add.png`)}
+                    style={isAddPictureButtonEnabled ? styles.button.image.enabled : styles.button.image.disabled}
+                />
             </Pressable>
-            <Pressable onPress={onPressShowMetaDataButton} disabled={!onPressShowMetaDataButton}>
-                <Image source={require(`${imagesPath}/ic_description.png`)} style={styles.buttonImage}></Image>
+            <Pressable
+                onPress={onPressShowMetaDataButton}
+                disabled={!isShowMetaDateButtonEnabled}>
+                <Image
+                    source={require(`${imagesPath}/ic_description.png`)}
+                    style={isShowMetaDateButtonEnabled ? styles.button.image.enabled : styles.button.image.disabled}
+                />
             </Pressable>
         </View>
     );
@@ -30,11 +43,21 @@ const createStyleSheet = (theme) => {
             paddingHorizontal: 16,
             height: 44
         },
-        buttonImage: {
-            width: 30,
-            height: 30,
-            resizeMode: 'contain',
-            tintColor: theme.primaryColor
+        button: {
+            image: {
+                enabled: {
+                    width: 30,
+                    height: 30,
+                    resizeMode: 'contain',
+                    tintColor: theme.primaryColor
+                },
+                disabled: {
+                    width: 30,
+                    height: 30,
+                    resizeMode: 'contain',
+                    tintColor: theme.primaryDisabledColor
+                }
+            }
         }
     });
 };

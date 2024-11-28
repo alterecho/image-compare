@@ -41,6 +41,7 @@ const CompareImageScreen = ({ navigation }) => {
         setImageInfo2(imageInfo);
       }
     } catch (error) {
+      console.log("[ERROR]:", error)
       if (containerID == ContainerID[1]) {
         setImageInfo1(null)
       } else {
@@ -65,11 +66,11 @@ const CompareImageScreen = ({ navigation }) => {
   }
 
   function handleCompareButtonClick() {
-    let metaDataArrayFor1stImage = imageInfo1?.metaDataArray
-    let metaDataArrayFor2ndImage = imageInfo2?.metaDataArray
+    let metaDataArrayFor1stImage = imageInfo1?.metaData
+    let metaDataArrayFor2ndImage = imageInfo2?.metaData
     if (metaDataArrayFor1stImage == null || metaDataArrayFor2ndImage == null) {
       return
-    }
+    }    
 
     navigation.navigate(
       Pages.COMPARE_META_DATA_PAGE,

@@ -1,37 +1,60 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import Strings from '../../assets/strings.en'
 import Theme from "../../Theme";
 import { useContext } from "react";
+import { Ionicons } from '@expo/vector-icons'
 
 const CompareButton = ({ onPress, style }) => {
     const { theme, toggleTheme } = useContext(Theme.context)
     const styles = createStyleSheet(theme)
+    const isEnabled = onPress != null
     return (
-        <View style={ [style] }>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={onPress}
-                disabled={!onPress}>
-                <Text style={styles.buttonText}>
-                   {Strings.button.compare}
-                </Text>
-            </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+            style={[
+                styles.container, isEnabled ? styles.button.enabled : styles.button.disabled
+            ]}
+            onPress={onPress}
+            disabled={!isEnabled}>
+            <Ionicons style={ isEnabled ?  styles.icon.enabled : styles.icon.disabled } size={20} name="git-compare"></Ionicons>
+        </TouchableOpacity>
     )
 };
 
 const createStyleSheet = (theme) => {
     return StyleSheet.create({
-        button: {
-            backgroundColor: theme.secondaryColor,
+        container: {
             height: 40,
             justifyContent: 'center',
             alignContent: 'center'
         },
-        buttonText: {
-            color: theme.primaryColor,
-            textAlign: 'center'
-        }
+        button: {
+            enabled: {
+                backgroundColor: `#00ff00ff`,
+            },
+            disabled: {
+                backgroundColor: theme.secondaryDisabledColor
+            }
+        },
+        text: {
+            enabled: {
+                color: theme.primaryColor,
+                textAlign: 'center'
+            },
+            disabled: {
+                color: theme.primaryDisabledColor,
+                textAlign: `center`
+            }
+        },
+        icon: {
+            enabled: {
+                color: theme.primaryColor,
+                textAlign: 'center'
+            },
+            disabled: {
+                color: theme.primaryDisabledColor,
+                textAlign: `center`
+            }
+        },
+
     });
 }
 
