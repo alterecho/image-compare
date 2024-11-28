@@ -4,12 +4,16 @@ const themeContext = createContext();
 
 const lightTheme = {
     primaryColor: '#FFFFFF',
-    secondaryColor: '#A9A9A9'
+    primaryDisabledColor: '#FFFFFF77',
+    secondaryColor: '#A9A9A9',
+    secondaryDisabledColor: '#A9A9A977'
 };
 
 const darkTheme = {
     primaryColor: lightTheme.secondaryColor,
-    secondaryColor: lightTheme.primaryColor
+    primaryDisableColor: lightTheme.primaryDisabledColor,
+    secondaryColor: lightTheme.primaryColor,
+    secondaryDisabledColor: lightTheme.secondaryDisabledColor,
 };
 
 const Theme = {
