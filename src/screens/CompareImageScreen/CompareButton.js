@@ -1,28 +1,21 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import Strings from '../../assets/strings.en'
 import Theme from "../../Theme";
 import { useContext } from "react";
+import { Ionicons } from '@expo/vector-icons'
 
 const CompareButton = ({ onPress, style }) => {
     const { theme, toggleTheme } = useContext(Theme.context)
     const styles = createStyleSheet(theme)
     const isEnabled = onPress != null
     return (
-        <View style={[style]}>
-            <TouchableOpacity
-                style={[
-                    styles.container,
-                    isEnabled ? styles.button.enabled : styles.button.disabled
-                ]}
-                onPress={onPress}
-                disabled={!isEnabled}>
-                <Text style={
-                    isEnabled ? styles.text.enabled : styles.text.disabled
-                }>
-                    {Strings.button.compare}
-                </Text>
-            </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+            style={[
+                styles.container, isEnabled ? styles.button.enabled : styles.button.disabled
+            ]}
+            onPress={onPress}
+            disabled={!isEnabled}>
+            <Ionicons style={ isEnabled ?  styles.icon.enabled : styles.icon.disabled } size={20} name="git-compare"></Ionicons>
+        </TouchableOpacity>
     )
 };
 
@@ -35,8 +28,7 @@ const createStyleSheet = (theme) => {
         },
         button: {
             enabled: {
-                backgroundColor: theme.secondaryColor,
-
+                backgroundColor: `#00ff00ff`,
             },
             disabled: {
                 backgroundColor: theme.secondaryDisabledColor
@@ -52,6 +44,17 @@ const createStyleSheet = (theme) => {
                 textAlign: `center`
             }
         },
+        icon: {
+            enabled: {
+                color: theme.primaryColor,
+                textAlign: 'center'
+            },
+            disabled: {
+                color: theme.primaryDisabledColor,
+                textAlign: `center`
+            }
+        },
+
     });
 }
 
