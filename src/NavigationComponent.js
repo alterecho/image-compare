@@ -29,7 +29,7 @@ const NavigationComponent = () => {
         <Stack.Screen
           name={Pages.COMPARE_META_DATA_PAGE}
           component={CompareMetaDataScreen}
-          options={{ headerShown: true, title: "" }}
+          options={{ headerShown: true, headerTransparent: true, title: "" }}
         />
         <Stack.Screen
           name={Pages.META_DATA_PAGE}

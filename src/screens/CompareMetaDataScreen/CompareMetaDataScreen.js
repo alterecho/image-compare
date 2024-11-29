@@ -1,17 +1,17 @@
 import React, { useState, useRef, useContext } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import MetaDataTableView from "../../common/components/MetaDataTable/MetaDataTableView";
 import { ContainerID } from "../Constants";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Theme from "../../Theme";
 import * as Utils from "../../common/utilities/Utils";
+import { useHeaderHeight } from "@react-navigation/elements"
 
 const CompareMetaDataScreen = ({ route }) => {
   const tableView1Ref = useRef(null)
   const tableView2Ref = useRef(null)
-
+  const headerHeight = useHeaderHeight()
   const { theme, toggleTheme } = useContext(Theme.context);
-  const styles = makeStyleSheet(theme)
+  const styles = makeStyleSheet(theme, headerHeight)
 
   const exif1 = require('../../../tests/data/metadata-sample1.json').exif
   const exif2 = require('../../../tests/data/metadata-sample2.json').exif
@@ -52,8 +52,7 @@ const CompareMetaDataScreen = ({ route }) => {
   };
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
+      <View style={styles.screen}>
         <MetaDataTableView
           ref={tableView1Ref}
           style={{ flex: 0.25 }}
@@ -68,16 +67,16 @@ const CompareMetaDataScreen = ({ route }) => {
           onSelectMetaData={(item) => {
             handleSelectMetaDataCell(ContainerID[1], item)
           }} />
-      </SafeAreaView>
-    </SafeAreaProvider>
+      </View>
   );
 }
 
-const makeStyleSheet = (theme) => {
+const makeStyleSheet = (theme, headerHeight) => {
   return StyleSheet.create(
     {
-      container: {
+      screen: {
         flex: 1,
+        paddingTop: headerHeight,
         flexDirection: 'column',
         backgroundColor: theme.secondaryColor
       }
