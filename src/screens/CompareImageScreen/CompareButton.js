@@ -1,21 +1,41 @@
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, useAnimatedValue } from "react-native";
 import Theme from "../../Theme";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Ionicons } from '@expo/vector-icons'
+import Animated, { withRepeat, withTiming, useAnimatedStyle, useSharedValue, interpolateColor } from "react-native-reanimated";
 
 const CompareButton = ({ onPress, style }) => {
     const { theme, toggleTheme } = useContext(Theme.context)
     const styles = createStyleSheet(theme)
     const isEnabled = onPress != null
+
+    const strobeAnimation = useSharedValue(0)
+
+    useEffect(() => {
+        strobeAnimation.value = withRepeat(
+            withTiming(1, { duration: 1000 }),
+            -1,
+            true
+        )
+    }, []);
+
+    const animatedStyle = useAnimatedStyle(() => {
+        const backgroundColor = interpolateColor(
+            strobeAnimation.value,
+            [0, 1],
+            [styles.button.disabled.backgroundColor, styles.button.enabled.backgroundColor]
+        );
+        return { backgroundColor }
+    });
+
     return (
-        <TouchableOpacity
-            style={[
-                styles.container, isEnabled ? styles.button.enabled : styles.button.disabled
-            ]}
-            onPress={onPress}
-            disabled={!isEnabled}>
-            <Ionicons style={ isEnabled ?  styles.icon.enabled : styles.icon.disabled } size={20} name="git-compare"></Ionicons>
-        </TouchableOpacity>
+        <Animated.View style={[styles.container, isEnabled ? animatedStyle : styles.button.disabled]}>
+            <TouchableOpacity
+                onPress={onPress}
+                disabled={!isEnabled}>
+                <Ionicons style={isEnabled ? styles.icon.enabled : styles.icon.disabled} size={20} name="git-compare"></Ionicons>
+            </TouchableOpacity>
+        </Animated.View>
     )
 };
 
