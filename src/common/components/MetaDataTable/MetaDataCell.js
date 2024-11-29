@@ -8,7 +8,7 @@ export function Model(metaDataItem, isSelected) {
 }
 
 const MetaDataCell = ({ model, onSelectMetaData }) => {
-  const theme = useContext(Theme.context)
+  const { theme, toggleTheme } = useContext(Theme.context)
   const styles = makeStyleSheet(theme)
   return (
     <TouchableOpacity style={[styles.container, model.isSelected ? styles.selected : {backgroundColor: 'transparent'}]} onPress={() => onSelectMetaData(model.metaDataItem)}>
@@ -31,7 +31,7 @@ const makeStyleSheet = (theme) => {
         backgroundColor: 'green'
       },
       title: {
-        color: theme.primaryColor,
+        color: theme.primaryDisabledColor,
         flex: 0.45,
         textAlign: 'right',
         paddingRight: 8,
