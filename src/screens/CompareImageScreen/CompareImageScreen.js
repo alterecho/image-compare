@@ -103,7 +103,7 @@ const makeStyleSheet = (theme) => {
   return StyleSheet.create({
     screen: {
       flex: 1,
-      backgroundColor: theme.primaryColor
+      backgroundColor: theme.secondaryColor
     }
   })
 }
