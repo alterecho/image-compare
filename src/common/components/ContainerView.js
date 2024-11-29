@@ -149,7 +149,7 @@ const makeStyleSheet = (theme) => {
       containerView: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: theme.secondaryColor
+        backgroundColor: theme.primaryDisabledColor
       },
       imageContainerView: {
         flex: 1,
