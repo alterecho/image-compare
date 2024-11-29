@@ -66,17 +66,17 @@ const CompareImageScreen = ({ navigation }) => {
   }
 
   function handleCompareButtonClick() {
-    let metaDataArrayFor1stImage = imageInfo1?.metaData
-    let metaDataArrayFor2ndImage = imageInfo2?.metaData
-    if (metaDataArrayFor1stImage == null || metaDataArrayFor2ndImage == null) {
+    let metaData1 = imageInfo1?.metaData
+    let metaData2 = imageInfo2?.metaData
+    if (metaData1 == null || metaData2 == null) {
       return
     }    
 
     navigation.navigate(
       Pages.COMPARE_META_DATA_PAGE,
       {
-        metaDataArray1: metaDataArrayFor1stImage,
-        metaDataArray2: metaDataArrayFor2ndImage
+        metaData1: metaData1,
+        metaData2: metaData2
       }
     );
   }
@@ -103,7 +103,7 @@ const makeStyleSheet = (theme) => {
   return StyleSheet.create({
     screen: {
       flex: 1,
-      backgroundColor: theme.primaryColor
+      backgroundColor: theme.secondaryColor
     }
   })
 }

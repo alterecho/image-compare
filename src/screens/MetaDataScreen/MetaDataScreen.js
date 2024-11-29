@@ -16,13 +16,11 @@ const MetaDataScreen = ({ route }) => {
     const metaDataCellModelArray = Utils.makeMetaDataCellModelArrayFromMetaData(metaData, selectedItems)
 
     const handleSelectMetaDataItem = (metaDataItem) => {
-        setSelectedItems([metaDataItem])
+        // no handling
     }
 
-    console.log("header", headerHeight, StatusBar.currentHeight)
-
     return (
-        <View style={ [ styles.screen, {flex: 1} ]}>
+        <View style={ [ styles.screen ]}>
         <MetaDataTableView style={{ flex: 1 }} metaDataCellModelArray={metaDataCellModelArray} onSelectMetaData={handleSelectMetaDataItem}/>
         </View>
 )

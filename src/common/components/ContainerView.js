@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { View, Image, Button, StyleSheet, useAnimatedValue } from "react-native";
 import * as Utils from "../../common/utilities/Utils";
 import Toolbar from "./Toolbar";
@@ -6,6 +6,7 @@ import { GestureHandlerRootView, Gesture, GestureDetector } from "react-native-g
 import Animated, { useSharedValue, useAnimatedStyle, runOnJS } from "react-native-reanimated";
 import AnimatedImage from "./AnimatedImage";
 import { Size } from "../../structs";
+import Theme from "../../Theme";
 
 const ContainerView = ({ imageUri, onPressAddPictureButton, onPressShowMetaDataButton }) => {
   const [imageSize, setImageSize] = useState(Size(0, 0));
@@ -15,7 +16,8 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressShowMetaDataB
   const startX = useSharedValue(0);
   const startY = useSharedValue(0);
   const startScale = useSharedValue(0);
-
+  const { theme, toggleTheme } = useContext(Theme.context)
+  const styles = makeStyleSheet(theme)
   const [viewSize, setViewSize] = useState(Size(0, 0))
 
   useEffect(() => {
@@ -141,24 +143,25 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressShowMetaDataB
   );
 }
 
-const styles = StyleSheet.create(
-  {
-    containerView: {
-      flex: 1,
-      flexDirection: 'column',
-      backgroundColor: 'lightGray'
-    },
-    imageContainerView: {
-      flex: 1,
-      height: '100%',
-      width: '100%',
-      overflow: 'hidden'
-    },
-    image: {
-
-      backgroundColor: '#ff0000'
+const makeStyleSheet = (theme) => {
+  return StyleSheet.create(
+    {
+      containerView: {
+        flex: 1,
+        flexDirection: 'column',
+        backgroundColor: theme.secondaryColor
+      },
+      imageContainerView: {
+        flex: 1,
+        height: '100%',
+        width: '100%',
+        overflow: 'hidden'
+      },
+      image: {
+        backgroundColor: '#ff0000'
+      }
     }
-  }
-)
+  )
+}
 
 export default ContainerView;

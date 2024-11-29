@@ -5,7 +5,7 @@ const themeContext = createContext();
 const lightTheme = {
     primaryColor: '#FFFFFF',
     primaryDisabledColor: '#FFFFFF77',
-    secondaryColor: '#77777777',
+    secondaryColor: '#777777',
     secondaryDisabledColor: '#7777777777'
 };
 
