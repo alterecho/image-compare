@@ -7,8 +7,6 @@ import Theme from "../../Theme";
 import * as Utils from "../../common/utilities/Utils";
 
 const CompareMetaDataScreen = ({ route }) => {
-  // const metaDataArray1 = route.params.metaDataArray1
-  // const metaDataArray2 = route.params.metaDataArray2
   const tableView1Ref = useRef(null)
   const tableView2Ref = useRef(null)
 
@@ -20,8 +18,11 @@ const CompareMetaDataScreen = ({ route }) => {
 
   const [selectedItems, setSelectedItems] = useState([])
 
-  const metaData1 = Utils.makeMetaDataFromExifData(exif1)
-  const metaData2 = Utils.makeMetaDataFromExifData(exif2)
+  const metaData1 = route.params.metaData1
+  const metaData2 = route.params.metaData2
+
+  // const metaData1 = Utils.makeMetaDataFromExifData(exif1)
+  // const metaData2 = Utils.makeMetaDataFromExifData(exif2)
 
   const metaDataCellModelArray1 = Utils.makeMetaDataCellModelArrayFromMetaData(metaData1, selectedItems)
   const metaDataCellModelArray2 = Utils.makeMetaDataCellModelArrayFromMetaData(metaData2, selectedItems)
