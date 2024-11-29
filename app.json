@@ -9,8 +9,8 @@
           ]
           
       ],
-    "name": "image-compare",
-    "slug": "image-compare",
+    "name": "Image Compare",
+    "slug": "Image Compare",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,18 +18,18 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.imagecompare"
+      "bundleIdentifier": "com.vjc.imagecompare"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.imagecompare"
+      "package": "com.vjc.imagecompare"
     },
     "web": {
       "favicon": "./assets/favicon.png"
