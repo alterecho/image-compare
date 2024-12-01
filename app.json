@@ -10,8 +10,8 @@
           
       ],
     "name": "Image Compare",
-    "slug": "Image Compare",
-    "version": "1.0.0",
+    "slug": "image-compare",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -25,6 +25,7 @@
       "bundleIdentifier": "com.vjc.imagecompare"
     },
     "android": {
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
