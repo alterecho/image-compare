@@ -1,14 +1,13 @@
 {
   "expo": {
-      "plugins": [
-          [
-              "expo-image-picker",
-              {
-                  "photosPermission": "The app accesses your photos to let you share them with your friends."
-              }
-          ]
-          
-      ],
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ],
     "name": "Image Compare",
     "slug": "image-compare",
     "version": "2.0.0",
@@ -30,11 +29,19 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.vjc.imagecompare"
+      "package": "com.vjc.imagecompare",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "newArchEnabled": true
+    "newArchEnabled": true,
+    "extra": {
+      "eas": {
+        "projectId": "9fcd8edd-c1ae-4416-9b73-9462da5e55f3"
+      }
+    }
   }
 }
