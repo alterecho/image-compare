@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 
-import Theme from './Theme';
-import NavigationComponent from './NavigationComponent';
+import Theme from './src/Theme';
+import NavigationComponent from './src/NavigationComponent';
 
 const App = () => {
   const [isDarkMode, setIsDarkMode] = useState(false)
