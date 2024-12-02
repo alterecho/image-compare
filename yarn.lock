@@ -2991,6 +2991,13 @@ expo-keep-awake@~14.0.1:
   resolved "https://registry.yarnpkg.com/expo-keep-awake/-/expo-keep-awake-14.0.1.tgz#77c38feefa95c494aa167e6df5a6eacd17af2358"
   integrity sha512-c5mGCAIk2YM+Vsdy90BlEJ4ZX+KG5Au9EkJUIxXWlpnuKmDAJ3N+5nEZ7EUO1ZTheqoSBeAo4jJ8rTWPU+JXdw==
 
+expo-localization@~16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/expo-localization/-/expo-localization-16.0.0.tgz#fe426550649b6a8ea26876f26c065e5dcf6d5bb9"
+  integrity sha512-PaWDUs6sNaEbFwQc6QKsTfYCg9GDo3bBl+cWnoG0G7pn1A623CcMwWyV7jD5jpqz0s1gHmwSRjR3vKOqhouRWg==
+  dependencies:
+    rtl-detect "^1.0.2"
+
 expo-modules-autolinking@2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/expo-modules-autolinking/-/expo-modules-autolinking-2.0.2.tgz#cf946317e22e120dfe97440f225c8033c6bced42"
@@ -5567,6 +5574,11 @@ roarr@^2.15.3:
     json-stringify-safe "^5.0.1"
     semver-compare "^1.0.0"
     sprintf-js "^1.1.2"
+
+rtl-detect@^1.0.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/rtl-detect/-/rtl-detect-1.1.2.tgz#ca7f0330af5c6bb626c15675c642ba85ad6273c6"
+  integrity sha512-PGMBq03+TTG/p/cRB7HCLKJ1MgDIi07+QU1faSjiYRfmY5UsAttV9Hs08jDAHVwcOwmVLcSJkpwyfXszVjWfIQ==
 
 run-parallel@^1.1.9:
   version "1.2.0"
