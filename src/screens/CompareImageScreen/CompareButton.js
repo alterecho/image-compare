@@ -36,7 +36,7 @@ const CompareButton = ({ onPress, style }) => {
             <TouchableOpacity
                 style={isEnabled ? styles.enabled.container : styles.disabled.container}
                 onPress={onPress}
-                disabled={isEnabled}
+                disabled={!isEnabled}
                 >
                 <Ionicons
                     style={[isEnabled ? styles.enabled.icon : styles.disabled.icon]}
