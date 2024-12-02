@@ -3,6 +3,7 @@ import Theme from "../../Theme";
 import { useContext, useEffect } from "react";
 import { Ionicons } from '@expo/vector-icons'
 import Animated, { withRepeat, withTiming, useAnimatedStyle, useSharedValue, interpolateColor } from "react-native-reanimated";
+import Strings from "../../assets/strings";
 
 const CompareButton = ({ onPress, style }) => {
     const { theme, toggleTheme } = useContext(Theme.context)
@@ -23,58 +24,85 @@ const CompareButton = ({ onPress, style }) => {
         const backgroundColor = interpolateColor(
             strobeAnimation.value,
             [0, 1],
-            [styles.button.disabled.backgroundColor, styles.button.enabled.backgroundColor]
+            [styles.disabled.animation.backgroundColor, styles.enabled.animation.backgroundColor]
         );
         return { backgroundColor }
     });
 
     return (
-        <Animated.View style={[styles.container, isEnabled ? animatedStyle : styles.button.disabled]}>
+        <Animated.View
+            style={[styles.enabled.container, isEnabled &&  animatedStyle]}
+        >
             <TouchableOpacity
+                style={isEnabled ? styles.enabled.container : styles.disabled.container}
                 onPress={onPress}
-                disabled={!isEnabled}>
-                <Ionicons style={isEnabled ? styles.icon.enabled : styles.icon.disabled} size={20} name="git-compare"></Ionicons>
+                disabled={isEnabled}
+                >
+                <Ionicons
+                    style={[isEnabled ? styles.enabled.icon : styles.disabled.icon]}
+                    size={20}
+                    name="git-compare"
+                />
+                <Text
+                    style={[isEnabled ? styles.enabled.icon : styles.disabled.icon]}
+                >
+                    {Strings.button.compareButtonTitle}
+                </Text>
             </TouchableOpacity>
-        </Animated.View>
+        </Animated.View >
     )
 };
 
 const createStyleSheet = (theme) => {
     return StyleSheet.create({
-        container: {
-            height: 40,
-            justifyContent: 'center',
-            alignContent: 'center'
-        },
-        button: {
-            enabled: {
-                backgroundColor: `#00ff00ff`,
+        enabled: {
+            animation: {
+                backgroundColor: `#00ff00ff`
             },
-            disabled: {
+            container: {
+                height: 40,
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignContent: 'center',
+                gap: 8,
+                textAlign: `center`,
+                backgroundColor: 'clear',
+            },
+            icon: {
+                color: theme.primaryColor,
+                textAlign: 'center',
+                lineHeight: 40
+            },
+            text: {
+                color: theme.primaryColor,
+                textAlign: 'center',
+                lineHeight: 40
+            }
+        },
+        disabled: {
+            animation: {
                 backgroundColor: theme.secondaryDisabledColor
-            }
-        },
-        text: {
-            enabled: {
-                color: theme.primaryColor,
-                textAlign: 'center'
             },
-            disabled: {
-                color: theme.primaryDisabledColor,
-                textAlign: `center`
-            }
-        },
-        icon: {
-            enabled: {
-                color: theme.primaryColor,
-                textAlign: 'center'
+            container: {
+                height: 40,
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignContent: 'center',
+                gap: 8,
+                textAlign: `center`,
+                backgroundColor: 'clear',
             },
-            disabled: {
+            icon: {
                 color: theme.primaryDisabledColor,
-                textAlign: `center`
+                textAlign: `center`,
+                lineHeight: 40
+            },
+            text: {
+                color: theme.primaryDisabledColor,
+                textAlign: `center`,
+                lineHeight: 40
             }
-        },
-
+        }
     });
 }
 
