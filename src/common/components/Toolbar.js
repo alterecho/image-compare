@@ -61,7 +61,7 @@ const createStyleSheet = (theme) => {
                     flexDirection: 'row',
                     alignContent: 'center',
                     justifyContent: 'center',
-                    gap: 8,
+                    gap: 4,
                 },
                 icon: {
                     width: 30,
@@ -80,7 +80,7 @@ const createStyleSheet = (theme) => {
                     flexDirection: 'row',
                     alignContent: 'center',
                     justifyContent: 'center',
-                    gap: 8
+                    gap: 4
                 },
                 icon: {
                     width: 30,
