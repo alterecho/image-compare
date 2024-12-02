@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View, Button, Pressable, Image } from 'react-native';
+import { StyleSheet, View, Button, TouchableOpacity, Image, Text } from 'react-native';
 import Theme from '../../Theme';
+import Strings from "../../assets/strings";
 
 const Toolbar = ({ onPressAddPictureButton, onPressShowMetaDataButton }) => {
     const { theme, toggleTheme } = useContext(Theme.context);
@@ -13,22 +14,32 @@ const Toolbar = ({ onPressAddPictureButton, onPressShowMetaDataButton }) => {
 
     return (
         <View style={styles.toolbar}>
-            <Pressable
+            <TouchableOpacity
                 onPress={onPressAddPictureButton}
-                disabled={!isAddPictureButtonEnabled}>
+                disabled={!isAddPictureButtonEnabled}
+                style={isAddPictureButtonEnabled ? styles.button.enabled.container : styles.button.disabled.container}
+            >
                 <Image
                     source={require(`${imagesPath}/ic_add.png`)}
-                    style={isAddPictureButtonEnabled ? styles.button.image.enabled : styles.button.image.disabled}
+                    style={isAddPictureButtonEnabled ? styles.button.enabled.icon : styles.button.disabled.icon}
                 />
-            </Pressable>
-            <Pressable
+                <Text style={isAddPictureButtonEnabled ? styles.button.enabled.text : styles.button.disabled.text}>
+                {Strings.button.addButtonTitle}
+                </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
                 onPress={onPressShowMetaDataButton}
-                disabled={!isShowMetaDateButtonEnabled}>
+                disabled={!isShowMetaDateButtonEnabled}
+                style={isShowMetaDateButtonEnabled ? styles.button.enabled.container : styles.button.disabled.container}
+            >
                 <Image
                     source={require(`${imagesPath}/ic_description.png`)}
-                    style={isShowMetaDateButtonEnabled ? styles.button.image.enabled : styles.button.image.disabled}
+                    style={isShowMetaDateButtonEnabled ? styles.button.enabled.icon : styles.button.disabled.icon}
                 />
-            </Pressable>
+                <Text style={isShowMetaDateButtonEnabled ? styles.button.enabled.text : styles.button.disabled.text}>
+                    {Strings.button.imageInfoButtonTitle}
+                </Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -41,21 +52,45 @@ const createStyleSheet = (theme) => {
             justifyContent: 'space-around',
             alignItems: 'center',
             paddingHorizontal: 16,
-            height: 44
+            height: 44,
+            flexDirection: 'row',
         },
         button: {
-            image: {
-                enabled: {
+            enabled: {
+                container: {
+                    flexDirection: 'row',
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                    gap: 4,
+                },
+                icon: {
                     width: 30,
                     height: 30,
                     resizeMode: 'contain',
-                    tintColor: theme.primaryColor
+                    tintColor: theme.primaryColor,
+                    lineHeight: 30
                 },
-                disabled: {
+                text: {
+                    color: theme.primaryColor,
+                    lineHeight: 30
+                }
+            },
+            disabled: {
+                container: {
+                    flexDirection: 'row',
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                    gap: 4
+                },
+                icon: {
                     width: 30,
                     height: 30,
                     resizeMode: 'contain',
                     tintColor: theme.primaryDisabledColor
+                },
+                text: {
+                    color: theme.primaryDisabledColor,
+                    lineHeight: 30
                 }
             }
         }

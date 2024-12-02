@@ -31,12 +31,12 @@ const CompareButton = ({ onPress, style }) => {
 
     return (
         <Animated.View
-            style={[styles.enabled.container, isEnabled &&  animatedStyle]}
+            style={[styles.disabled.container, isEnabled &&  animatedStyle]}
         >
             <TouchableOpacity
                 style={isEnabled ? styles.enabled.container : styles.disabled.container}
                 onPress={onPress}
-                disabled={isEnabled}
+                disabled={!isEnabled}
                 >
                 <Ionicons
                     style={[isEnabled ? styles.enabled.icon : styles.disabled.icon]}
@@ -64,7 +64,7 @@ const createStyleSheet = (theme) => {
                 flexDirection: 'row',
                 justifyContent: 'center',
                 alignContent: 'center',
-                gap: 8,
+                gap: 4,
                 textAlign: `center`,
                 backgroundColor: 'clear',
             },
@@ -88,7 +88,7 @@ const createStyleSheet = (theme) => {
                 flexDirection: 'row',
                 justifyContent: 'center',
                 alignContent: 'center',
-                gap: 8,
+                gap: 4,
                 textAlign: `center`,
                 backgroundColor: 'clear',
             },
