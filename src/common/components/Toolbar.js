@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View, Button, Pressable, Image, Text } from 'react-native';
+import { StyleSheet, View, Button, TouchableOpacity, Image, Text } from 'react-native';
 import Theme from '../../Theme';
 import Strings from "../../assets/strings";
 
@@ -14,7 +14,7 @@ const Toolbar = ({ onPressAddPictureButton, onPressShowMetaDataButton }) => {
 
     return (
         <View style={styles.toolbar}>
-            <Pressable
+            <TouchableOpacity
                 onPress={onPressAddPictureButton}
                 disabled={!isAddPictureButtonEnabled}
                 style={isAddPictureButtonEnabled ? styles.button.enabled.container : styles.button.disabled.container}
@@ -26,8 +26,8 @@ const Toolbar = ({ onPressAddPictureButton, onPressShowMetaDataButton }) => {
                 <Text style={isAddPictureButtonEnabled ? styles.button.enabled.text : styles.button.disabled.text}>
                 {Strings.button.addButtonTitle}
                 </Text>
-            </Pressable>
-            <Pressable
+            </TouchableOpacity>
+            <TouchableOpacity
                 onPress={onPressShowMetaDataButton}
                 disabled={!isShowMetaDateButtonEnabled}
                 style={isShowMetaDateButtonEnabled ? styles.button.enabled.container : styles.button.disabled.container}
@@ -39,7 +39,7 @@ const Toolbar = ({ onPressAddPictureButton, onPressShowMetaDataButton }) => {
                 <Text style={isShowMetaDateButtonEnabled ? styles.button.enabled.text : styles.button.disabled.text}>
                     {Strings.button.imageInfoButtonTitle}
                 </Text>
-            </Pressable>
+            </TouchableOpacity>
         </View>
     );
 }
