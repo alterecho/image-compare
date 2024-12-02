@@ -11,7 +11,7 @@ export const getRandomColor = () => {
   return `rgb(${color.r}, ${color.g}, ${color.b})`;
 };
 
-export const makeBorderStyle = (color = 'green', width = 1) => {
+export const makeBorderStyle = (color = 'red', width = 1) => {
   const style = {
     borderColor: color,
     borderWidth: width
