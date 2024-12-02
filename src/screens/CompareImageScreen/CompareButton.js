@@ -31,7 +31,7 @@ const CompareButton = ({ onPress, style }) => {
 
     return (
         <Animated.View
-            style={[styles.enabled.container, isEnabled &&  animatedStyle]}
+            style={[styles.disabled.container, isEnabled &&  animatedStyle]}
         >
             <TouchableOpacity
                 style={isEnabled ? styles.enabled.container : styles.disabled.container}
@@ -90,7 +90,7 @@ const createStyleSheet = (theme) => {
                 alignContent: 'center',
                 gap: 4,
                 textAlign: `center`,
-                backgroundColor: 'clear',
+                backgroundColor: Theme.secondaryDisabledColor,
             },
             icon: {
                 color: theme.primaryDisabledColor,
