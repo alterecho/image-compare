@@ -90,7 +90,7 @@ const createStyleSheet = (theme) => {
                 alignContent: 'center',
                 gap: 4,
                 textAlign: `center`,
-                backgroundColor: Theme.secondaryDisabledColor,
+                backgroundColor: 'clear',
             },
             icon: {
                 color: theme.primaryDisabledColor,
