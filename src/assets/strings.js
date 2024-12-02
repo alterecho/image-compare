@@ -1,5 +1,7 @@
 export default {
     button: {
-        compare: "Compare"
+        compareButtonTitle: "Compare",
+        addButtonTitle: "Select",
+        imageInfoButtonTitle: "Info"
     }
 }
