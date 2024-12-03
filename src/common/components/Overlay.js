@@ -28,7 +28,7 @@ const makeStyleSheet = (theme, thisSize) => {
     return StyleSheet.create({
         container: {
             flex: 1,
-            backgroundColor: 'yellow',
+            backgroundColor: 'clear',
             width: '100%',
             height: '100%',
             position: 'absolute',
