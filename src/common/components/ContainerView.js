@@ -10,6 +10,7 @@ import Theme from "../../Theme";
 import Overlay from "./Overlay";
 import MetaDataView from "./MetaDataView";
 import TestMetaData from "../../../tests/data/metadata-sample1.json"
+import { Config as ToolbarConfig } from "./Toolbar";
 
 const ContainerView = ({ imageInfo, onPressAddPictureButton }) => {
   const [imageSize, setImageSize] = useState(Size(0, 0));
@@ -110,16 +111,20 @@ const ContainerView = ({ imageInfo, onPressAddPictureButton }) => {
     pinchGestureHandler
   )
 
+  const toolbarConfig = ToolbarConfig({
+    onPressAddPictureButtonListener: onPressAddPictureButton,
+    isAddPictureButtonEnabled: true,
+    onImageInfoButtonListener: () => {
+      setIsShowMetaData(!isShowMetaData)
+    }
+    ,
+    isImageInfoButtonEnabled: imageInfo == null ? false : true
+  });
+
+  console.log("toolbarConfig", JSON.stringify(toolbarConfig))
   return (
     <View style={[styles.containerView]}>
-      <Toolbar
-        onPressAddPictureButton={onPressAddPictureButton}
-        onPressShowMetaDataButton={
-          () => {
-            setIsShowMetaData(!isShowMetaData)
-          }
-        }
-      />
+      <Toolbar config={toolbarConfig} />
       <View style={{ flex: 1 }}>
         <GestureHandlerRootView style={
           [
