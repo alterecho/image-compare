@@ -72,7 +72,7 @@ const CompareImageScreen = ({ navigation }) => {
           imageInfo={imageInfo1}
           onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[0]) }}
         />
-        <CompareButton onPress={imageInfo1 && imageInfo2 ? handleCompareButtonClick : null}></CompareButton>
+        {/* <CompareButton onPress={imageInfo1 && imageInfo2 ? handleCompareButtonClick : null}></CompareButton> */}
         <ContainerView
           imageInfo={imageInfo2}
           onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[1]) }}
