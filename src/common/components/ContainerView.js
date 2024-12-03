@@ -7,8 +7,11 @@ import Animated, { useSharedValue, useAnimatedStyle, runOnJS } from "react-nativ
 import AnimatedImage from "./AnimatedImage";
 import { Size } from "../../structs";
 import Theme from "../../Theme";
+import Overlay from "./Overlay";
+import MetaDataView from "./MetaDataView";
+import TestMetaData from "../../../tests/data/metadata-sample1.json"
 
-const ContainerView = ({ imageUri, onPressAddPictureButton, onPressShowMetaDataButton }) => {
+const ContainerView = ({ imageInfo, onPressAddPictureButton }) => {
   const [imageSize, setImageSize] = useState(Size(0, 0));
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -19,16 +22,18 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressShowMetaDataB
   const { theme, toggleTheme } = useContext(Theme.context)
   const styles = makeStyleSheet(theme)
   const [viewSize, setViewSize] = useState(Size(0, 0))
+  const [isShowMetaData, setIsShowMetaData] = useState(false);
+
 
   useEffect(() => {
-    if (imageUri) {
-      Image.getSize(imageUri, (width, height) => {
+    if (imageInfo) {
+      Image.getSize(imageInfo.uri, (width, height) => {
         setImageSize(Size(width, height));
       }, error => {
         // handle error
       })
     }
-  }, [imageUri]);
+  }, [imageInfo]);
 
   useEffect(() => {
     fitInContainer()
@@ -109,36 +114,54 @@ const ContainerView = ({ imageUri, onPressAddPictureButton, onPressShowMetaDataB
     <View style={[styles.containerView]}>
       <Toolbar
         onPressAddPictureButton={onPressAddPictureButton}
-        onPressShowMetaDataButton={onPressShowMetaDataButton}
+        onPressShowMetaDataButton={
+          () => {
+            setIsShowMetaData(!isShowMetaData)
+          }
+        }
       />
-      <GestureHandlerRootView style={
-        [
-          { flex: 1 }
-        ]
-      }>
-        <GestureDetector gesture={combinedGestureHandlers}>
-          <Animated.View
-            style={[
-              {
-                flex: 1, justifyContent: 'center', alignItems: 'center',
-                overflow: "hidden"
-              }
-            ]}
-            onLayout={(event) => {
-              const { width, height } = event.nativeEvent.layout;
-              setViewSize({ width, height })
-            }}>
-            <AnimatedImage
-              source={{ uri: imageUri }}
-              style={[{
-                height: imageSize.height,
-                width: imageSize.width
-              }, gestureStyle]}
-              resizeMode="contain"
-            />
-          </Animated.View>
-        </GestureDetector>
-      </GestureHandlerRootView>
+      <View style={{ flex: 1 }}>
+        <GestureHandlerRootView style={
+          [
+            { flex: 1 }
+          ]
+        }>
+          <GestureDetector gesture={combinedGestureHandlers}>
+            <Animated.View
+              style={[
+                {
+                  flex: 1, justifyContent: 'center', alignItems: 'center',
+                  overflow: "hidden"
+                }
+              ]}
+              onLayout={(event) => {
+                const { width, height } = event.nativeEvent.layout;
+                setViewSize({ width, height })
+              }}>
+              <AnimatedImage
+                source={{ uri: imageInfo?.uri }}
+                style={[{
+                  height: imageSize.height,
+                  width: imageSize.width
+                }, gestureStyle]}
+                resizeMode="contain"
+              />
+            </Animated.View>
+          </GestureDetector>
+        </GestureHandlerRootView>
+        {
+          isShowMetaData &&
+          <Overlay>
+            <MetaDataView style={{
+              flex: 1,
+              backgroundColor: 'red'
+            }}
+              metaData={imageInfo?.metaData}
+            >
+            </MetaDataView>
+          </Overlay>
+        }
+      </View>
     </View>
   );
 }

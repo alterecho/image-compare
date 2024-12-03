@@ -5,7 +5,6 @@ import { StyleSheet, View } from "react-native";
 import Theme from "../../Theme";
 import { useHeaderHeight } from '@react-navigation/elements';
 import * as Utils from "../utilities/Utils";
-import { StatusBar } from "expo-status-bar";
 
 const MetaDataView = ({ style, metaData }) => {
     const { theme, toggleTheme } = useContext(Theme.context)
@@ -20,7 +19,11 @@ const MetaDataView = ({ style, metaData }) => {
 
     return (
         <View style={[style, styles.container]}>
-            <MetaDataTableView style={{ flex: 1 }} metaDataCellModelArray={metaDataCellModelArray} onSelectMetaData={handleSelectMetaDataItem} />
+            <MetaDataTableView
+                style={{ flex: 1 }}
+                metaDataCellModelArray={metaDataCellModelArray}
+                onSelectMetaData={handleSelectMetaDataItem}
+            />
         </View>
     )
 }
@@ -31,7 +34,7 @@ const makeStyleSheet = (theme, headerHeight) => {
             flex: 1,
             paddingTop: headerHeight,
             backgroundColor: theme.secondaryColor,
-            opacity: 0.5,
+            opacity: 0.9,
             flexDirection: 'column'
         }
     })

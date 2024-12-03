@@ -50,21 +50,6 @@ const CompareImageScreen = ({ navigation }) => {
     }
   };
 
-  function handleShowMetaDataButtonClick(containerID) {
-    let imageInfoToUse = null
-    switch (containerID) {
-      case ContainerID[0]:
-        imageInfoToUse = imageInfo1
-        break;
-      case ContainerID[1]:
-        imageInfoToUse = imageInfo2
-        break;
-      default:
-        break;
-    }
-    navigation.navigate(Pages.META_DATA_PAGE, { imageInfo: imageInfoToUse });
-  }
-
   function handleCompareButtonClick() {
     let metaData1 = imageInfo1?.metaData
     let metaData2 = imageInfo2?.metaData
@@ -84,15 +69,13 @@ const CompareImageScreen = ({ navigation }) => {
     <SafeAreaProvider style={styles.screen}>
       <SafeAreaView style={{ flex: 1 }}>
         <ContainerView
-          imageUri={imageInfo1?.uri}
+          imageInfo={imageInfo1}
           onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[0]) }}
-          onPressShowMetaDataButton={imageInfo1 ? () => { handleShowMetaDataButtonClick(ContainerID[0]) } : null}
         />
         <CompareButton onPress={imageInfo1 && imageInfo2 ? handleCompareButtonClick : null}></CompareButton>
         <ContainerView
-          imageUri={imageInfo2?.uri}
+          imageInfo={imageInfo2}
           onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[1]) }}
-          onPressShowMetaDataButton={imageInfo2 ? () => { handleShowMetaDataButtonClick(ContainerID[1]) } : null}
         />
       </SafeAreaView>
     </SafeAreaProvider>
