@@ -3,20 +3,35 @@ import { StyleSheet, View, Button, TouchableOpacity, Image, Text } from 'react-n
 import Theme from '../../Theme';
 import Strings from "../../assets/strings";
 
-const Toolbar = ({ onPressAddPictureButton, onPressShowMetaDataButton }) => {
+export function Config({
+    onPressAddPictureButtonListener,
+    isAddPictureButtonEnabled = false,
+    onImageInfoButtonListener,
+    isImageInfoButtonEnabled = false
+}) {
+    return Object.freeze({
+        onPressAddPictureButtonListener,
+        isAddPictureButtonEnabled,
+        onImageInfoButtonListener,
+        isImageInfoButtonEnabled,
+    });
+}
+
+const Toolbar = ({ config }) => {
     const { theme, toggleTheme } = useContext(Theme.context);
     const styles = createStyleSheet(theme);
 
     const imagesPath = "../../assets/images";
-
-    const isAddPictureButtonEnabled = onPressAddPictureButton != null
-    const isShowMetaDateButtonEnabled = onPressShowMetaDataButton != null
+    const onPressAddPictureButtonListener = config?.onPressAddPictureButtonListener
+    const isAddPictureButtonEnabled = config?.isAddPictureButtonEnabled ?? false
+    const onImageInfoButtonListener = config?.onImageInfoButtonListener
+    const isImageInfoButtonEnabled = config?.isImageInfoButtonEnabled ?? false
 
     return (
         <View style={styles.toolbar}>
             <TouchableOpacity
-                onPress={onPressAddPictureButton}
-                disabled={!isAddPictureButtonEnabled}
+                onPress={onPressAddPictureButtonListener}
+                disabled={!(isAddPictureButtonEnabled ?? false)}
                 style={isAddPictureButtonEnabled ? styles.button.enabled.container : styles.button.disabled.container}
             >
                 <Image
@@ -24,19 +39,19 @@ const Toolbar = ({ onPressAddPictureButton, onPressShowMetaDataButton }) => {
                     style={isAddPictureButtonEnabled ? styles.button.enabled.icon : styles.button.disabled.icon}
                 />
                 <Text style={isAddPictureButtonEnabled ? styles.button.enabled.text : styles.button.disabled.text}>
-                {Strings.button.addButtonTitle}
+                    {Strings.button.addButtonTitle}
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity
-                onPress={onPressShowMetaDataButton}
-                disabled={!isShowMetaDateButtonEnabled}
-                style={isShowMetaDateButtonEnabled ? styles.button.enabled.container : styles.button.disabled.container}
+                onPress={onImageInfoButtonListener}
+                disabled={!isImageInfoButtonEnabled}
+                style={isImageInfoButtonEnabled ? styles.button.enabled.container : styles.button.disabled.container}
             >
                 <Image
                     source={require(`${imagesPath}/ic_description.png`)}
-                    style={isShowMetaDateButtonEnabled ? styles.button.enabled.icon : styles.button.disabled.icon}
+                    style={isImageInfoButtonEnabled ? styles.button.enabled.icon : styles.button.disabled.icon}
                 />
-                <Text style={isShowMetaDateButtonEnabled ? styles.button.enabled.text : styles.button.disabled.text}>
+                <Text style={isImageInfoButtonEnabled ?? false ? styles.button.enabled.text : styles.button.disabled.text}>
                     {Strings.button.imageInfoButtonTitle}
                 </Text>
             </TouchableOpacity>
