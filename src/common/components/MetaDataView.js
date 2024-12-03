@@ -7,7 +7,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import * as Utils from "../../common/utilities/Utils";
 import { StatusBar } from "expo-status-bar";
 
-const MetaDataScreen = ({ route }) => {
+const MetaDataView = ({ route }) => {
     const { theme, toggleTheme } = useContext(Theme.context)
     const [ selectedItems, setSelectedItems ] = useState([])
     const headerHeight = useHeaderHeight();
@@ -20,7 +20,7 @@ const MetaDataScreen = ({ route }) => {
     }
 
     return (
-        <View style={ [ styles.screen ]}>
+        <View style={ [ styles.container ]}>
         <MetaDataTableView style={{ flex: 1 }} metaDataCellModelArray={metaDataCellModelArray} onSelectMetaData={handleSelectMetaDataItem}/>
         </View>
 )
@@ -28,7 +28,7 @@ const MetaDataScreen = ({ route }) => {
 
 const makeStyleSheet = (theme, headerHeight) => {
     return StyleSheet.create({
-        screen: {
+        container: {
             flex: 1,
             paddingTop: headerHeight,
             backgroundColor: theme.secondaryColor,
@@ -37,4 +37,4 @@ const makeStyleSheet = (theme, headerHeight) => {
     })
 }
 
-export default MetaDataScreen;
+export default MetaDataView;
