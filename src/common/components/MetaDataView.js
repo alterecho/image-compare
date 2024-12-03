@@ -14,7 +14,7 @@ const MetaDataView = ({ style, metaData }) => {
     const metaDataCellModelArray = Utils.makeMetaDataCellModelArrayFromMetaData(metaData, selectedItems)
 
     const handleSelectMetaDataItem = (metaDataItem) => {
-        // no handling
+        setSelectedItems([metaDataItem])
     }
 
     return (
