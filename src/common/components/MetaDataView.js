@@ -1,18 +1,16 @@
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { MetaDataTableView } from "../../common/components/MetaDataTable/MetaDataTableView";
+import { MetaDataTableView } from "./MetaDataTable/MetaDataTableView";
 import { useContext, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Theme from "../../Theme";
 import { useHeaderHeight } from '@react-navigation/elements';
-import * as Utils from "../../common/utilities/Utils";
-import { StatusBar } from "expo-status-bar";
+import * as Utils from "../utilities/Utils";
 
-const MetaDataScreen = ({ route }) => {
+const MetaDataView = ({ style, metaData }) => {
     const { theme, toggleTheme } = useContext(Theme.context)
-    const [ selectedItems, setSelectedItems ] = useState([])
+    const [selectedItems, setSelectedItems] = useState([])
     const headerHeight = useHeaderHeight();
     const styles = makeStyleSheet(theme, headerHeight)
-    const metaData = route.params.imageInfo.metaData
     const metaDataCellModelArray = Utils.makeMetaDataCellModelArrayFromMetaData(metaData, selectedItems)
 
     const handleSelectMetaDataItem = (metaDataItem) => {
@@ -20,21 +18,26 @@ const MetaDataScreen = ({ route }) => {
     }
 
     return (
-        <View style={ [ styles.screen ]}>
-        <MetaDataTableView style={{ flex: 1 }} metaDataCellModelArray={metaDataCellModelArray} onSelectMetaData={handleSelectMetaDataItem}/>
+        <View style={[style, styles.container]}>
+            <MetaDataTableView
+                style={{ flex: 1 }}
+                metaDataCellModelArray={metaDataCellModelArray}
+                onSelectMetaData={handleSelectMetaDataItem}
+            />
         </View>
-)
+    )
 }
 
 const makeStyleSheet = (theme, headerHeight) => {
     return StyleSheet.create({
-        screen: {
+        container: {
             flex: 1,
             paddingTop: headerHeight,
             backgroundColor: theme.secondaryColor,
+            opacity: 0.9,
             flexDirection: 'column'
         }
     })
 }
 
-export default MetaDataScreen;
+export default MetaDataView;
