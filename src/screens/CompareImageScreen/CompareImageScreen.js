@@ -80,7 +80,6 @@ const CompareImageScreen = ({ navigation }) => {
       return metaDataItem.title === selectedMetaDataItem.title
     });
 
-    console.log("CompareImageScreen handleOnSelectMetaDataItem indexInOtherContainer ", indexInOtherContainer)
     if (indexInOtherContainer === -1) {
       return
     }

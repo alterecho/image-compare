@@ -11,13 +11,26 @@ const MetaDataView =  forwardRef(({ style, metaData, onSelectMetaDataItemHandler
     const [selectedItems, setSelectedItems] = useState([])
     const headerHeight = useHeaderHeight();
     const styles = makeStyleSheet(theme, headerHeight)
-    const metaDataCellModelArray = Utils.makeMetaDataCellModelArrayFromMetaData(metaData, selectedItems)
+    const [metaDataCellModelArray, setMetaDataCellModelArray] = (() => {
+        const metaDataCellModelArray = Utils.makeMetaDataCellModelArrayFromMetaData(
+            metaData, selectedItems
+        );
+        return useState(metaDataCellModelArray)
+    })()
+     
     const tableViewRef = useRef(null);
     useImperativeHandle(ref, () => ({
-        selectIndex: (index) => {
-            console.log("MetaDataView: selectIndex: ", index)
-            tableViewRef.current.selectIndex(index)
-        }
+        selectIndex: (selectedIndex) => {
+            if (selectedIndex >= metaDataCellModelArray.length) {
+                return
+            }
+            const modifiedArray =  metaDataCellModelArray.map((model, index) => (
+                {...model, isSelected: index === selectedIndex ? true : false}
+            ))      
+            setMetaDataCellModelArray(modifiedArray)
+            console.log("metaDataCellModelArray: ", JSON.stringify(metaDataCellModelArray))
+            // tableViewRef.current.scrollToIndex(index); 
+    }
     }))
     const handleOnSelectMetaDataItem = (metaDataItem) => {
         setSelectedItems([metaDataItem])

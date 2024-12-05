@@ -32,7 +32,6 @@ const ContainerView = forwardRef(
       if (selectedIndex == null) {
         return
       }
-      console.log("Container: selectedIndex useEffect", selectedIndex, "metaDataViewRef:", metaDataViewRef)
       metaDataViewRef?.current?.selectIndex(selectedIndex)
     })
 

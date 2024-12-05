@@ -8,9 +8,8 @@ export const MetaDataTableView = forwardRef(({ metaDataCellModelArray, onSelectM
   const styles = makeStyleSheet(theme);
   const tableRef = useRef(null)
   useImperativeHandle(ref, () => ({
-    selectIndex: (index) => {
-      console.log("cell selectIndex tableRef", index, tableRef)
-      tableRef.current.scrollToIndex({ index, animated: true })
+    scrollToIndex: (index) => {
+      tableRef.current.scrollToIndex({ index: index, animated: true })
     }
   }))
 
