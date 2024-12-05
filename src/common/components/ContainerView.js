@@ -132,7 +132,10 @@ const ContainerView = forwardRef(
     )
 
     const toolbarConfig = ToolbarConfig({
-      onPressAddPictureButtonListener: onPressAddPictureButton,
+      onPressAddPictureButtonListener: () => {
+        onPressAddPictureButton()
+        setIsShowMetaData(false)
+      },
       isAddPictureButtonEnabled: true,
       onImageInfoButtonListener: () => {
         setIsShowMetaData(!isShowMetaData)
