@@ -26,22 +26,13 @@ const ContainerView = forwardRef(
     const styles = makeStyleSheet(theme)
     const [viewSize, setViewSize] = useState(Size(0, 0))
     const [isShowMetaData, setIsShowMetaData] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(null);
-
-    useEffect(() => {
-      if (selectedIndex == null) {
-        return
-      }
-      metaDataViewRef?.current?.selectIndex(selectedIndex)
-    })
 
     useImperativeHandle(ref, () => (
       {
         imageInfo: imageInfo,
         selectIndex: (index) => {
-          console.log()
           setIsShowMetaData(true)
-          setSelectedIndex(index)
+          metaDataViewRef?.current?.selectIndex(index)
         }
       }
     ));

@@ -1,6 +1,6 @@
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { MetaDataTableView } from "./MetaDataTable/MetaDataTableView";
-import { forwardRef, useContext, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Theme from "../../Theme";
 import { useHeaderHeight } from '@react-navigation/elements';
@@ -16,6 +16,7 @@ const MetaDataView =  forwardRef(({ style, metaData, onSelectMetaDataItemHandler
     );
      
     const tableViewRef = useRef(null);
+    
     useImperativeHandle(ref, () => ({
         selectIndex: (selectedIndex) => {
             if (selectedIndex >= metaDataCellModelArray.length) {
@@ -24,9 +25,10 @@ const MetaDataView =  forwardRef(({ style, metaData, onSelectMetaDataItemHandler
             
             const selectedMetaDataItem = metaDataCellModelArray[selectedIndex]?.metaDataItem
             setSelectedItems(selectedMetaDataItem ? [selectedMetaDataItem] : [])
-            // tableViewRef.current.scrollToIndex(index); 
+            tableViewRef?.current?.scrollToIndex(index); 
     }
     }))
+
     const handleOnSelectMetaDataItem = (metaDataItem) => {
         setSelectedItems([metaDataItem])
         onSelectMetaDataItemHandler(metaDataItem)
