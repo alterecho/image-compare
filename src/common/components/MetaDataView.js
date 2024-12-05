@@ -11,7 +11,7 @@ const MetaDataView =  forwardRef(({ style, metaData, onSelectMetaDataItemHandler
     const [selectedItems, setSelectedItems] = useState([])
     const headerHeight = useHeaderHeight();
     const styles = makeStyleSheet(theme, headerHeight)
-    const metaDataCellModelArray = Utils.makeMetaDataCellModelArrayFromMetaData(
+    const metaDataCellModelArray = metaData == null ? [] : Utils.makeMetaDataCellModelArrayFromMetaData(
         metaData, selectedItems
     );
      
