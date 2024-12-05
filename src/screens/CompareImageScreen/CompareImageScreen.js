@@ -21,7 +21,7 @@ const CompareImageScreen = ({ navigation }) => {
   const handleAddPictureButtonClick = async (containerRef) => {
     try {
       const options = {
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        mediaTypes: ['images'],
         allowsEditing: true,
         aspect: [4, 3],
         quality: 1,
