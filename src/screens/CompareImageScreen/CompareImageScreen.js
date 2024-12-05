@@ -29,7 +29,7 @@ const CompareImageScreen = ({ navigation }) => {
       };
 
       let result = await ImagePicker.launchImageLibraryAsync(options);
-      if (result.cancelled) {
+      if (result.canceled) {
         return;
       }
 
