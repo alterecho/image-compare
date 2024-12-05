@@ -1,20 +1,32 @@
 import { View, FlatList, StyleSheet } from "react-native"
-import { forwardRef, useContext } from "react";
+import { forwardRef, useContext, useImperativeHandle, useRef } from "react";
 import MetaDataCell from "./MetaDataCell";
 import Theme from "../../../Theme";
 
-export const MetaDataTableView = forwardRef(({ metaDataCellModelArray, onSelectMetaData }, ref) => {
+export const MetaDataTableView = forwardRef(({ metaDataCellModelArray, onSelectMetaDataItemHandler }, ref) => {
   const { theme, toggleTheme } = useContext(Theme.context);
   const styles = makeStyleSheet(theme);
+  const tableRef = useRef(null)
+  useImperativeHandle(ref, () => ({
+    scrollToIndex: (index) => {
+      tableRef.current.scrollToIndex({ index: index, animated: true })
+    }
+  }))
 
   return (
     <View style={styles.container}>
       <FlatList
-        ref={ref}
+        ref={tableRef}
         data={metaDataCellModelArray}
         keyExtractor={(dataItem) => dataItem.metaDataItem.title}
         renderItem={
-          ({ item: model }) => <MetaDataCell model={model} onSelectMetaData={onSelectMetaData} />
+          ({ item: model }) => {
+          return <MetaDataCell
+            model={model}
+            onSelectMetaDataItemHandler={onSelectMetaDataItemHandler}
+          
+          />
+        }
         }
       />
     </View >
