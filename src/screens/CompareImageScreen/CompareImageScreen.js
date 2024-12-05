@@ -3,7 +3,7 @@ import { Button, StyleSheet, Platform } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import ContainerView from "../../common/components/ContainerView";
 import { ImageInfo, MetaDataItem } from "../../structs";
-import { Pages, ContainerID } from "../Constants";
+import { Pages } from "../Constants";
 import CompareButton from "./CompareButton";
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import  * as Utils from "../../common/utilities/Utils";
@@ -18,7 +18,7 @@ const CompareImageScreen = ({ navigation }) => {
 
   const styles = makeStyleSheet(theme);
 
-  const handleAddPictureButtonClick = async (containerID) => {
+  const handleAddPictureButtonClick = async (containerRef) => {
     try {
       const options = {
         mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -29,7 +29,7 @@ const CompareImageScreen = ({ navigation }) => {
       };
 
       let result = await ImagePicker.launchImageLibraryAsync(options);
-      if (result.cancelled) {
+      if (result.canceled) {
         return;
       }
 
@@ -38,14 +38,14 @@ const CompareImageScreen = ({ navigation }) => {
       
       const metaData = Utils.makeMetaDataFromExifData(exifData)
       let imageInfo = ImageInfo(pickedImageURI, metaData);
-      if (containerID == ContainerID[0]) {
+      if (containerRef === container1Ref) {
         setImageInfo1(imageInfo);
       } else {
         setImageInfo2(imageInfo);
       }
     } catch (error) {
       console.log("[ERROR]:", error)
-      if (containerID == ContainerID[1]) {
+      if (containerRef === container2Ref) {
         setImageInfo1(null)
       } else {
         setImageInfo2(null)
@@ -109,14 +109,14 @@ const CompareImageScreen = ({ navigation }) => {
         <ContainerView
           ref={container1Ref}
           imageInfo={imageInfo1}
-          onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[0]) }}
+          onPressAddPictureButton={() => { handleAddPictureButtonClick(container1Ref) }}
           onSelectMetaDataItemHandler={handleOnSelectMetaDataItem}
         />
         {/* <CompareButton onPress={imageInfo1 && imageInfo2 ? handleCompareButtonClick : null}></CompareButton> */}
         <ContainerView
           ref={container2Ref}
           imageInfo={imageInfo2}
-          onPressAddPictureButton={() => { handleAddPictureButtonClick(ContainerID[1]) }}
+          onPressAddPictureButton={() => { handleAddPictureButtonClick(container2Ref) }}
           onSelectMetaDataItemHandler={handleOnSelectMetaDataItem}
         />
       </SafeAreaView>
