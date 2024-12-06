@@ -58,7 +58,7 @@ const Toolbar = ({ config }) => {
                     style={isCameraButtonEnabled ? styles.button.enabled.icon : styles.button.disabled.icon}
                 />
                 <Text style={isCameraButtonEnabled ? styles.button.enabled.text : styles.button.disabled.text}>
-                    {Strings.button.addButtonTitle}
+                    {Strings.button.cameraButtonTitle}
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity
