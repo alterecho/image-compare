@@ -20,6 +20,9 @@ export const makeBorderStyle = (color = 'red', width = 1) => {
 }
 
 export const makeMetaDataFromExifData = (exifData) => {
+  if (exifData == null) {
+    return null
+  }
   return Object
   .keys(exifData)
   .map(key => MetaDataItem(key, exifData[key]))

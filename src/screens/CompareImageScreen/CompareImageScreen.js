@@ -18,6 +18,23 @@ const CompareImageScreen = ({ navigation }) => {
 
   const styles = makeStyleSheet(theme);
 
+  const makeImageInfoFromsImagePickerResult = (result, containerRef) => {
+    console.log("makeImageInfoFromsImagePickerResult result", result);
+    let pickedImageURI = result.assets[0].uri;
+    const exifData = result.assets[0].exif;
+
+    const metaData = Utils.makeMetaDataFromExifData(exifData)
+    return ImageInfo(pickedImageURI, metaData);
+  }
+
+  const setImageInfo = (imageInfo, containerRef) => {
+    if (containerRef === container1Ref) {
+      setImageInfo1(imageInfo);
+    } else {
+      setImageInfo2(imageInfo);
+    }
+  }
+
   const handleAddPictureButtonClick = async (containerRef) => {
     try {
       const options = {
@@ -33,16 +50,8 @@ const CompareImageScreen = ({ navigation }) => {
         return;
       }
 
-      let pickedImageURI = result.assets[0].uri;
-      const exifData = result.assets[0].exif;
-
-      const metaData = Utils.makeMetaDataFromExifData(exifData)
-      let imageInfo = ImageInfo(pickedImageURI, metaData);
-      if (containerRef === container1Ref) {
-        setImageInfo1(imageInfo);
-      } else {
-        setImageInfo2(imageInfo);
-      }
+      const imageInfo = makeImageInfoFromsImagePickerResult(result, containerRef);
+      setImageInfo(imageInfo, containerRef);
     } catch (error) {
       console.log("[ERROR]:", error)
       if (containerRef === container2Ref) {
@@ -54,7 +63,25 @@ const CompareImageScreen = ({ navigation }) => {
   };
 
   const onPressCameraButton = async (containerRef) => {
-    console.log("onPressCameraButton")
+    const cameraPermissionStatus = await ImagePicker.requestCameraPermissionsAsync();
+    if (!cameraPermissionStatus.granted) {
+      console.log("camera permission not granted. is:", cameraPermissionStatus);
+      return;
+    }
+
+    const cameraResult = await ImagePicker.launchCameraAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1
+    });
+
+    if (cameraResult.canceled) {
+      console.log("canceled");
+      return;
+    }
+    let imageInfo = makeImageInfoFromsImagePickerResult(cameraResult, containerRef);
+    setImageInfo(imageInfo, containerRef);
   }
 
   const OnSelectMetaDataItem = (containerRef, selectedMetaDataItem) => {
