@@ -12,8 +12,22 @@ import MetaDataView from "./MetaDataView";
 import TestMetaData from "../../../tests/data/metadata-sample1.json"
 import { Config as ToolbarConfig } from "./Toolbar";
 
+export function Config(
+  imageInfo, 
+  onPressAddPictureButton, 
+  onPressCameraButton, 
+  onSelectMetaDataItem
+) {
+  return Object.freeze(
+    imageInfo, 
+    onPressAddPictureButton, 
+    onPressCameraButton, 
+    onSelectMetaDataItem
+  )
+}
+
 const ContainerView = forwardRef(
-  ({ imageInfo, onPressAddPictureButton, onSelectMetaDataItemHandler }, ref) => {
+  ({ config  }, ref) => {
     const metaDataViewRef = useRef(null)
     const [imageSize, setImageSize] = useState(Size(0, 0));
     const translateX = useSharedValue(0);
@@ -29,8 +43,9 @@ const ContainerView = forwardRef(
 
     useImperativeHandle(ref, () => (
       {
-        imageInfo: imageInfo,
+        imageInfo: config?.imageInfo,
         selectIndex: (index) => {
+          console.log("selectIndex");
           setIsShowMetaData(true)
           metaDataViewRef?.current?.selectIndex(index)
         }
@@ -38,14 +53,14 @@ const ContainerView = forwardRef(
     ));
 
     useEffect(() => {
-      if (imageInfo) {
-        Image.getSize(imageInfo.uri, (width, height) => {
+      if (config?.imageInfo) {
+        Image.getSize(config?.imageInfo.uri, (width, height) => {
           setImageSize(Size(width, height));
         }, error => {
           // handle error
         })
       }
-    }, [imageInfo]);
+    }, [config?.imageInfo]);
 
     useEffect(() => {
       fitInContainer()
@@ -123,16 +138,22 @@ const ContainerView = forwardRef(
     )
 
     const toolbarConfig = ToolbarConfig({
-      onPressAddPictureButtonListener: () => {
-        onPressAddPictureButton()
+      onPressAddPictureButton: () => {
+        config.onPressAddPictureButton()
         setIsShowMetaData(false)
       },
       isAddPictureButtonEnabled: true,
-      onImageInfoButtonListener: () => {
+      onPressCameraButton: () => {
+        config.onPressCameraButton()
+        setIsShowMetaData(false)
+      },
+      isCameraButtonEnabled: true,
+      onPressImageInfoButton: () => {
+        console.log("onPressImageInfoButton");
         setIsShowMetaData(!isShowMetaData)
       }
       ,
-      isImageInfoButtonEnabled: imageInfo == null ? false : true
+      isImageInfoButtonEnabled: config?.imageInfo == null ? false : true
     });
 
     return (
@@ -157,7 +178,7 @@ const ContainerView = forwardRef(
                   setViewSize({ width, height })
                 }}>
                 <AnimatedImage
-                  source={{ uri: imageInfo?.uri }}
+                  source={{ uri: config?.imageInfo?.uri }}
                   style={[{
                     height: imageSize.height,
                     width: imageSize.width
@@ -176,10 +197,8 @@ const ContainerView = forwardRef(
                   flex: 1,
                   backgroundColor: 'red'
                 }}
-                metaData={imageInfo?.metaData}
-                onSelectMetaDataItemHandler={(selectedMetaDataItem) => {
-                  onSelectMetaDataItemHandler(ref, selectedMetaDataItem)
-                }}
+                metaData={config?.imageInfo?.metaData}
+                onSelectMetaDataItemHandler={config?.onSelectMetaDataItem}
               >
               </MetaDataView>
             </Overlay>
