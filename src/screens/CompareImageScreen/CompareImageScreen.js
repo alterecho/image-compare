@@ -1,6 +1,7 @@
 import React, { useContext, useState, useRef } from "react";
-import { Button, StyleSheet, Platform } from 'react-native'
-import * as ImagePicker from 'expo-image-picker'
+import { Button, StyleSheet, Platform } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import * as MediaLibrary from 'expo-media-library';
 import ContainerView, { Config } from "../../common/components/ContainerView";
 import { ImageInfo, MetaDataItem } from "../../structs";
 import { Pages } from "../Constants";
@@ -69,6 +70,11 @@ const CompareImageScreen = ({ navigation }) => {
       return;
     }
 
+    const mediaLibraryPermissions = await MediaLibrary.requestPermissionsAsync();
+    if (!mediaLibraryPermissions.granted) {
+      console.log("media library permissions not granted")
+    }
+
     const cameraResult = await ImagePicker.launchCameraAsync({
       mediaTypes: ['images'],
       allowsEditing: true,
@@ -82,7 +88,12 @@ const CompareImageScreen = ({ navigation }) => {
     }
     let imageInfo = makeImageInfoFromsImagePickerResult(cameraResult, containerRef);
     setImageInfo(imageInfo, containerRef);
-  }
+    try {
+      await MediaLibrary.saveToLibraryAsync(imageInfo.uri);
+    } catch (error) {
+      console.log("[ERROR]: saving to media library ", error)
+    }
+  } 
 
   const OnSelectMetaDataItem = (containerRef, selectedMetaDataItem) => {
     const selectedContainer = containerRef?.current
@@ -121,7 +132,6 @@ const CompareImageScreen = ({ navigation }) => {
     
     otherContainer.selectIndex(indexInOtherContainer)
   }
-
 
   function handleCompareButtonClick() {
     let metaData1 = imageInfo1?.metaData
