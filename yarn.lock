@@ -2998,6 +2998,11 @@ expo-localization@~16.0.0:
   dependencies:
     rtl-detect "^1.0.2"
 
+expo-media-library@~17.0.3:
+  version "17.0.3"
+  resolved "https://registry.yarnpkg.com/expo-media-library/-/expo-media-library-17.0.3.tgz#4ee3e6a8a2544887d910a72eaf2a15858b78cc0e"
+  integrity sha512-vo8AqWxv1C8+U8dA5W43qs8+3dgD3VZDvcCkZBQTBnGr/2Rs7x6nNQD5s7UfYyr6qmW6102JB3+OUKHpkwEssg==
+
 expo-modules-autolinking@2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/expo-modules-autolinking/-/expo-modules-autolinking-2.0.2.tgz#cf946317e22e120dfe97440f225c8033c6bced42"
