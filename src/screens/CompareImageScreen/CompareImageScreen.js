@@ -1,12 +1,12 @@
 import React, { useContext, useState, useRef } from "react";
 import { Button, StyleSheet, Platform } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
-import ContainerView from "../../common/components/ContainerView";
+import ContainerView, { Config } from "../../common/components/ContainerView";
 import { ImageInfo, MetaDataItem } from "../../structs";
 import { Pages } from "../Constants";
 import CompareButton from "./CompareButton";
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import  * as Utils from "../../common/utilities/Utils";
+import * as Utils from "../../common/utilities/Utils";
 import Theme from "../../Theme";
 
 const CompareImageScreen = ({ navigation }) => {
@@ -18,10 +18,27 @@ const CompareImageScreen = ({ navigation }) => {
 
   const styles = makeStyleSheet(theme);
 
+  const makeImageInfoFromsImagePickerResult = (result, containerRef) => {
+    console.log("makeImageInfoFromsImagePickerResult result", result);
+    let pickedImageURI = result.assets[0].uri;
+    const exifData = result.assets[0].exif;
+
+    const metaData = Utils.makeMetaDataFromExifData(exifData)
+    return ImageInfo(pickedImageURI, metaData);
+  }
+
+  const setImageInfo = (imageInfo, containerRef) => {
+    if (containerRef === container1Ref) {
+      setImageInfo1(imageInfo);
+    } else {
+      setImageInfo2(imageInfo);
+    }
+  }
+
   const handleAddPictureButtonClick = async (containerRef) => {
     try {
       const options = {
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        mediaTypes: ['images'],
         allowsEditing: true,
         aspect: [4, 3],
         quality: 1,
@@ -33,16 +50,8 @@ const CompareImageScreen = ({ navigation }) => {
         return;
       }
 
-      let pickedImageURI = result.assets[0].uri;
-      const exifData = result.assets[0].exif;
-      
-      const metaData = Utils.makeMetaDataFromExifData(exifData)
-      let imageInfo = ImageInfo(pickedImageURI, metaData);
-      if (containerRef === container1Ref) {
-        setImageInfo1(imageInfo);
-      } else {
-        setImageInfo2(imageInfo);
-      }
+      const imageInfo = makeImageInfoFromsImagePickerResult(result, containerRef);
+      setImageInfo(imageInfo, containerRef);
     } catch (error) {
       console.log("[ERROR]:", error)
       if (containerRef === container2Ref) {
@@ -53,7 +62,29 @@ const CompareImageScreen = ({ navigation }) => {
     }
   };
 
-  const handleOnSelectMetaDataItem = (containerRef, selectedMetaDataItem) => {
+  const onPressCameraButton = async (containerRef) => {
+    const cameraPermissionStatus = await ImagePicker.requestCameraPermissionsAsync();
+    if (!cameraPermissionStatus.granted) {
+      console.log("camera permission not granted. is:", cameraPermissionStatus);
+      return;
+    }
+
+    const cameraResult = await ImagePicker.launchCameraAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1
+    });
+
+    if (cameraResult.canceled) {
+      console.log("canceled");
+      return;
+    }
+    let imageInfo = makeImageInfoFromsImagePickerResult(cameraResult, containerRef);
+    setImageInfo(imageInfo, containerRef);
+  }
+
+  const OnSelectMetaDataItem = (containerRef, selectedMetaDataItem) => {
     const selectedContainer = containerRef?.current
     const container1 = container1Ref.current;
     const container2 = container2Ref.current;
@@ -68,22 +99,26 @@ const CompareImageScreen = ({ navigation }) => {
     if (selectedMetaDataItem == null || container1MetaData == null || container2MetaData == null) {
       return;
     }
-    
+
     const otherContainer = containerRef.current == container1 ? container2 : container1
     const otherContainerMetaData = otherContainer.imageInfo.metaData
+    
     if (otherContainerMetaData == null) {
       return
     }
-    
-    
+
+
     let indexInOtherContainer = otherContainerMetaData.findIndex((metaDataItem) => {
       return metaDataItem.title === selectedMetaDataItem.title
     });
+    console.log("indexInOtherContainer", indexInOtherContainer, selectedMetaDataItem, otherContainerMetaData)
+    
 
     if (indexInOtherContainer === -1) {
       return
     }
 
+    
     otherContainer.selectIndex(indexInOtherContainer)
   }
 
@@ -93,7 +128,7 @@ const CompareImageScreen = ({ navigation }) => {
     let metaData2 = imageInfo2?.metaData
     if (metaData1 == null || metaData2 == null) {
       return
-    }    
+    }
 
     navigation.navigate(
       Pages.COMPARE_META_DATA_PAGE,
@@ -103,21 +138,30 @@ const CompareImageScreen = ({ navigation }) => {
       }
     );
   }
+
+  const container1Config = Config({
+    imageInfo: imageInfo1,
+    onPressAddPictureButton: () => { handleAddPictureButtonClick(container1Ref) },
+    onPressCameraButton: () => { onPressCameraButton(container1Ref) },
+    onSelectMetaDataItem: (metaDataItem) => { OnSelectMetaDataItem(container1Ref, metaDataItem) }
+  })
+  const container2Config = Config({
+    imageInfo: imageInfo2,
+    onPressAddPictureButton: () => { handleAddPictureButtonClick(container2Ref) },
+    onPressCameraButton: () => { onPressCameraButton(container2Ref) },
+    onSelectMetaDataItem: (metaDataItem) => { OnSelectMetaDataItem(container2Ref, metaDataItem) }
+  })
   return (
     <SafeAreaProvider style={styles.screen}>
       <SafeAreaView style={{ flex: 1 }}>
         <ContainerView
           ref={container1Ref}
-          imageInfo={imageInfo1}
-          onPressAddPictureButton={() => { handleAddPictureButtonClick(container1Ref) }}
-          onSelectMetaDataItemHandler={handleOnSelectMetaDataItem}
+          config={container1Config}
         />
         {/* <CompareButton onPress={imageInfo1 && imageInfo2 ? handleCompareButtonClick : null}></CompareButton> */}
         <ContainerView
           ref={container2Ref}
-          imageInfo={imageInfo2}
-          onPressAddPictureButton={() => { handleAddPictureButtonClick(container2Ref) }}
-          onSelectMetaDataItemHandler={handleOnSelectMetaDataItem}
+          config={container2Config}
         />
       </SafeAreaView>
     </SafeAreaProvider>

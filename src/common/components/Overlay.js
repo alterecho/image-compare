@@ -10,7 +10,6 @@ const Overlay = ({ style, children }) => {
     const styles = makeStyleSheet(theme, thisSize);
 
     const onLayout = (event) => {
-        console.log("onLayout", JSON.stringify(event.nativeEvent))
         const { width, height } = event.nativeEvent.layout
         setThisSize(Size(width, height))
     }

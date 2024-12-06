@@ -4,15 +4,19 @@ import Theme from '../../Theme';
 import Strings from "../../assets/strings";
 
 export function Config({
-    onPressAddPictureButtonListener,
+    onPressAddPictureButton,
     isAddPictureButtonEnabled = false,
-    onImageInfoButtonListener,
+    onPressCameraButton,
+    isCameraButtonEnabled = false,
+    onPressImageInfoButton,
     isImageInfoButtonEnabled = false
 }) {
     return Object.freeze({
-        onPressAddPictureButtonListener,
+        onPressAddPictureButton,
         isAddPictureButtonEnabled,
-        onImageInfoButtonListener,
+        onPressCameraButton,
+        isCameraButtonEnabled,
+        onPressImageInfoButton,
         isImageInfoButtonEnabled,
     });
 }
@@ -22,15 +26,17 @@ const Toolbar = ({ config }) => {
     const styles = createStyleSheet(theme);
 
     const imagesPath = "../../assets/images";
-    const onPressAddPictureButtonListener = config?.onPressAddPictureButtonListener
+    const onPressAddPictureButton = config?.onPressAddPictureButton
     const isAddPictureButtonEnabled = config?.isAddPictureButtonEnabled ?? false
-    const onImageInfoButtonListener = config?.onImageInfoButtonListener
+    const onPressCameraButton = config?.onPressCameraButton
+    const isCameraButtonEnabled = config?.isCameraButtonEnabled ?? false
+    const onPressImageInfoButton = config?.onPressImageInfoButton
     const isImageInfoButtonEnabled = config?.isImageInfoButtonEnabled ?? false
 
     return (
         <View style={styles.toolbar}>
             <TouchableOpacity
-                onPress={onPressAddPictureButtonListener}
+                onPress={onPressAddPictureButton}
                 disabled={!(isAddPictureButtonEnabled ?? false)}
                 style={isAddPictureButtonEnabled ? styles.button.enabled.container : styles.button.disabled.container}
             >
@@ -43,7 +49,20 @@ const Toolbar = ({ config }) => {
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity
-                onPress={onImageInfoButtonListener}
+                onPress={onPressCameraButton}
+                disabled={!(isCameraButtonEnabled ?? false)}
+                style={isCameraButtonEnabled ? styles.button.enabled.container : styles.button.disabled.container}
+            >
+                <Image
+                    source={require(`${imagesPath}/ic_camera.png`)}
+                    style={isCameraButtonEnabled ? styles.button.enabled.icon : styles.button.disabled.icon}
+                />
+                <Text style={isCameraButtonEnabled ? styles.button.enabled.text : styles.button.disabled.text}>
+                    {Strings.button.cameraButtonTitle}
+                </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={onPressImageInfoButton}
                 disabled={!isImageInfoButtonEnabled}
                 style={isImageInfoButtonEnabled ? styles.button.enabled.container : styles.button.disabled.container}
             >
