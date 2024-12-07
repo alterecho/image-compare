@@ -36,7 +36,7 @@ const CompareImageScreen = ({ navigation }) => {
     }
   }
 
-  const handleAddPictureButtonClick = async (containerRef) => {
+  const onPressAddPictureButtonClick = async (containerRef) => {
     try {
       const options = {
         mediaTypes: ['images'],
@@ -79,7 +79,8 @@ const CompareImageScreen = ({ navigation }) => {
       mediaTypes: ['images'],
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 1
+      quality: 1,
+      exif: true
     });
 
     if (cameraResult.canceled) {
@@ -151,13 +152,13 @@ const CompareImageScreen = ({ navigation }) => {
 
   const container1Config = Config({
     imageInfo: imageInfo1,
-    onPressAddPictureButton: () => { handleAddPictureButtonClick(container1Ref) },
+    onPressAddPictureButton: () => { onPressAddPictureButtonClick(container1Ref) },
     onPressCameraButton: () => { onPressCameraButton(container1Ref) },
     onSelectMetaDataItem: (metaDataItem) => { OnSelectMetaDataItem(container1Ref, metaDataItem) }
   })
   const container2Config = Config({
     imageInfo: imageInfo2,
-    onPressAddPictureButton: () => { handleAddPictureButtonClick(container2Ref) },
+    onPressAddPictureButton: () => { onPressAddPictureButtonClick(container2Ref) },
     onPressCameraButton: () => { onPressCameraButton(container2Ref) },
     onSelectMetaDataItem: (metaDataItem) => { OnSelectMetaDataItem(container2Ref, metaDataItem) }
   })
