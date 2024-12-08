@@ -3,6 +3,7 @@ export default {
         compareButtonTitle: "Compare",
         addButtonTitle: "Select",
         cameraButtonTitle: "Camera",
-        imageInfoButtonTitle: "Info"
+        imageInfoButtonTitle: "Info",
+        closeButtonTitle: "Close"
     }
 }
