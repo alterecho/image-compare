@@ -6,7 +6,6 @@ import Theme from "../../Theme";
 const TitledButton = ({ imageSrc, title, isEnabled = false, onPress }) => {
     const { theme, toggleTheme } = useContext(Theme.context);
     const styles = makeStyleSheet(theme);
-    console.log("TitledButton", imageSrc, title, isEnabled, onPress);
     const currentStyle = isEnabled ? styles.enabled : styles.disabled
 
     return (

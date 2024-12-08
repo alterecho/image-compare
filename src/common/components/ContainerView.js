@@ -153,7 +153,11 @@ const ContainerView = forwardRef(
         setIsShowMetaData(!isShowMetaData)
       }
       ,
-      isImageInfoButtonEnabled: config?.imageInfo == null ? false : true
+      isImageInfoButtonEnabled: config?.imageInfo == null ? false : true,
+      isAddPictureHidden: isShowMetaData,
+      isCameraButtonHidden: isShowMetaData,
+      isImageInfoButtonHidden: isShowMetaData,
+      isCloseButtonHidden: !isShowMetaData
     });
 
     return (

@@ -6,16 +6,16 @@ import TitledButton from './TitledButton';
 
 export function Config({
     onPressAddPictureButton = null,
-    isAddPictureButtonEnabled = false,
+    isAddPictureButtonEnabled = true,
     isAddPictureHidden = false,
     onPressCameraButton = null,
-    isCameraButtonEnabled = false,
+    isCameraButtonEnabled = true,
     isCameraButtonHidden = false,
     onPressImageInfoButton = null,
-    isImageInfoButtonEnabled = false,
+    isImageInfoButtonEnabled = true,
     isImageInfoButtonHidden = false,
     onPressCloseButton = null,
-    isCloseButtonEnabled = false,
+    isCloseButtonEnabled = true,
     isCloseButtonHidden = false,
 
 }) {
@@ -28,7 +28,10 @@ export function Config({
         isCameraButtonHidden,
         onPressImageInfoButton,
         isImageInfoButtonEnabled,
-        isImageInfoButtonHidden
+        isImageInfoButtonHidden,
+        onPressCloseButton,
+        isCloseButtonHidden,
+        isCloseButtonEnabled
     });
 }
 
@@ -60,11 +63,11 @@ const Toolbar = ({ config }) => {
                 isEnabled={config.isImageInfoButtonEnabled}
                 onPress={config.onPressImageInfoButton}
             />)}
-            {!config.isImageInfoButtonHidden && (<TitledButton
+            {!config.isCloseButtonHidden && (<TitledButton
                 imageSrc={require(`${imagesPath}/ic_close.png`)}
                 title={Strings.button.addButtonTitle}
-                isEnabled={config.isImageInfoButtonEnabled}
-                onPress={config.onPressImageInfoButton}
+                isEnabled={config.isCloseButtonEnabled}
+                onPress={config.onPressCloseButton}
             />)}
 
         </View>
