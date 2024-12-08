@@ -23,7 +23,7 @@ const TitledButton = ({ imageSrc, title, isEnabled = false, onPress }) => {
                 {title}
             </Text>
         </TouchableOpacity>
-    )
+    );
 }
 const makeStyleSheet = (theme) => {
     return StyleSheet.create({
