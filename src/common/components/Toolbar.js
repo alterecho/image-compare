@@ -59,13 +59,13 @@ const Toolbar = ({ config }) => {
                 )}
             {!config.isImageInfoButtonHidden && (<TitledButton
                 imageSrc={require(`${imagesPath}/ic_description.png`)}
-                title={Strings.button.addButtonTitle}
+                title={Strings.button.imageInfoButtonTitle}
                 isEnabled={config.isImageInfoButtonEnabled}
                 onPress={config.onPressImageInfoButton}
             />)}
             {!config.isCloseButtonHidden && (<TitledButton
                 imageSrc={require(`${imagesPath}/ic_close.png`)}
-                title={Strings.button.addButtonTitle}
+                title={Strings.button.closeButtonTitle}
                 isEnabled={config.isCloseButtonEnabled}
                 onPress={config.onPressCloseButton}
             />)}
