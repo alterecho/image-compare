@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View, Button, TouchableOpacity, Image, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Theme from '../../Theme';
 import Strings from "../../assets/strings";
+import TitledButton from './TitledButton';
 
 export function Config({
     onPressAddPictureButton,
@@ -24,56 +25,28 @@ export function Config({
 const Toolbar = ({ config }) => {
     const { theme, toggleTheme } = useContext(Theme.context);
     const styles = createStyleSheet(theme);
-
     const imagesPath = "../../assets/images";
-    const onPressAddPictureButton = config?.onPressAddPictureButton
-    const isAddPictureButtonEnabled = config?.isAddPictureButtonEnabled ?? false
-    const onPressCameraButton = config?.onPressCameraButton
-    const isCameraButtonEnabled = config?.isCameraButtonEnabled ?? false
-    const onPressImageInfoButton = config?.onPressImageInfoButton
-    const isImageInfoButtonEnabled = config?.isImageInfoButtonEnabled ?? false
-
+    
     return (
         <View style={styles.toolbar}>
-            <TouchableOpacity
-                onPress={onPressAddPictureButton}
-                disabled={!(isAddPictureButtonEnabled ?? false)}
-                style={isAddPictureButtonEnabled ? styles.button.enabled.container : styles.button.disabled.container}
-            >
-                <Image
-                    source={require(`${imagesPath}/ic_add.png`)}
-                    style={isAddPictureButtonEnabled ? styles.button.enabled.icon : styles.button.disabled.icon}
-                />
-                <Text style={isAddPictureButtonEnabled ? styles.button.enabled.text : styles.button.disabled.text}>
-                    {Strings.button.addButtonTitle}
-                </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={onPressCameraButton}
-                disabled={!(isCameraButtonEnabled ?? false)}
-                style={isCameraButtonEnabled ? styles.button.enabled.container : styles.button.disabled.container}
-            >
-                <Image
-                    source={require(`${imagesPath}/ic_camera.png`)}
-                    style={isCameraButtonEnabled ? styles.button.enabled.icon : styles.button.disabled.icon}
-                />
-                <Text style={isCameraButtonEnabled ? styles.button.enabled.text : styles.button.disabled.text}>
-                    {Strings.button.cameraButtonTitle}
-                </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={onPressImageInfoButton}
-                disabled={!isImageInfoButtonEnabled}
-                style={isImageInfoButtonEnabled ? styles.button.enabled.container : styles.button.disabled.container}
-            >
-                <Image
-                    source={require(`${imagesPath}/ic_description.png`)}
-                    style={isImageInfoButtonEnabled ? styles.button.enabled.icon : styles.button.disabled.icon}
-                />
-                <Text style={isImageInfoButtonEnabled ?? false ? styles.button.enabled.text : styles.button.disabled.text}>
-                    {Strings.button.imageInfoButtonTitle}
-                </Text>
-            </TouchableOpacity>
+            <TitledButton
+                imageSrc={require(`${imagesPath}/ic_add.png`)}
+                title={Strings.button.addButtonTitle}
+                isEnabled={config.isAddPictureButtonEnabled}
+                onPress={config.onPressAddPictureButton}
+            />
+            <TitledButton
+                imageSrc={require(`${imagesPath}/ic_camera.png`)}
+                title={Strings.button.cameraButtonTitle}
+                isEnabled={config.isAddPictureButtonEnabled}
+                onPress={config.onPressCameraButton}
+            />
+            <TitledButton
+                imageSrc={require(`${imagesPath}/ic_description.png`)}
+                title={Strings.button.addButtonTitle}
+                isEnabled={config.isImageInfoButtonEnabled}
+                onPress={config.onPressImageInfoButton}
+            />
         </View>
     );
 }
@@ -88,45 +61,6 @@ const createStyleSheet = (theme) => {
             paddingHorizontal: 16,
             height: 44,
             flexDirection: 'row',
-        },
-        button: {
-            enabled: {
-                container: {
-                    flexDirection: 'row',
-                    alignContent: 'center',
-                    justifyContent: 'center',
-                    gap: 4,
-                },
-                icon: {
-                    width: 30,
-                    height: 30,
-                    resizeMode: 'contain',
-                    tintColor: theme.primaryColor,
-                    lineHeight: 30
-                },
-                text: {
-                    color: theme.primaryColor,
-                    lineHeight: 30
-                }
-            },
-            disabled: {
-                container: {
-                    flexDirection: 'row',
-                    alignContent: 'center',
-                    justifyContent: 'center',
-                    gap: 4
-                },
-                icon: {
-                    width: 30,
-                    height: 30,
-                    resizeMode: 'contain',
-                    tintColor: theme.primaryDisabledColor
-                },
-                text: {
-                    color: theme.primaryDisabledColor,
-                    lineHeight: 30
-                }
-            }
         }
     });
 };
