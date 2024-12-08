@@ -138,21 +138,16 @@ const ContainerView = forwardRef(
     )
 
     const toolbarConfig = ToolbarConfig({
-      onPressAddPictureButton: () => {
-        config.onPressAddPictureButton()
-        setIsShowMetaData(false)
-      },
+      onPressAddPictureButton: config.onPressAddPictureButton,
       isAddPictureButtonEnabled: true,
-      onPressCameraButton: () => {
-        config.onPressCameraButton()
-        setIsShowMetaData(false)
-      },
+      onPressCameraButton: config.onPressCameraButton,
       isCameraButtonEnabled: true,
       onPressImageInfoButton: () => {
-        console.log("onPressImageInfoButton");
-        setIsShowMetaData(!isShowMetaData)
-      }
-      ,
+        setIsShowMetaData(true)
+      },
+      onPressCloseButton: () => {
+        setIsShowMetaData(false)
+      },
       isImageInfoButtonEnabled: config?.imageInfo == null ? false : true,
       isAddPictureHidden: isShowMetaData,
       isCameraButtonHidden: isShowMetaData,
