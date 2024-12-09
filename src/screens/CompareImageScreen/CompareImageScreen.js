@@ -121,9 +121,7 @@ const CompareImageScreen = ({ navigation }) => {
 
     let indexInOtherContainer = otherContainerMetaData.findIndex((metaDataItem) => {
       return metaDataItem.title === selectedMetaDataItem.title
-    });
-    console.log("indexInOtherContainer", indexInOtherContainer, selectedMetaDataItem, otherContainerMetaData)
-    
+    });    
 
     if (indexInOtherContainer === -1) {
       return

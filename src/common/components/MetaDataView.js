@@ -21,10 +21,16 @@ const MetaDataView = forwardRef(({ style, metaData, onSelectMetaDataItemHandler 
             if (selectedIndex >= metaDataCellModelArray.length) {
                 return
             }
-
+            
             const selectedMetaDataItem = metaDataCellModelArray[selectedIndex]?.metaDataItem
             setSelectedItems(selectedMetaDataItem ? [selectedMetaDataItem] : [])
-            // flatListRef?.current?.scrollToIndex(selectedIndex);
+
+            try {
+                flatListRef?.current?.scrollToIndex({index: selectedIndex, animated: true});
+            } catch (error) {
+                console.log(error);
+            }
+            
         }
     }))
 

@@ -45,7 +45,6 @@ const ContainerView = forwardRef(
       {
         imageInfo: config?.imageInfo,
         selectIndex: (index) => {
-          console.log("selectIndex");
           setIsShowMetaData(true)
           metaDataViewRef?.current?.selectIndex(index)
         }
