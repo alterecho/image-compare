@@ -4,33 +4,32 @@ import Theme from '../../Theme';
 import Strings from "../../assets/strings";
 import TitledButton from './TitledButton';
 
+export const Mode = {
+    default: 0,
+    cancelButtonOnly: 1
+}
+
 export function Config({
+    mode = Mode.default,
     onPressAddPictureButton = null,
     isAddPictureButtonEnabled = true,
-    isAddPictureHidden = false,
     onPressCameraButton = null,
     isCameraButtonEnabled = true,
-    isCameraButtonHidden = false,
     onPressImageInfoButton = null,
     isImageInfoButtonEnabled = true,
-    isImageInfoButtonHidden = false,
     onPressCloseButton = null,
     isCloseButtonEnabled = true,
-    isCloseButtonHidden = false,
 
 }) {
     return Object.freeze({
+        mode,
         onPressAddPictureButton,
         isAddPictureButtonEnabled,
-        isAddPictureHidden,
         onPressCameraButton,
         isCameraButtonEnabled,
-        isCameraButtonHidden,
         onPressImageInfoButton,
         isImageInfoButtonEnabled,
-        isImageInfoButtonHidden,
         onPressCloseButton,
-        isCloseButtonHidden,
         isCloseButtonEnabled
     });
 }
@@ -40,52 +39,63 @@ const Toolbar = ({ config }) => {
     const styles = createStyleSheet(theme);
     const imagesPath = "../../assets/images";
 
-    return (
-        <View style={styles.toolbar}>
-            {!config.isAddPictureHidden &&
-                (<TitledButton
+    const viewsForDefaultMode = () => {
+        return (
+            <View style={styles.toolbar}>
+                <TitledButton
                     imageSrc={require(`${imagesPath}/ic_add.png`)}
                     title={Strings.button.addButtonTitle}
                     isEnabled={config.isAddPictureButtonEnabled}
                     onPress={config.onPressAddPictureButton}
-                />)}
-            {!config.isCameraButtonHidden &&
-                (<TitledButton
+                />
+                <TitledButton
                     imageSrc={require(`${imagesPath}/ic_camera.png`)}
                     title={Strings.button.cameraButtonTitle}
                     isEnabled={config.isAddPictureButtonEnabled}
                     onPress={config.onPressCameraButton}
                 />
-                )}
-            {!config.isImageInfoButtonHidden && (<TitledButton
-                imageSrc={require(`${imagesPath}/ic_description.png`)}
-                title={Strings.button.imageInfoButtonTitle}
-                isEnabled={config.isImageInfoButtonEnabled}
-                onPress={config.onPressImageInfoButton}
-            />)}
-            {!config.isCloseButtonHidden && (<TitledButton
-                imageSrc={require(`${imagesPath}/ic_close.png`)}
-                title={Strings.button.closeButtonTitle}
-                isEnabled={config.isCloseButtonEnabled}
-                onPress={config.onPressCloseButton}
-            />)}
+                <TitledButton
+                    imageSrc={require(`${imagesPath}/ic_description.png`)}
+                    title={Strings.button.imageInfoButtonTitle}
+                    isEnabled={config.isImageInfoButtonEnabled}
+                    onPress={config.onPressImageInfoButton}
+                />
 
-        </View>
-    );
+            </View>
+        )
+
+    }
+
+    const viewsForCancelMode = () => {
+        return (
+            <View style={styles.toolbar}>
+                <View>
+                </View>
+                (<TitledButton
+                    imageSrc={require(`${imagesPath}/ic_close.png`)}
+                    title={Strings.button.closeButtonTitle}
+                    isEnabled={config.isCloseButtonEnabled}
+                    onPress={config.onPressCloseButton}
+                />)
+            </View>
+        );
+    }
+
+    return ( config.mode == Mode.cancelButtonOnly ? viewsForCancelMode() : viewsForDefaultMode())
 }
 
-const createStyleSheet = (theme) => {
-    return StyleSheet.create({
-        toolbar: {
-            backgroundColor: theme.secondaryColor,
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            alignItems: 'center',
-            paddingHorizontal: 16,
-            height: 44,
-            flexDirection: 'row',
-        }
-    });
-};
+    const createStyleSheet = (theme) => {
+        return StyleSheet.create({
+            toolbar: {
+                backgroundColor: theme.secondaryColor,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                paddingHorizontal: 16,
+                height: 44,
+                flexDirection: 'row',
+            }
+        });
+    };
 
-export default Toolbar;
+    export default Toolbar;

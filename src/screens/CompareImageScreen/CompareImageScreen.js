@@ -20,7 +20,6 @@ const CompareImageScreen = ({ navigation }) => {
   const styles = makeStyleSheet(theme);
 
   const makeImageInfoFromsImagePickerResult = (result, containerRef) => {
-    console.log("makeImageInfoFromsImagePickerResult result", result);
     let pickedImageURI = result.assets[0].uri;
     const exifData = result.assets[0].exif;
 
