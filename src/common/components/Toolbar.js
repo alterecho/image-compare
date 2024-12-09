@@ -71,12 +71,12 @@ const Toolbar = ({ config }) => {
             <View style={styles.toolbar}>
                 <View>
                 </View>
-                (<TitledButton
+                <TitledButton
                     imageSrc={require(`${imagesPath}/ic_close.png`)}
                     title={Strings.button.closeButtonTitle}
                     isEnabled={config.isCloseButtonEnabled}
                     onPress={config.onPressCloseButton}
-                />)
+                />
             </View>
         );
     }
