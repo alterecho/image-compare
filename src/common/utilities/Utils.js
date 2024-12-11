@@ -28,12 +28,11 @@ export const makeMetaDataFromExifData = (exifData) => {
   .map(key => MetaDataItem(key, exifData[key]))
 }
 
-export const makeMetaDataCellModelArrayFromMetaData = (metaData, selectedItems) => {
-  const mp = metaData.map((metaDataItem) => {
-    let isSelected = selectedItems.some(item => item.title === metaDataItem.title)
-    return MetaDataCellModel(metaDataItem, isSelected)
+export const makeMetaDataCellModelArrayFromMetaData = (metaData) => {
+  const cellModelArray = metaData.map((metaDataItem) => {
+    return MetaDataCellModel({metaDataItem, isSelected: false})
   });
-  return mp
+  return cellModelArray
 }
 
 export const makeMetaDataCellModelArrayFromExifData = (exifData) => {
