@@ -124,9 +124,14 @@ const CompareImageScreen = ({ navigation }) => {
       return metaDataItem.title === selectedMetaDataItem.title
     });    
 
-    console.log("indexInOtherContainer", indexInOtherContainer);
+    // open the info overlay in the other container
     otherContainer.showInfoOverlay();
+
+    // set the selected rows in the other container
     otherContainer.selectIndices([indexInOtherContainer]);
+
+    // scroll to the cell
+    otherContainer.scrollToIndex(indexInOtherContainer);
   }
 
   function handleCompareButtonClick() {

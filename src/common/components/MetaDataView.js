@@ -30,13 +30,19 @@ const MetaDataView = forwardRef(({ style, metaData, onSelectMetaDataItemHandler 
         selectIndices: (indices) => {
             
             const updatedModelArray = makeCellModelArrayByUpdatingSelectedIndices([...cellModelArray], indices);
-            console.log("mdv selectIndices ", indices, "\n", updatedModelArray.map((item) => item.isSelected));
             setCellModelArray(updatedModelArray)
         },
         scrollToIndex: (index) => {
-            // to implement
+            console.log("mdv scroll to index", index, "cellModelArray.length ", cellModelArray.length);
+            if (index > cellModelArray.length - 1) {
+                return
+            }
+            try {
+                flatListRef.current.scrollToIndex({ index: index, animated: true });
+            } catch (error) {
+                console.log(error);
+            }
         }
-
     }))
 
     const handleOnSelectMetaDataItem = (index) => {
