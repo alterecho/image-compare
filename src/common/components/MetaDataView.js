@@ -3,50 +3,68 @@ import { StyleSheet, View, FlatList } from "react-native";
 import Theme from "../../Theme";
 import { useHeaderHeight } from '@react-navigation/elements';
 import MetaDataCell from "./MetaDataTable/MetaDataCell";
-import * as Utils from "../utilities/Utils";
+import { makeMetaDataCellModelArrayFromMetaData } from "../utilities/Utils";
 
 const MetaDataView = forwardRef(({ style, metaData, onSelectMetaDataItemHandler }, ref) => {
+
     const { theme, toggleTheme } = useContext(Theme.context)
-    const [selectedItems, setSelectedItems] = useState([])
     const headerHeight = useHeaderHeight();
     const styles = makeStyleSheet(theme, headerHeight)
-    const metaDataCellModelArray = metaData == null ? [] : Utils.makeMetaDataCellModelArrayFromMetaData(
-        metaData, selectedItems
-    );
-
+    const [cellModelArray, setCellModelArray] = useState([])
     const flatListRef = useRef(null);
 
+    const makeCellModelArrayByUpdatingSelectedIndices = (cellModelArray, selectedIndices) => {
+        return cellModelArray.map(
+            (model, index) => {
+                return {...model, isSelected: selectedIndices.includes(index)};
+            }
+        );
+    }
+
+    useEffect(() => {
+        const cellModelArray = makeMetaDataCellModelArrayFromMetaData(metaData);
+        setCellModelArray(cellModelArray);
+    }, [])
+
     useImperativeHandle(ref, () => ({
-        selectIndex: (selectedIndex) => {
-            if (selectedIndex >= metaDataCellModelArray.length) {
+        selectIndices: (indices) => {
+            
+            const updatedModelArray = makeCellModelArrayByUpdatingSelectedIndices([...cellModelArray], indices);
+            setCellModelArray(updatedModelArray)
+        },
+        scrollToIndex: (index) => {
+            console.log("mdv scroll to index", index, "cellModelArray.length ", cellModelArray.length);
+            if (index > cellModelArray.length - 1) {
                 return
             }
-
-            const selectedMetaDataItem = metaDataCellModelArray[selectedIndex]?.metaDataItem
-            setSelectedItems(selectedMetaDataItem ? [selectedMetaDataItem] : [])
-            // flatListRef?.current?.scrollToIndex(selectedIndex);
+            try {
+                flatListRef.current.scrollToIndex({ index: index, animated: true });
+            } catch (error) {
+                console.log(error);
+            }
         }
     }))
 
-    const handleOnSelectMetaDataItem = (metaDataItem) => {
-        setSelectedItems([metaDataItem])
-        onSelectMetaDataItemHandler(metaDataItem)
+    const handleOnSelectMetaDataItem = (index) => {
+        onSelectMetaDataItemHandler(index)
     }
+
+    const renderItem = ({ item: model, index }) => {
+        return <MetaDataCell
+            model={model}
+            onPress={() => handleOnSelectMetaDataItem(index)}
+
+        />
+    };
+
     return (
         <View style={[style, styles.container]}>
             <FlatList
                 ref={flatListRef}
-                data={metaDataCellModelArray}
+                data={cellModelArray}
                 keyExtractor={(dataItem) => dataItem.metaDataItem.title}
-                renderItem={
-                    ({ item: model }) => {
-                        return <MetaDataCell
-                            model={model}
-                            onSelectMetaDataItemHandler={handleOnSelectMetaDataItem}
-
-                        />
-                    }
-                }
+                // getItemLayout={}
+                renderItem={renderItem}
             />
         </View>
     )

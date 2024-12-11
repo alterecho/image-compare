@@ -3,17 +3,17 @@ import { StyleSheet } from "react-native";
 import Theme from "../../../Theme";
 import { useContext } from "react";
 
-export function Model(metaDataItem, isSelected) {
+export function Model({metaDataItem, isSelected}) {
   return Object.freeze({metaDataItem, isSelected})
 }
 
-const MetaDataCell = ({ model, onSelectMetaDataItemHandler }) => {
+const MetaDataCell = ({ model, onPress }) => {
   const { theme, toggleTheme } = useContext(Theme.context)
   const styles = makeStyleSheet(theme)
   return (
     <TouchableOpacity 
     style={[styles.container, model.isSelected ? styles.selected : {backgroundColor: 'transparent'}]} 
-    onPress={() => onSelectMetaDataItemHandler(model.metaDataItem)}>
+    onPress={onPress}>
       <Text style={styles.title}>{model.metaDataItem.title}</Text>
       <Text style={styles.value}>{model.metaDataItem.value}</Text>
     </TouchableOpacity >

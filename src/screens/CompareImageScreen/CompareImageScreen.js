@@ -93,24 +93,26 @@ const CompareImageScreen = ({ navigation }) => {
     } catch (error) {
       console.log("[ERROR]: saving to media library ", error)
     }
-  } 
+  }
 
-  const OnSelectMetaDataItem = (containerRef, selectedMetaDataItem) => {
+  const OnSelectMetaDataItem = (containerRef, index) => {
     const selectedContainer = containerRef?.current
+    selectedContainer.selectIndices([index]);
+    
     const container1 = container1Ref.current;
     const container2 = container2Ref.current;
-
+    const selectedMetaDataItem = containerRef.current.imageInfo.metaData[index];
     if (selectedContainer == null || container1 == null || container2 == null) {
       return;
     }
-
+    
     const container1MetaData = container1?.imageInfo?.metaData;
     const container2MetaData = container2?.imageInfo?.metaData;
-
+    
     if (selectedMetaDataItem == null || container1MetaData == null || container2MetaData == null) {
       return;
     }
-
+    
     const otherContainer = containerRef.current == container1 ? container2 : container1
     const otherContainerMetaData = otherContainer.imageInfo.metaData
     
@@ -118,19 +120,18 @@ const CompareImageScreen = ({ navigation }) => {
       return
     }
 
-
     let indexInOtherContainer = otherContainerMetaData.findIndex((metaDataItem) => {
       return metaDataItem.title === selectedMetaDataItem.title
-    });
-    console.log("indexInOtherContainer", indexInOtherContainer, selectedMetaDataItem, otherContainerMetaData)
-    
+    });    
 
-    if (indexInOtherContainer === -1) {
-      return
-    }
+    // open the info overlay in the other container
+    otherContainer.showInfoOverlay();
 
-    
-    otherContainer.selectIndex(indexInOtherContainer)
+    // set the selected rows in the other container
+    otherContainer.selectIndices([indexInOtherContainer]);
+
+    // scroll to the cell
+    otherContainer.scrollToIndex(indexInOtherContainer);
   }
 
   function handleCompareButtonClick() {

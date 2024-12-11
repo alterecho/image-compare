@@ -40,18 +40,26 @@ const ContainerView = forwardRef(
     const styles = makeStyleSheet(theme)
     const [viewSize, setViewSize] = useState(Size(0, 0))
     const [isShowMetaData, setIsShowMetaData] = useState(false);
+    const selectedIndices = useRef([]);
 
     useImperativeHandle(ref, () => (
       {
         imageInfo: config?.imageInfo,
-        selectIndex: (index) => {
-          console.log("selectIndex");
-          setIsShowMetaData(true)
-          metaDataViewRef?.current?.selectIndex(index)
+
+        showInfoOverlay: () => {
+          setIsShowMetaData(true)          
+        },
+        selectIndices: (indices) => {
+          metaDataViewRef?.current?.selectIndices(indices);
+        },
+        scrollToIndex: (index) => {
+          console.log("CV scroll to index", index)
+          metaDataViewRef?.current?.scrollToIndex(index);
         }
       }
     ));
 
+    // imageInfo changed
     useEffect(() => {
       if (config?.imageInfo) {
         Image.getSize(config?.imageInfo.uri, (width, height) => {
