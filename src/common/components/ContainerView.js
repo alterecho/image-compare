@@ -81,9 +81,9 @@ const ContainerView = forwardRef(
     const gestureStyle = useAnimatedStyle(() => (
       {
         transform: [
-          { scale: scale.value },
           { translateX: translateX.value },
-          { translateY: translateY.value }
+          { translateY: translateY.value },
+          { scale: scale.value }
         ]
       }
     ))
