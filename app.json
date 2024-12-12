@@ -11,7 +11,7 @@
     ],
     "name": "Image Compare",
     "slug": "image-compare",
-    "version": "2.4.3",
+    "version": "2.4.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
