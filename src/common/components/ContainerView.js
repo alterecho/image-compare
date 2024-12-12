@@ -57,7 +57,6 @@ const ContainerView = forwardRef(
         },
 
         scrollToIndex: (index) => {
-          console.log("CV scroll to index", index)
           metaDataViewRef?.current?.scrollToIndex(index);
         }
       }
