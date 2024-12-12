@@ -1,5 +1,5 @@
 import { MetaDataItem } from "../../structs";
-import { Model as MetaDataCellModel } from "../../common/components/MetaDataTable/MetaDataCell";
+import { DifferenceModel, DifferenceType, Model as MetaDataCellModel } from "../../common/components/MetaDataTable/MetaDataCell";
 
 export const getRandomColor = () => {
   let color = {
@@ -24,13 +24,44 @@ export const makeMetaDataFromExifData = (exifData) => {
     return null
   }
   return Object
-  .keys(exifData)
-  .map(key => MetaDataItem(key, exifData[key]))
+    .keys(exifData)
+    .map(key => MetaDataItem(key, exifData[key]))
 }
 
-export const makeMetaDataCellModelArrayFromMetaData = (metaData) => {
+export const makeMetaDataCellModelArrayFromMetaData = ({ metaData, comparisonMetaData = null }) => {
   const cellModelArray = metaData.map((metaDataItem) => {
-    return MetaDataCellModel({metaDataItem, isSelected: false})
+
+    let comparisonMetaDataItem = comparisonMetaData?.find(
+      (item) => item.title === metaDataItem.title
+    );
+    let differenceValue = null;
+    let differenceType = null;
+    console.log(metaDataItem, comparisonMetaDataItem, "typeof ", typeof metaDataItem.value, typeof comparisonMetaDataItem?.value);
+    if (typeof metaDataItem.value === 'number' && typeof comparisonMetaDataItem?.value === 'number') {
+      differenceValue = metaDataItem.value - comparisonMetaDataItem.value;
+      let differenceSymbol = "";
+      if (differenceValue > 0) {
+        differenceSymbol = "+"
+        differenceType = DifferenceType.greaterThan;
+      } else if (differenceValue < 0) {
+        differenceSymbol = "-"
+        differenceType = DifferenceType.lesserThan;
+      } 
+      differenceValue = differenceSymbol + differenceValue;
+    } else {
+      differenceValue = comparisonMetaDataItem?.value;
+      differenceType = DifferenceType.text;
+    }
+    console.log("differenceType, differenceValue", differenceType,
+      differenceValue);
+    return MetaDataCellModel({
+      metaDataItem,
+      isSelected: false,
+      difference: DifferenceModel({
+        value: differenceValue,
+        type: differenceType
+      })
+    });
   });
   return cellModelArray
 }

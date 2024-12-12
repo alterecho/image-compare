@@ -5,7 +5,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import MetaDataCell from "./MetaDataTable/MetaDataCell";
 import { makeMetaDataCellModelArrayFromMetaData } from "../utilities/Utils";
 
-const MetaDataView = forwardRef(({ style, metaData, onSelectMetaDataItemHandler }, ref) => {
+const MetaDataView = forwardRef(({ style, metaData, comparisonMetaData,  onSelectMetaDataItemHandler }, ref) => {
 
     const { theme, toggleTheme } = useContext(Theme.context)
     const headerHeight = useHeaderHeight();
@@ -22,7 +22,10 @@ const MetaDataView = forwardRef(({ style, metaData, onSelectMetaDataItemHandler 
     }
 
     useEffect(() => {
-        const cellModelArray = makeMetaDataCellModelArrayFromMetaData(metaData);
+        console.log("mdv useeffect");
+        // console.log("mdv useeffect metaData:\n", metaData, "\ncomparisonMetaData\n" , comparisonMetaData);
+        const cellModelArray = makeMetaDataCellModelArrayFromMetaData({ metaData, comparisonMetaData });
+        console.log("cellModelArray", cellModelArray);
         setCellModelArray(cellModelArray);
     }, [])
 

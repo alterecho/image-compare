@@ -13,13 +13,15 @@ import TestMetaData from "../../../tests/data/metadata-sample1.json"
 import { Config as ToolbarConfig } from "./Toolbar";
 
 export function Config(
-  imageInfo, 
+  imageInfo,
+  comparisonImageInfo,
   onPressAddPictureButton, 
   onPressCameraButton, 
   onSelectMetaDataItem
 ) {
   return Object.freeze(
     imageInfo, 
+    comparisonImageInfo,
     onPressAddPictureButton, 
     onPressCameraButton, 
     onSelectMetaDataItem
@@ -49,9 +51,11 @@ const ContainerView = forwardRef(
         showInfoOverlay: () => {
           setIsShowMetaData(true)          
         },
+        
         selectIndices: (indices) => {
           metaDataViewRef?.current?.selectIndices(indices);
         },
+
         scrollToIndex: (index) => {
           console.log("CV scroll to index", index)
           metaDataViewRef?.current?.scrollToIndex(index);
@@ -202,6 +206,7 @@ const ContainerView = forwardRef(
                   backgroundColor: 'red'
                 }}
                 metaData={config?.imageInfo?.metaData}
+                comparisonMetaData={config?.comparisonImageInfo?.metaData}
                 onSelectMetaDataItemHandler={config?.onSelectMetaDataItem}
               >
               </MetaDataView>

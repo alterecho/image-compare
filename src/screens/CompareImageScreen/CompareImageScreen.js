@@ -152,12 +152,14 @@ const CompareImageScreen = ({ navigation }) => {
 
   const container1Config = Config({
     imageInfo: imageInfo1,
+    comparisonImageInfo: imageInfo2,
     onPressAddPictureButton: () => { onPressAddPictureButtonClick(container1Ref) },
     onPressCameraButton: () => { onPressCameraButton(container1Ref) },
     onSelectMetaDataItem: (metaDataItem) => { OnSelectMetaDataItem(container1Ref, metaDataItem) }
   })
   const container2Config = Config({
     imageInfo: imageInfo2,
+    comparisonImageInfo: imageInfo1,
     onPressAddPictureButton: () => { onPressAddPictureButtonClick(container2Ref) },
     onPressCameraButton: () => { onPressCameraButton(container2Ref) },
     onSelectMetaDataItem: (metaDataItem) => { OnSelectMetaDataItem(container2Ref, metaDataItem) }
