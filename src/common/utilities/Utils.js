@@ -36,7 +36,6 @@ export const makeMetaDataCellModelArrayFromMetaData = ({ metaData, comparisonMet
     );
     let differenceValue = null;
     let differenceType = null;
-    console.log(metaDataItem, comparisonMetaDataItem, "typeof ", typeof metaDataItem.value, typeof comparisonMetaDataItem?.value);
     if (typeof metaDataItem.value === 'number' && typeof comparisonMetaDataItem?.value === 'number') {
       differenceValue = metaDataItem.value - comparisonMetaDataItem.value;
       let differenceSymbol = "";
@@ -52,8 +51,7 @@ export const makeMetaDataCellModelArrayFromMetaData = ({ metaData, comparisonMet
       differenceValue = comparisonMetaDataItem?.value;
       differenceType = DifferenceType.text;
     }
-    console.log("differenceType, differenceValue", differenceType,
-      differenceValue);
+
     return MetaDataCellModel({
       metaDataItem,
       isSelected: false,

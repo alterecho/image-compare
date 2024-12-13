@@ -22,10 +22,7 @@ const MetaDataView = forwardRef(({ style, metaData, comparisonMetaData,  onSelec
     }
 
     useEffect(() => {
-        console.log("mdv useeffect");
-        // console.log("mdv useeffect metaData:\n", metaData, "\ncomparisonMetaData\n" , comparisonMetaData);
         const cellModelArray = makeMetaDataCellModelArrayFromMetaData({ metaData, comparisonMetaData });
-        console.log("cellModelArray", cellModelArray);
         setCellModelArray(cellModelArray);
     }, [])
 
@@ -36,7 +33,6 @@ const MetaDataView = forwardRef(({ style, metaData, comparisonMetaData,  onSelec
             setCellModelArray(updatedModelArray)
         },
         scrollToIndex: (index) => {
-            console.log("mdv scroll to index", index, "cellModelArray.length ", cellModelArray.length);
             if (index > cellModelArray.length - 1) {
                 return
             }
