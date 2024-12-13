@@ -5,7 +5,7 @@ import Toolbar, { Mode as ToolbarMode } from "./Toolbar";
 import { GestureHandlerRootView, Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useSharedValue, useAnimatedStyle, runOnJS } from "react-native-reanimated";
 import AnimatedImage from "./AnimatedImage";
-import { Size } from "../../structs";
+import { Size, Vector } from "../../structs";
 import Theme from "../../Theme";
 import Overlay from "./Overlay";
 import MetaDataView from "./MetaDataView";
@@ -15,21 +15,21 @@ import { Config as ToolbarConfig } from "./Toolbar";
 export function Config(
   imageInfo,
   comparisonImageInfo,
-  onPressAddPictureButton, 
-  onPressCameraButton, 
+  onPressAddPictureButton,
+  onPressCameraButton,
   onSelectMetaDataItem
 ) {
   return Object.freeze(
-    imageInfo, 
+    imageInfo,
     comparisonImageInfo,
-    onPressAddPictureButton, 
-    onPressCameraButton, 
+    onPressAddPictureButton,
+    onPressCameraButton,
     onSelectMetaDataItem
   )
 }
 
 const ContainerView = forwardRef(
-  ({ config  }, ref) => {
+  ({ config }, ref) => {
     const metaDataViewRef = useRef(null)
     const [imageSize, setImageSize] = useState(Size(0, 0));
     const translateX = useSharedValue(0);
@@ -49,9 +49,9 @@ const ContainerView = forwardRef(
         imageInfo: config?.imageInfo,
 
         showInfoOverlay: () => {
-          setIsShowMetaData(true)          
+          setIsShowMetaData(true)
         },
-        
+
         selectIndices: (indices) => {
           metaDataViewRef?.current?.selectIndices(indices);
         },
@@ -128,8 +128,27 @@ const ContainerView = forwardRef(
       startX.value = translateX.value
       startY.value = translateY.value
     }).onUpdate((event) => {
-      translateX.value = startX.value + event.translationX
-      translateY.value = startY.value + event.translationY
+      let newTranslation = {
+        x: startX.value + event.translationX, 
+        y: startY.value + event.translationY
+      };
+      const imageSizeScaled = Size(imageSize.width * scale.value, imageSize.height * scale.value);
+
+      if (newTranslation.x >= viewSize.width) {
+        newTranslation.x = viewSize.width;
+      }
+      if (newTranslation.x + imageSizeScaled.width < 0) {
+        newTranslation.x = -imageSizeScaled.width;
+      }
+
+      if (newTranslation.y >= viewSize.height) {
+        newTranslation.y = viewSize.height;
+      }
+      if (newTranslation.y + imageSizeScaled.height < 0) {
+        newTranslation.y = -imageSizeScaled.height;
+      }
+      translateX.value = newTranslation.x;
+      translateY.value = newTranslation.y;
     });
 
     const pinchGestureHandler = Gesture.Pinch().onStart((event) => {
@@ -149,7 +168,7 @@ const ContainerView = forwardRef(
     )
 
     const toolbarConfig = ToolbarConfig({
-      mode: isShowMetaData ? ToolbarMode.cancelButtonOnly :  ToolbarMode.default,
+      mode: isShowMetaData ? ToolbarMode.cancelButtonOnly : ToolbarMode.default,
       onPressAddPictureButton: config.onPressAddPictureButton,
       isAddPictureButtonEnabled: true,
       onPressCameraButton: config.onPressCameraButton,

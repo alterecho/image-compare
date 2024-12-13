@@ -1,0 +1,3 @@
+v2.4.5:
+- Fix slow panning of large images
+- Restrict panning images out of View
