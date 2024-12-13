@@ -1,5 +1,5 @@
 import React, { useContext, useState, useRef } from "react";
-import { Button, StyleSheet, Platform } from 'react-native';
+import { Button, StyleSheet, Platform, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
 import ContainerView, { Config } from "../../common/components/ContainerView";
@@ -9,6 +9,7 @@ import CompareButton from "./CompareButton";
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import * as Utils from "../../common/utilities/Utils";
 import Theme from "../../Theme";
+import strings from "../../assets/strings";
 
 const CompareImageScreen = ({ navigation }) => {
   const [imageInfo1, setImageInfo1] = useState(null);
@@ -88,41 +89,72 @@ const CompareImageScreen = ({ navigation }) => {
     }
     let imageInfo = makeImageInfoFromsImagePickerResult(cameraResult, containerRef);
     setImageInfo(imageInfo, containerRef);
+    savePictureAfterPrompt(imageInfo.uri);
+  }
+
+  const requestLibraryPermissions = async () => {
+    const { status } = await MediaLibrary.requestPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Denied', 'Cannot save photo without permission.');
+      throw new Error("");
+      
+    }
+  };
+  const savePicture = async (uri) => {
     try {
-      await MediaLibrary.saveToLibraryAsync(imageInfo.uri);
+      await MediaLibrary.saveToLibraryAsync(uri);
     } catch (error) {
       console.log("[ERROR]: saving to media library ", error)
     }
   }
 
+  const savePictureAfterPrompt = async (uri) => {
+    Alert.alert(
+      strings.alert.savePicture.title,
+      strings.alert.savePicture.message,
+      [
+        {
+          text: strings.alert.savePicture.cancelButtonTitle,
+          styles: 'cancel'
+        },
+        {
+          text: strings.alert.savePicture.confirmButtonTitle,
+          onPress: () => {
+            savePicture(uri);
+          }
+        }
+      ]
+    );
+  }
+
   const OnSelectMetaDataItem = (containerRef, index) => {
     const selectedContainer = containerRef?.current
     selectedContainer.selectIndices([index]);
-    
+
     const container1 = container1Ref.current;
     const container2 = container2Ref.current;
     const selectedMetaDataItem = containerRef.current.imageInfo.metaData[index];
     if (selectedContainer == null || container1 == null || container2 == null) {
       return;
     }
-    
+
     const container1MetaData = container1?.imageInfo?.metaData;
     const container2MetaData = container2?.imageInfo?.metaData;
-    
+
     if (selectedMetaDataItem == null || container1MetaData == null || container2MetaData == null) {
       return;
     }
-    
+
     const otherContainer = containerRef.current == container1 ? container2 : container1
     const otherContainerMetaData = otherContainer.imageInfo.metaData
-    
+
     if (otherContainerMetaData == null) {
       return
     }
 
     let indexInOtherContainer = otherContainerMetaData.findIndex((metaDataItem) => {
       return metaDataItem.title === selectedMetaDataItem.title
-    });    
+    });
 
     // open the info overlay in the other container
     otherContainer.showInfoOverlay();
