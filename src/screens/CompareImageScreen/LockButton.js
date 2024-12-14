@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons'
 import Animated, { withRepeat, withTiming, useAnimatedStyle, useSharedValue, interpolateColor } from "react-native-reanimated";
 import Strings from "../../assets/strings";
 
-const LockButton = ({ onPress, style }) => {
+const LockButton = ({ onPress, isEngaged, style }) => {
     const { theme, toggleTheme } = useContext(Theme.context)
     const styles = createStyleSheet(theme)
     const isEnabled = onPress != null
@@ -28,25 +28,25 @@ const LockButton = ({ onPress, style }) => {
         );
         return { backgroundColor }
     });
-
+    console.log("LockButton isEngaged: ", isEngaged)
     return (
         <Animated.View
-            style={[styles.disabled.container, isEnabled &&  animatedStyle]}
+            style={[styles.disabled.container, isEnabled && !isEngaged && animatedStyle, isEngaged && styles.enabled.container]}
         >
             <TouchableOpacity
                 style={isEnabled ? styles.enabled.container : styles.disabled.container}
                 onPress={onPress}
                 disabled={!isEnabled}
-                >
+            >
                 <Ionicons
                     style={[isEnabled ? styles.enabled.icon : styles.disabled.icon]}
                     size={20}
-                    name="git-compare"
+                    name={isEngaged ? 'git-compare' : 'git-compare-outline'}
                 />
                 <Text
                     style={[isEnabled ? styles.enabled.icon : styles.disabled.icon]}
                 >
-                    {Strings.button.lockButtonTitle}
+                    { isEngaged ? "isEngaged" : Strings.button.lockButtonTitle}
                 </Text>
             </TouchableOpacity>
         </Animated.View >

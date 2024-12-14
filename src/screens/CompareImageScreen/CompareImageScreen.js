@@ -15,6 +15,7 @@ const CompareImageScreen = ({ navigation }) => {
   const [imageInfo1, setImageInfo1] = useState(null);
   const [imageInfo2, setImageInfo2] = useState(null);
   const { theme, toggleTheme } = useContext(Theme.context);
+  const [ isLockEngaged, setIsLockEngaged ] = useState(false);
   const container1Ref = useRef(null)
   const container2Ref = useRef(null)
 
@@ -97,7 +98,7 @@ const CompareImageScreen = ({ navigation }) => {
     if (status !== 'granted') {
       Alert.alert('Permission Denied', 'Cannot save photo without permission.');
       throw new Error("");
-      
+
     }
   };
   const savePicture = async (uri) => {
@@ -167,19 +168,10 @@ const CompareImageScreen = ({ navigation }) => {
   }
 
   function onClickLockButton() {
-    let metaData1 = imageInfo1?.metaData
-    let metaData2 = imageInfo2?.metaData
-    if (metaData1 == null || metaData2 == null) {
-      return
-    }
-
-    navigation.navigate(
-      Pages.COMPARE_META_DATA_PAGE,
-      {
-        metaData1: metaData1,
-        metaData2: metaData2
-      }
-    );
+    setIsLockEngaged(!isLockEngaged);
+    setTimeout(() => {
+      console.log("isLockEngaged", isLockEngaged);
+    }, 1000);
   }
 
   const container1Config = Config({
@@ -203,7 +195,10 @@ const CompareImageScreen = ({ navigation }) => {
           ref={container1Ref}
           config={container1Config}
         />
-        <LockButton onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}></LockButton>
+        <LockButton
+          isEngaged={isLockEngaged}
+          onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
+        />
         <ContainerView
           ref={container2Ref}
           config={container2Config}
