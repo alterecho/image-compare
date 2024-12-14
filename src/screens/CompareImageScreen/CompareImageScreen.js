@@ -5,7 +5,7 @@ import * as MediaLibrary from 'expo-media-library';
 import ContainerView, { Config } from "../../common/components/ContainerView";
 import { ImageInfo, MetaDataItem } from "../../structs";
 import { Pages } from "../Constants";
-import CompareButton from "./CompareButton";
+import LockButton from "./LockButton";
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import * as Utils from "../../common/utilities/Utils";
 import Theme from "../../Theme";
@@ -166,7 +166,7 @@ const CompareImageScreen = ({ navigation }) => {
     otherContainer.scrollToIndex(indexInOtherContainer);
   }
 
-  function handleCompareButtonClick() {
+  function onClickLockButton() {
     let metaData1 = imageInfo1?.metaData
     let metaData2 = imageInfo2?.metaData
     if (metaData1 == null || metaData2 == null) {
@@ -203,7 +203,7 @@ const CompareImageScreen = ({ navigation }) => {
           ref={container1Ref}
           config={container1Config}
         />
-        {/* <CompareButton onPress={imageInfo1 && imageInfo2 ? handleCompareButtonClick : null}></CompareButton> */}
+        <LockButton onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}></LockButton>
         <ContainerView
           ref={container2Ref}
           config={container2Config}

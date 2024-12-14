@@ -1,6 +1,6 @@
 export default {
     button: {
-        compareButtonTitle: "Compare",
+        lockButtonTitle: "Lock",
         addButtonTitle: "Select",
         cameraButtonTitle: "Camera",
         imageInfoButtonTitle: "Info",

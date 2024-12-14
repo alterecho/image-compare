@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons'
 import Animated, { withRepeat, withTiming, useAnimatedStyle, useSharedValue, interpolateColor } from "react-native-reanimated";
 import Strings from "../../assets/strings";
 
-const CompareButton = ({ onPress, style }) => {
+const LockButton = ({ onPress, style }) => {
     const { theme, toggleTheme } = useContext(Theme.context)
     const styles = createStyleSheet(theme)
     const isEnabled = onPress != null
@@ -46,7 +46,7 @@ const CompareButton = ({ onPress, style }) => {
                 <Text
                     style={[isEnabled ? styles.enabled.icon : styles.disabled.icon]}
                 >
-                    {Strings.button.compareButtonTitle}
+                    {Strings.button.lockButtonTitle}
                 </Text>
             </TouchableOpacity>
         </Animated.View >
@@ -106,4 +106,4 @@ const createStyleSheet = (theme) => {
     });
 }
 
-export default CompareButton;
+export default LockButton;
