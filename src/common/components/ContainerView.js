@@ -129,10 +129,13 @@ const ContainerView = forwardRef(
       startY.value = translateY.value
     }).onUpdate((event) => {
       let newTranslation = {
-        x: startX.value + event.translationX, 
+        x: startX.value + event.translationX,
         y: startY.value + event.translationY
       };
-      const imageSizeScaled = Size(imageSize.width * scale.value, imageSize.height * scale.value);
+      const imageSizeScaled = {
+        width: imageSize.width * scale.value,
+        height: imageSize.height * scale.value
+      };
 
       if (newTranslation.x >= viewSize.width) {
         newTranslation.x = viewSize.width;
