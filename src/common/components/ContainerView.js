@@ -1,7 +1,7 @@
 import React, { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { View, Image, Button, StyleSheet, useAnimatedValue } from "react-native";
 import * as Utils from "../../common/utilities/Utils";
-import Toolbar, { Mode as ToolbarMode } from "./Toolbar";
+import Toolbar, { DisplayMode as ToolbarDisplayMode } from "./Toolbar";
 import { GestureHandlerRootView, Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useSharedValue, useAnimatedStyle, runOnJS } from "react-native-reanimated";
 import AnimatedImage from "./AnimatedImage";
@@ -168,7 +168,7 @@ const ContainerView = forwardRef(
     )
 
     const toolbarConfig = ToolbarConfig({
-      mode: isShowMetaData ? ToolbarMode.cancelButtonOnly : ToolbarMode.default,
+      mode: isShowMetaData ? ToolbarDisplayMode.cancelButtonOnly : ToolbarDisplayMode.default,
       onPressAddPictureButton: config.onPressAddPictureButton,
       isAddPictureButtonEnabled: true,
       onPressCameraButton: config.onPressCameraButton,
