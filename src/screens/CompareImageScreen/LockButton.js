@@ -21,17 +21,22 @@ const LockButton = ({ onPress, isEngaged, style }) => {
     }, []);
 
     const animatedStyle = useAnimatedStyle(() => {
-        const backgroundColor = interpolateColor(
+        let animatedColor = interpolateColor(
             strobeAnimation.value,
             [0, 1],
-            [styles.disabled.animation.backgroundColor, styles.enabled.animation.backgroundColor]
-        );
+            [styles.disabled.animation.backgroundColor, styles.enabled.animation.backgroundColor],
+        )
+        
+        let backgroundColor = styles.disabled.container.backgroundColor;
+        if (isEnabled) {
+            backgroundColor = isEngaged ? styles.enabled.animation.backgroundColor : animatedColor;
+        }
         return { backgroundColor }
     });
-    console.log("LockButton isEngaged: ", isEngaged)
+
     return (
         <Animated.View
-            style={[styles.disabled.container, isEnabled && !isEngaged && animatedStyle, isEngaged && styles.enabled.container]}
+            style={[animatedStyle]}
         >
             <TouchableOpacity
                 style={isEnabled ? styles.enabled.container : styles.disabled.container}
@@ -46,7 +51,7 @@ const LockButton = ({ onPress, isEngaged, style }) => {
                 <Text
                     style={[isEnabled ? styles.enabled.icon : styles.disabled.icon]}
                 >
-                    { isEngaged ? "isEngaged" : Strings.button.lockButtonTitle}
+                    {isEngaged ? Strings.button.UnlockButtonTitle : Strings.button.lockButtonTitle}
                 </Text>
             </TouchableOpacity>
         </Animated.View >
@@ -57,7 +62,7 @@ const createStyleSheet = (theme) => {
     return StyleSheet.create({
         enabled: {
             animation: {
-                backgroundColor: `#00ff00ff`
+                backgroundColor: '#00ff00ff'
             },
             container: {
                 height: 40,
@@ -66,7 +71,7 @@ const createStyleSheet = (theme) => {
                 alignContent: 'center',
                 gap: 4,
                 textAlign: `center`,
-                backgroundColor: 'clear',
+                backgroundColor: theme.secondaryDisabledColor
             },
             icon: {
                 color: theme.primaryColor,
@@ -81,7 +86,7 @@ const createStyleSheet = (theme) => {
         },
         disabled: {
             animation: {
-                backgroundColor: theme.secondaryDisabledColor
+                backgroundColor: '#000000'
             },
             container: {
                 height: 40,
@@ -90,7 +95,7 @@ const createStyleSheet = (theme) => {
                 alignContent: 'center',
                 gap: 4,
                 textAlign: `center`,
-                backgroundColor: 'clear',
+                backgroundColor: theme.secondaryDisabledColor
             },
             icon: {
                 color: theme.primaryDisabledColor,

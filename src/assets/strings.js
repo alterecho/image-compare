@@ -1,6 +1,7 @@
 export default {
     button: {
         lockButtonTitle: "Lock",
+        UnlockButtonTitle: "Unlock",
         addButtonTitle: "Select",
         cameraButtonTitle: "Camera",
         imageInfoButtonTitle: "Info",
