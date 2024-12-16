@@ -1,9 +1,9 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { Button, StyleSheet, Platform, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
 import ContainerView, { Config } from "../../common/components/ContainerView";
-import { ImageInfo, MetaDataItem } from "../../structs";
+import { ImageInfo, MetaDataItem, Transform } from "../../structs";
 import { Pages } from "../Constants";
 import LockButton from "./LockButton";
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -15,7 +15,18 @@ const CompareImageScreen = ({ navigation }) => {
   const [imageInfo1, setImageInfo1] = useState(null);
   const [imageInfo2, setImageInfo2] = useState(null);
   const { theme, toggleTheme } = useContext(Theme.context);
-  const [ isLockEngaged, setIsLockEngaged ] = useState(false);
+  const [isLockEngaged, setIsLockEngaged] = useState(false);
+  useEffect(() => {
+    console.log("isLockEngaged", isLockEngaged)
+    if (isLockEngaged === true) {
+      const container1 = container1Ref.current
+      const container2 = container2Ref.current
+      container1.setTransform(Transform(0.0, 0.0, container1.scaleToFitInContainer));
+      container2.setTransform(Transform(0.0, 0.0, container2.scaleToFitInContainer));
+    }
+  }, [isLockEngaged]);
+
+
   const container1Ref = useRef(null)
   const container2Ref = useRef(null)
 
@@ -128,7 +139,7 @@ const CompareImageScreen = ({ navigation }) => {
     );
   }
 
-  const OnSelectMetaDataItem = (containerRef, index) => {
+  const onSelectMetaDataItem = (containerRef, index) => {
     const selectedContainer = containerRef?.current
     selectedContainer.selectIndices([index]);
 
@@ -167,11 +178,19 @@ const CompareImageScreen = ({ navigation }) => {
     otherContainer.scrollToIndex(indexInOtherContainer);
   }
 
-  function onClickLockButton() {
+  const onClickLockButton = () => {
     setIsLockEngaged(!isLockEngaged);
-    setTimeout(() => {
-      console.log("isLockEngaged", isLockEngaged);
-    }, 1000);
+  }
+
+  const onTransformUpdated = (containerRef, transform) => {
+    if (!isLockEngaged) {
+      return
+    }
+    console.log("onTransformUpdated", transform);
+    const containerToDispatchTo = containerRef === container1Ref ? container2Ref.current : container1Ref.current
+    const senderImageScale = containerRef.current.scaleToFitInContainer ?? 1.0;
+    transform.scale = transform.scale / senderImageScale * containerToDispatchTo.scaleToFitInContainer;
+    containerToDispatchTo.setTransform(transform);
   }
 
   const container1Config = Config({
@@ -179,14 +198,18 @@ const CompareImageScreen = ({ navigation }) => {
     comparisonImageInfo: imageInfo2,
     onPressAddPictureButton: () => { onPressAddPictureButtonClick(container1Ref) },
     onPressCameraButton: () => { onPressCameraButton(container1Ref) },
-    onSelectMetaDataItem: (metaDataItem) => { OnSelectMetaDataItem(container1Ref, metaDataItem) }
-  })
+    onSelectMetaDataItem: (metaDataItem) => { onSelectMetaDataItem(container1Ref, metaDataItem) },
+    onTransformUpdated: onTransformUpdated,
+    isLockEngaged: isLockEngaged
+  });
   const container2Config = Config({
     imageInfo: imageInfo2,
     comparisonImageInfo: imageInfo1,
     onPressAddPictureButton: () => { onPressAddPictureButtonClick(container2Ref) },
     onPressCameraButton: () => { onPressCameraButton(container2Ref) },
-    onSelectMetaDataItem: (metaDataItem) => { OnSelectMetaDataItem(container2Ref, metaDataItem) }
+    onSelectMetaDataItem: (metaDataItem) => { onSelectMetaDataItem(container2Ref, metaDataItem) },
+    onTransformUpdated: onTransformUpdated,
+    isLockEngaged: isLockEngaged
   })
   return (
     <SafeAreaProvider style={styles.screen}>

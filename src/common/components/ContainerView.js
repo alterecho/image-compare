@@ -3,9 +3,9 @@ import { View, Image, Button, StyleSheet, useAnimatedValue } from "react-native"
 import * as Utils from "../../common/utilities/Utils";
 import Toolbar, { DisplayMode as ToolbarDisplayMode } from "./Toolbar";
 import { GestureHandlerRootView, Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { useSharedValue, useAnimatedStyle, runOnJS } from "react-native-reanimated";
+import Animated, { useSharedValue, useAnimatedStyle, runOnJS, useAnimatedReaction } from "react-native-reanimated";
 import AnimatedImage from "./AnimatedImage";
-import { Size, Vector } from "../../structs";
+import { Size, Transform, Vector } from "../../structs";
 import Theme from "../../Theme";
 import Overlay from "./Overlay";
 import MetaDataView from "./MetaDataView";
@@ -17,37 +17,46 @@ export function Config(
   comparisonImageInfo,
   onPressAddPictureButton,
   onPressCameraButton,
-  onSelectMetaDataItem
+  onSelectMetaDataItem,
+  onTransformUpdated
 ) {
   return Object.freeze(
     imageInfo,
     comparisonImageInfo,
     onPressAddPictureButton,
     onPressCameraButton,
-    onSelectMetaDataItem
+    onSelectMetaDataItem,
+    onTransformUpdated
   )
 }
 
 const ContainerView = forwardRef(
-  ({ config }, ref) => {
+  ({ config }, forwardedRef) => {
     const metaDataViewRef = useRef(null)
     const [imageSize, setImageSize] = useState(Size(0, 0));
     const translateX = useSharedValue(0);
     const translateY = useSharedValue(0);
     const scale = useSharedValue(1.0);
     const startX = useSharedValue(0);
+
     const startY = useSharedValue(0);
     const startScale = useSharedValue(0);
     const { theme, toggleTheme } = useContext(Theme.context)
     const styles = makeStyleSheet(theme)
     const [viewSize, setViewSize] = useState(Size(0, 0))
+    const scaleToFitInContainer = useRef(1.0)
+    useEffect(() => {
+      
+      scaleToFitInContainer.current = calculateScaleForSizeFittingInSize(imageSize, viewSize);
+      console.log("useEffect scaleToFitInContainer.current", scaleToFitInContainer.current)
+    }, [viewSize, imageSize]);
     const [isShowMetaData, setIsShowMetaData] = useState(false);
-    const selectedIndices = useRef([]);
 
-    useImperativeHandle(ref, () => (
+    const isBeingInteracted = useRef(false);
+
+    useImperativeHandle(forwardedRef, () => (
       {
         imageInfo: config?.imageInfo,
-
         showInfoOverlay: () => {
           setIsShowMetaData(true)
         },
@@ -58,9 +67,50 @@ const ContainerView = forwardRef(
 
         scrollToIndex: (index) => {
           metaDataViewRef?.current?.scrollToIndex(index);
+        },
+        scaleToFitInContainer: scaleToFitInContainer.current,
+        getTransform: () => {
+          return Transform(translateX.value, translateY.value, scale.value)
+        },
+        setTransform: (transform) => {
+          console.log("setTransform", transform);
+          translateX.value = transform.x;
+          translateY.value = transform.y;
+          scale.value = transform.scale;
         }
       }
     ));
+
+    const onAnimationReaction = (current, previous) => {
+      if (isBeingInteracted.current === false || config?.onTransformUpdated == null) {
+        return;
+      }
+      config?.onTransformUpdated(
+        forwardedRef,
+        {
+          x: current.x,
+          y: current.y,
+          scale: current.scale
+        }
+      );
+    }
+
+    useAnimatedReaction(() => {
+      try {
+        return {
+          x: translateX.value,
+          y: translateY.value,
+          scale: scale.value
+        }  
+      } catch (error) {
+        console.log(error)
+      }
+    }, (current, previous) => {
+      if (config?.onTransformUpdated == null) {
+        return;
+      }
+      runOnJS(onAnimationReaction)(current, previous);
+    });
 
     // imageInfo changed
     useEffect(() => {
@@ -87,15 +137,24 @@ const ContainerView = forwardRef(
       }
     ))
 
+    const calculateScaleForSizeFittingInSize = (size, parentSize) => {
+      if (!size || !parentSize) {
+        return 1.0
+      }
+      let scale = viewSize.height / imageSize.height
+      if (size.width * scale > viewSize.width) {
+        scale *= viewSize.width / (imageSize.width * scale)
+      }
+      console.log("calculateScaleForSizeFittingInSize", viewSize, imageSize);
+      return scale
+    }
+
     const fitInContainer = (newScale = null) => {
       if (!viewSize.width || !viewSize.height) {
         return 1.0
       }
-      newScale = newScale ?? viewSize.height / imageSize.height
-      if (imageSize.width * newScale > viewSize.width) {
-        newScale *= viewSize.width / (imageSize.width * newScale)
-      }
-      recenterWithScale(newScale)
+      const scale = newScale ?? scaleToFitInContainer.current
+      recenterWithScale(scale)
     }
 
     const recenterWithScale = (newScale = null) => {
@@ -118,16 +177,35 @@ const ContainerView = forwardRef(
       }
     }
 
-    const tapGestureHandler = Gesture.Tap()
-      .numberOfTaps(2)
-      .onEnd(() => {
-        runOnJS(toggleScale)();
-      });
+    const onDoubleTapGestureBegin = () => {
+      
+      isBeingInteracted.current = true
+    }
 
-    const panGestureHandler = Gesture.Pan().onStart((event) => {
+
+    const onDoubleTapGestureStart = () => {
+      
+      isBeingInteracted.current = true
+    }
+
+    const onDoubleTapGestureEnd = () => {
+      toggleScale()
+      isBeingInteracted.current = false
+    }
+
+
+    const onPanGestureStart = (event) => {
+      isBeingInteracted.current = true
       startX.value = translateX.value
       startY.value = translateY.value
-    }).onUpdate((event) => {
+    }
+
+    const onPanGestureEnd = (event) => {
+      isBeingInteracted.current = false
+    }
+
+    
+    const onPanGestureUpdate = (event) => {
       let newTranslation = {
         x: startX.value + event.translationX,
         y: startY.value + event.translationY
@@ -152,7 +230,30 @@ const ContainerView = forwardRef(
       }
       translateX.value = newTranslation.x;
       translateY.value = newTranslation.y;
-    });
+    }
+
+    const tapGestureHandler = Gesture.Tap()
+      .numberOfTaps(2)
+      .onBegin(() => {
+        runOnJS(onDoubleTapGestureBegin)();
+      })
+      .onStart(() => {
+        runOnJS(onDoubleTapGestureStart)();
+      })
+      .onEnd(() => {
+        runOnJS(onDoubleTapGestureEnd)();
+      });
+
+    const panGestureHandler = Gesture.Pan()
+      .onStart((event) => {
+        runOnJS(onPanGestureStart)(event);
+      })
+      .onUpdate((event) => {
+        runOnJS(onPanGestureUpdate)(event);
+      })
+      .onEnd((event, success) => {
+        runOnJS(onPanGestureEnd)(event);
+      });
 
     const pinchGestureHandler = Gesture.Pinch().onStart((event) => {
       startScale.current = scale.value
