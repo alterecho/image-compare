@@ -4,13 +4,13 @@ import Theme from '../../Theme';
 import Strings from "../../assets/strings";
 import TitledButton from './TitledButton';
 
-export const Mode = {
+export const DisplayMode = {
     default: 0,
     cancelButtonOnly: 1
 }
 
 export function Config({
-    mode = Mode.default,
+    mode = DisplayMode.default,
     onPressAddPictureButton = null,
     isAddPictureButtonEnabled = true,
     onPressCameraButton = null,
@@ -81,7 +81,7 @@ const Toolbar = ({ config }) => {
         );
     }
 
-    return ( config.mode == Mode.cancelButtonOnly ? viewsForCancelMode() : viewsForDefaultMode())
+    return ( config.mode == DisplayMode.cancelButtonOnly ? viewsForCancelMode() : viewsForDefaultMode())
 }
 
     const createStyleSheet = (theme) => {
