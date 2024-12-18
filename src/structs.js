@@ -10,6 +10,6 @@ export function Size(width, height) {
     return Object.freeze({ width, height})
 }
 
-export function Transform(x, y, scale) {
-    return { x, y, scale };
+export function Transform(x = 0, y = 0, scale = 0, rotation = 0) {
+    return { x, y, scale, rotation };
 }

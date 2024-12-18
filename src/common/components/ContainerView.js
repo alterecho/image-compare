@@ -36,11 +36,14 @@ const ContainerView = forwardRef(
     const [imageSize, setImageSize] = useState(Size(0, 0));
     const translateX = useSharedValue(0);
     const translateY = useSharedValue(0);
-    const scale = useSharedValue(1.0);
     const startX = useSharedValue(0);
-
     const startY = useSharedValue(0);
+
+    const scale = useSharedValue(1.0);
     const startScale = useSharedValue(0);
+    const rotation = useSharedValue(0);
+    const startRotation = useSharedValue(0);
+    
     const { theme, toggleTheme } = useContext(Theme.context)
     const styles = makeStyleSheet(theme)
     const [viewSize, setViewSize] = useState(Size(0, 0))
@@ -48,7 +51,6 @@ const ContainerView = forwardRef(
     useEffect(() => {
       
       scaleToFitInContainer.current = calculateScaleForSizeFittingInSize(imageSize, viewSize);
-      console.log("useEffect scaleToFitInContainer.current", scaleToFitInContainer.current)
     }, [viewSize, imageSize]);
     const [isShowMetaData, setIsShowMetaData] = useState(false);
 
@@ -70,13 +72,13 @@ const ContainerView = forwardRef(
         },
         scaleToFitInContainer: scaleToFitInContainer.current,
         getTransform: () => {
-          return Transform(translateX.value, translateY.value, scale.value)
+          return Transform(translateX.value, translateY.value, scale.value, rotation.value)
         },
         setTransform: (transform) => {
-          console.log("setTransform", transform);
           translateX.value = transform.x;
           translateY.value = transform.y;
           scale.value = transform.scale;
+          rotation.value = transform.rotation;
         }
       }
     ));
@@ -85,12 +87,14 @@ const ContainerView = forwardRef(
       if (isBeingInteracted.current === false || config?.onTransformUpdated == null) {
         return;
       }
+      console.log("onAnimationReaction", current,"\n", previous);
       config?.onTransformUpdated(
         forwardedRef,
         {
           x: current.x,
           y: current.y,
-          scale: current.scale
+          scale: current.scale,
+          rotation: current.rotation
         }
       );
     }
@@ -100,7 +104,8 @@ const ContainerView = forwardRef(
         return {
           x: translateX.value,
           y: translateY.value,
-          scale: scale.value
+          scale: scale.value,
+          rotation: rotation.value
         }  
       } catch (error) {
         console.log(error)
@@ -132,7 +137,8 @@ const ContainerView = forwardRef(
         transform: [
           { translateX: translateX.value },
           { translateY: translateY.value },
-          { scale: scale.value }
+          { scale: scale.value },
+          { rotate: `${rotation.value}deg`}
         ]
       }
     ))
@@ -145,7 +151,6 @@ const ContainerView = forwardRef(
       if (size.width * scale > viewSize.width) {
         scale *= viewSize.width / (imageSize.width * scale)
       }
-      console.log("calculateScaleForSizeFittingInSize", viewSize, imageSize);
       return scale
     }
 
@@ -160,6 +165,7 @@ const ContainerView = forwardRef(
     const recenterWithScale = (newScale = null) => {
       translateX.value = 0.0
       translateY.value = 0.0
+      rotation.value = 0.0
       if (newScale) {
         scale.value = newScale
       }
@@ -255,6 +261,12 @@ const ContainerView = forwardRef(
         runOnJS(onPanGestureEnd)(event);
       });
 
+    const rotationGestureHandler = Gesture.Rotation().onStart((event) => {
+      startRotation.value = rotation.value;
+    }).onUpdate((event) => {
+      rotation.value = startRotation.value + event.rotation * (180 / Math.PI);
+    });
+
     const pinchGestureHandler = Gesture.Pinch().onStart((event) => {
       startScale.current = scale.value
     }).onUpdate((event) => {
@@ -268,7 +280,8 @@ const ContainerView = forwardRef(
     const combinedGestureHandlers = Gesture.Simultaneous(
       panGestureHandler,
       tapGestureHandler,
-      pinchGestureHandler
+      pinchGestureHandler,
+      rotationGestureHandler
     )
 
     const toolbarConfig = ToolbarConfig({
