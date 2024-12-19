@@ -186,7 +186,6 @@ const CompareImageScreen = ({ navigation }) => {
     if (!isLockEngaged) {
       return
     }
-    console.log("onTransformUpdated", transform);
     const containerToDispatchTo = containerRef === container1Ref ? container2Ref.current : container1Ref.current
     const senderImageScale = containerRef.current.scaleToFitInContainer ?? 1.0;
     transform.scale = transform.scale / senderImageScale * containerToDispatchTo.scaleToFitInContainer;
