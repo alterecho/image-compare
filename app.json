@@ -12,7 +12,7 @@
     "name": "Image Compare",
     "slug": "image-compare",
     "version": "2.5.1",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
