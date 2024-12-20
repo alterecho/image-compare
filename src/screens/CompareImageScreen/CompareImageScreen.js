@@ -1,5 +1,5 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
-import { Button, StyleSheet, Platform, Alert } from 'react-native';
+import { Button, StyleSheet, Platform, Alert, Dimensions } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
 import ContainerView, { Config } from "../../common/components/ContainerView";
@@ -12,26 +12,37 @@ import Theme from "../../Theme";
 import strings from "../../assets/strings";
 
 const CompareImageScreen = ({ navigation }) => {
+  const { theme, toggleTheme } = useContext(Theme.context);
+  const container1Ref = useRef(null)
+  const container2Ref = useRef(null)
   const [imageInfo1, setImageInfo1] = useState(null);
   const [imageInfo2, setImageInfo2] = useState(null);
-  const { theme, toggleTheme } = useContext(Theme.context);
+  const [isLandscape, setIsLandscape] = useState(false);
+
   const [isLockEngaged, setIsLockEngaged] = useState(false);
   useEffect(() => {
-    console.log("isLockEngaged", isLockEngaged)
     if (isLockEngaged === true) {
       const container1 = container1Ref.current
       const container2 = container2Ref.current
-      container1.setTransform(Transform(0.0, 0.0, container1.scaleToFitInContainer));
-      container2.setTransform(Transform(0.0, 0.0, container2.scaleToFitInContainer));
+      container1.setTransform(Transform(0.0, 0.0, container1.scaleToFitInContainer, 0));
+      container2.setTransform(Transform(0.0, 0.0, container2.scaleToFitInContainer, 0));
     }
   }, [isLockEngaged]);
 
+  
 
-  const container1Ref = useRef(null)
-  const container2Ref = useRef(null)
-
-  const styles = makeStyleSheet(theme);
-
+  useEffect(() => {
+    const handleOrientationChange = () => {
+      const { width, height } = Dimensions.get('window');
+      setIsLandscape(width > height);
+    }
+    handleOrientationChange()
+    const subscription = Dimensions.addEventListener('change', handleOrientationChange);
+    return () => {
+      subscription.remove();
+    }
+  }, []);
+  
   const makeImageInfoFromsImagePickerResult = (result, containerRef) => {
     let pickedImageURI = result.assets[0].uri;
     const exifData = result.assets[0].exif;
@@ -96,7 +107,6 @@ const CompareImageScreen = ({ navigation }) => {
     });
 
     if (cameraResult.canceled) {
-      console.log("canceled");
       return;
     }
     let imageInfo = makeImageInfoFromsImagePickerResult(cameraResult, containerRef);
@@ -210,33 +220,73 @@ const CompareImageScreen = ({ navigation }) => {
     onTransformUpdated: onTransformUpdated,
     isLockEngaged: isLockEngaged
   })
-  return (
-    <SafeAreaProvider style={styles.screen}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <ContainerView
-          ref={container1Ref}
-          config={container1Config}
-        />
+
+  const makePortraitLayout = () => {
+    const styles = makePortraitStyleSheet(theme)
+    return (
+      <SafeAreaProvider style={styles.container}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <ContainerView
+            ref={container1Ref}
+            config={container1Config}
+          />
+          <LockButton
+            isEngaged={isLockEngaged}
+            onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
+          />
+          <ContainerView
+            ref={container2Ref}
+            config={container2Config}
+          />
+        </SafeAreaView>
+      </SafeAreaProvider>
+    )
+  }
+
+  const makeLandscapeLayout = () => {
+    const styles = makeLandscapeStyleSheet(theme);
+    return (
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.container}>
+          <ContainerView
+            ref={container1Ref}
+            config={container1Config}
+          />
+          <ContainerView
+            ref={container2Ref}
+            config={container2Config}
+          />
+        </SafeAreaView>
         <LockButton
-          isEngaged={isLockEngaged}
-          onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
-        />
-        <ContainerView
-          ref={container2Ref}
-          config={container2Config}
-        />
-      </SafeAreaView>
-    </SafeAreaProvider>
-  )
+            isEngaged={isLockEngaged}
+            onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
+          />
+
+      </SafeAreaProvider>
+    )
+  }
+  return isLandscape ? makeLandscapeLayout() : makePortraitLayout();
 }
 
-const makeStyleSheet = (theme) => {
+const makePortraitStyleSheet = (theme) => {
   return StyleSheet.create({
-    screen: {
+    container: {
       flex: 1,
+      flexDirection: 'column',
       backgroundColor: theme.secondaryColor
     }
   })
 }
+
+const makeLandscapeStyleSheet = (theme) => {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      flexDirection: 'row',
+      backgroundColor: theme.secondaryColor
+    }
+  })
+}
+
 
 export default CompareImageScreen;
