@@ -3,7 +3,7 @@ import { View, Image, Button, StyleSheet, useAnimatedValue } from "react-native"
 import * as Utils from "../../common/utilities/Utils";
 import Toolbar, { DisplayMode as ToolbarDisplayMode } from "./Toolbar";
 import { GestureHandlerRootView, Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { useSharedValue, useAnimatedStyle, runOnJS, useAnimatedReaction } from "react-native-reanimated";
+import Animated, { useSharedValue, useAnimatedStyle, runOnJS, useAnimatedReaction, withTiming } from "react-native-reanimated";
 import AnimatedImage from "./AnimatedImage";
 import { Size, Transform, Vector } from "../../structs";
 import Theme from "../../Theme";
@@ -43,18 +43,25 @@ const ContainerView = forwardRef(
     const startScale = useSharedValue(0);
     const rotation = useSharedValue(0);
     const startRotation = useSharedValue(0);
-    
+
     const { theme, toggleTheme } = useContext(Theme.context)
     const styles = makeStyleSheet(theme)
     const [viewSize, setViewSize] = useState(Size(0, 0))
     const scaleToFitInContainer = useRef(1.0)
     useEffect(() => {
-      
+
       scaleToFitInContainer.current = calculateScaleForSizeFittingInSize(imageSize, viewSize);
     }, [viewSize, imageSize]);
     const [isShowMetaData, setIsShowMetaData] = useState(false);
 
-    const isBeingInteracted = useRef(false);
+    const isBeingInteracted = useSharedValue(false);
+
+    const setTransform = (transform) => {
+      translateX.value = transform.x;
+      translateY.value = transform.y;
+      scale.value = transform.scale;
+      rotation.value = transform.rotation;
+    }
 
     useImperativeHandle(forwardedRef, () => (
       {
@@ -74,21 +81,16 @@ const ContainerView = forwardRef(
         getTransform: () => {
           return Transform(translateX.value, translateY.value, scale.value, rotation.value)
         },
-        setTransform: (transform) => {
-          translateX.value = transform.x;
-          translateY.value = transform.y;
-          scale.value = transform.scale;
-          rotation.value = transform.rotation;
-        }
+        setTransform
       }
     ));
 
     const onAnimationReaction = (current, previous) => {
-      if (isBeingInteracted.current === false || config?.onTransformUpdated == null) {
+      if (isBeingInteracted.value === false) {
         return;
       }
-      console.log("onAnimationReaction", current,"\n", previous);
-      config?.onTransformUpdated(
+      
+      config?.onTransformUpdated?.(
         forwardedRef,
         {
           x: current.x,
@@ -106,14 +108,11 @@ const ContainerView = forwardRef(
           y: translateY.value,
           scale: scale.value,
           rotation: rotation.value
-        }  
+        }
       } catch (error) {
         console.log(error)
       }
     }, (current, previous) => {
-      if (config?.onTransformUpdated == null) {
-        return;
-      }
       runOnJS(onAnimationReaction)(current, previous);
     });
 
@@ -138,7 +137,7 @@ const ContainerView = forwardRef(
           { translateX: translateX.value },
           { translateY: translateY.value },
           { scale: scale.value },
-          { rotate: `${rotation.value}deg`}
+          { rotate: `${rotation.value}deg` }
         ]
       }
     ))
@@ -163,12 +162,9 @@ const ContainerView = forwardRef(
     }
 
     const recenterWithScale = (newScale = null) => {
-      translateX.value = 0.0
-      translateY.value = 0.0
-      rotation.value = 0.0
-      if (newScale) {
-        scale.value = newScale
-      }
+      setTransform(Transform(
+        0, 0, newScale ?? scale.value, 0
+      ));
     }
 
     const toggleScale = () => {
@@ -184,33 +180,29 @@ const ContainerView = forwardRef(
     }
 
     const onDoubleTapGestureBegin = () => {
-      
-      isBeingInteracted.current = true
+      isBeingInteracted.value = true
     }
 
 
     const onDoubleTapGestureStart = () => {
-      
-      isBeingInteracted.current = true
+      isBeingInteracted.value = true
     }
 
     const onDoubleTapGestureEnd = () => {
       toggleScale()
-      isBeingInteracted.current = false
     }
 
-
     const onPanGestureStart = (event) => {
-      isBeingInteracted.current = true
+      isBeingInteracted.value = true
       startX.value = translateX.value
       startY.value = translateY.value
     }
 
     const onPanGestureEnd = (event) => {
-      isBeingInteracted.current = false
+      isBeingInteracted.value = false
     }
 
-    
+
     const onPanGestureUpdate = (event) => {
       let newTranslation = {
         x: startX.value + event.translationX,
@@ -248,6 +240,7 @@ const ContainerView = forwardRef(
       })
       .onEnd(() => {
         runOnJS(onDoubleTapGestureEnd)();
+        isBeingInteracted.value = false
       });
 
     const panGestureHandler = Gesture.Pan()

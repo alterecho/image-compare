@@ -18,18 +18,25 @@ const CompareImageScreen = ({ navigation }) => {
   const [imageInfo1, setImageInfo1] = useState(null);
   const [imageInfo2, setImageInfo2] = useState(null);
   const [isLandscape, setIsLandscape] = useState(false);
+  let lastInteractedContainerRef = useRef(null);
 
   const [isLockEngaged, setIsLockEngaged] = useState(false);
   useEffect(() => {
+    console.log("isLockEngaged, lastInteractedContainerRef", isLockEngaged, lastInteractedContainerRef != null)
     if (isLockEngaged === true) {
-      const container1 = container1Ref.current
-      const container2 = container2Ref.current
-      container1.setTransform(Transform(0.0, 0.0, container1.scaleToFitInContainer, 0));
-      container2.setTransform(Transform(0.0, 0.0, container2.scaleToFitInContainer, 0));
+      const otherContainerRefs = getOtherContainerRefs(lastInteractedContainerRef);
+      console.log("otherContainerRefs", otherContainerRefs)
+
+      otherContainerRefs.forEach((containerRef) => {
+        copyTransform(lastInteractedContainerRef, containerRef);
+      });
+      
     }
   }, [isLockEngaged]);
 
-  
+  const getOtherContainerRefs = (containerRef) => {
+    return [container1Ref, container2Ref].filter((ref) => ref.current !== containerRef.current);
+  }
 
   useEffect(() => {
     const handleOrientationChange = () => {
@@ -192,14 +199,31 @@ const CompareImageScreen = ({ navigation }) => {
     setIsLockEngaged(!isLockEngaged);
   }
 
-  const onTransformUpdated = (containerRef, transform) => {
+  const getContainerID = (containerRef) => {
+    return containerRef.current === container1Ref.current ? "1" : "2";
+  }
+
+  const copyTransform = (sourceContainerRef, targetContainerRef) => {
+    try {
+      const senderImageScale = sourceContainerRef.current.scaleToFitInContainer ?? 1.0;
+      const transform = sourceContainerRef.current.getTransform()
+      transform.scale = transform.scale / senderImageScale * targetContainerRef.current.scaleToFitInContainer;
+      targetContainerRef.current.setTransform(transform);
+  
+    } catch (error) {
+      console.log("error", error);
+    }
+
+  };
+  const onTransformUpdated = (containerRef) => {
+
+    lastInteractedContainerRef.current = containerRef.current;
     if (!isLockEngaged) {
       return
-    }
-    const containerToDispatchTo = containerRef === container1Ref ? container2Ref.current : container1Ref.current
-    const senderImageScale = containerRef.current.scaleToFitInContainer ?? 1.0;
-    transform.scale = transform.scale / senderImageScale * containerToDispatchTo.scaleToFitInContainer;
-    containerToDispatchTo.setTransform(transform);
+    }   
+    
+    const containerToDispatchToRef = containerRef.current === container1Ref.current ? container2Ref : container1Ref
+    copyTransform(containerRef, containerToDispatchToRef)
   }
 
   const container1Config = Config({
