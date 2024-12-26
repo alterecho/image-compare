@@ -22,15 +22,11 @@ const CompareImageScreen = ({ navigation }) => {
 
   const [isLockEngaged, setIsLockEngaged] = useState(false);
   useEffect(() => {
-    console.log("isLockEngaged, lastInteractedContainerRef", isLockEngaged, lastInteractedContainerRef != null)
     if (isLockEngaged === true) {
       const otherContainerRefs = getOtherContainerRefs(lastInteractedContainerRef);
-      console.log("otherContainerRefs", otherContainerRefs)
-
       otherContainerRefs.forEach((containerRef) => {
         copyTransform(lastInteractedContainerRef, containerRef);
       });
-      
     }
   }, [isLockEngaged]);
 
@@ -251,6 +247,7 @@ const CompareImageScreen = ({ navigation }) => {
       <SafeAreaProvider style={styles.container}>
         <SafeAreaView style={{ flex: 1 }}>
           <ContainerView
+          id="1"
             ref={container1Ref}
             config={container1Config}
           />
@@ -259,6 +256,7 @@ const CompareImageScreen = ({ navigation }) => {
             onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
           />
           <ContainerView
+          id='2'
             ref={container2Ref}
             config={container2Config}
           />

@@ -3,7 +3,7 @@ import { View, Image, Button, StyleSheet, useAnimatedValue } from "react-native"
 import * as Utils from "../../common/utilities/Utils";
 import Toolbar, { DisplayMode as ToolbarDisplayMode } from "./Toolbar";
 import { GestureHandlerRootView, Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { useSharedValue, useAnimatedStyle, runOnJS, useAnimatedReaction, withTiming } from "react-native-reanimated";
+import Animated, { useSharedValue, useAnimatedStyle, runOnJS, useAnimatedReaction } from "react-native-reanimated";
 import AnimatedImage from "./AnimatedImage";
 import { Size, Transform, Vector } from "../../structs";
 import Theme from "../../Theme";
@@ -31,7 +31,7 @@ export function Config(
 }
 
 const ContainerView = forwardRef(
-  ({ config }, forwardedRef) => {
+  ({ id, config }, forwardedRef) => {
     const metaDataViewRef = useRef(null)
     const [imageSize, setImageSize] = useState(Size(0, 0));
     const translateX = useSharedValue(0);
@@ -86,9 +86,12 @@ const ContainerView = forwardRef(
     ));
 
     const onAnimationReaction = (current, previous) => {
+      console.log("onAnimationReaction: isBeingInteracted", id, isBeingInteracted.value);
       if (isBeingInteracted.value === false) {
         return;
       }
+
+      
       
       config?.onTransformUpdated?.(
         forwardedRef,
@@ -179,31 +182,8 @@ const ContainerView = forwardRef(
       }
     }
 
-    const onDoubleTapGestureBegin = () => {
-      isBeingInteracted.value = true
-    }
-
-
-    const onDoubleTapGestureStart = () => {
-      isBeingInteracted.value = true
-    }
-
-    const onDoubleTapGestureEnd = () => {
-      toggleScale()
-    }
-
-    const onPanGestureStart = (event) => {
-      isBeingInteracted.value = true
-      startX.value = translateX.value
-      startY.value = translateY.value
-    }
-
-    const onPanGestureEnd = (event) => {
-      isBeingInteracted.value = false
-    }
-
-
     const onPanGestureUpdate = (event) => {
+      'worklet';
       let newTranslation = {
         x: startX.value + event.translationX,
         y: startY.value + event.translationY
@@ -233,25 +213,28 @@ const ContainerView = forwardRef(
     const tapGestureHandler = Gesture.Tap()
       .numberOfTaps(2)
       .onBegin(() => {
-        runOnJS(onDoubleTapGestureBegin)();
+        isBeingInteracted.value = true
       })
       .onStart(() => {
-        runOnJS(onDoubleTapGestureStart)();
+        isBeingInteracted.value = true;
       })
       .onEnd(() => {
-        runOnJS(onDoubleTapGestureEnd)();
-        isBeingInteracted.value = false
+        runOnJS(toggleScale)();
+        isBeingInteracted.value = false;
       });
 
     const panGestureHandler = Gesture.Pan()
       .onStart((event) => {
-        runOnJS(onPanGestureStart)(event);
+        isBeingInteracted.value = true
+        startX.value = translateX.value
+        startY.value = translateY.value  
       })
       .onUpdate((event) => {
-        runOnJS(onPanGestureUpdate)(event);
+        isBeingInteracted.value = true
+        onPanGestureUpdate(event);
       })
       .onEnd((event, success) => {
-        runOnJS(onPanGestureEnd)(event);
+        isBeingInteracted.value = false
       });
 
     const rotationGestureHandler = Gesture.Rotation().onStart((event) => {
