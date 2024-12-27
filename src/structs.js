@@ -7,9 +7,10 @@ export function MetaDataItem(title, value) {
 }
 
 export function Size(width, height) {
-    return Object.freeze({ width, height})
+    return Object.freeze({ width, height })
 }
 
-export function Transform(x = 0, y = 0, scale = 0, rotation = 0) {
+export function Transform(x, y, scale, rotation) {
+    'worklet';
     return { x, y, scale, rotation };
 }

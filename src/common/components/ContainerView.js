@@ -3,9 +3,9 @@ import { View, Image, Button, StyleSheet, useAnimatedValue } from "react-native"
 import * as Utils from "../../common/utilities/Utils";
 import Toolbar, { DisplayMode as ToolbarDisplayMode } from "./Toolbar";
 import { GestureHandlerRootView, Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { useSharedValue, useAnimatedStyle, runOnJS, useAnimatedReaction } from "react-native-reanimated";
+import Animated, { useSharedValue, useAnimatedStyle, runOnJS, useAnimatedReaction, runOnUI } from "react-native-reanimated";
 import AnimatedImage from "./AnimatedImage";
-import { Size, Transform, Vector } from "../../structs";
+import { Size, Transform, Transform2 } from "../../structs";
 import Theme from "../../Theme";
 import Overlay from "./Overlay";
 import MetaDataView from "./MetaDataView";
@@ -32,31 +32,36 @@ export function Config(
 
 const ContainerView = forwardRef(
   ({ id, config }, forwardedRef) => {
+
     const metaDataViewRef = useRef(null)
+
+    const { theme, toggleTheme } = useContext(Theme.context)
+    const styles = makeStyleSheet(theme)
+
     const [imageSize, setImageSize] = useState(Size(0, 0));
+    const [isShowMetaData, setIsShowMetaData] = useState(false);
+    const [viewSize, setViewSize] = useState(Size(0, 0))
+
+    useEffect(() => {
+      const calculatedScale = calculateScaleForSizeFittingInSize(imageSize, viewSize);
+      console.log("calculatedScale for", calculatedScale, imageSize, viewSize);
+      scaleToFitInContainer.value = calculatedScale
+      console.log("scaleToFitInrContainer", scaleToFitInContainer.value);
+    }, [viewSize, imageSize]);
+
     const translateX = useSharedValue(0);
     const translateY = useSharedValue(0);
     const startX = useSharedValue(0);
     const startY = useSharedValue(0);
-
     const scale = useSharedValue(1.0);
     const startScale = useSharedValue(0);
     const rotation = useSharedValue(0);
     const startRotation = useSharedValue(0);
-
-    const { theme, toggleTheme } = useContext(Theme.context)
-    const styles = makeStyleSheet(theme)
-    const [viewSize, setViewSize] = useState(Size(0, 0))
-    const scaleToFitInContainer = useRef(1.0)
-    useEffect(() => {
-
-      scaleToFitInContainer.current = calculateScaleForSizeFittingInSize(imageSize, viewSize);
-    }, [viewSize, imageSize]);
-    const [isShowMetaData, setIsShowMetaData] = useState(false);
-
+    const scaleToFitInContainer = useSharedValue(1.0)
     const isBeingInteracted = useSharedValue(false);
 
     const setTransform = (transform) => {
+      'worklet';
       translateX.value = transform.x;
       translateY.value = transform.y;
       scale.value = transform.scale;
@@ -77,7 +82,7 @@ const ContainerView = forwardRef(
         scrollToIndex: (index) => {
           metaDataViewRef?.current?.scrollToIndex(index);
         },
-        scaleToFitInContainer: scaleToFitInContainer.current,
+        scaleToFitInContainer: scaleToFitInContainer.value,
         getTransform: () => {
           return Transform(translateX.value, translateY.value, scale.value, rotation.value)
         },
@@ -91,8 +96,6 @@ const ContainerView = forwardRef(
         return;
       }
 
-      
-      
       config?.onTransformUpdated?.(
         forwardedRef,
         {
@@ -103,6 +106,33 @@ const ContainerView = forwardRef(
         }
       );
     }
+
+    console.log("BEFORE transform before", typeof Transform);
+
+    const fitInContainer = () => {
+      'worklet';
+      if (!viewSize.width || !viewSize.height) {
+        return
+      }
+      let scale = scaleToFitInContainer.value
+      if (scale <= 0.0) {
+        scale = 1.0
+      }
+      const transform = Transform(0, 0, scale, 0)
+      console.log("fitInContainer transform:, scale", transform, scale);
+      setTransform(transform);
+    }
+
+    useAnimatedReaction(
+      () => scaleToFitInContainer.value,
+      (current, previous) => {
+        if (current !== previous) {
+          fitInContainer()
+        }
+      }
+    );
+
+
 
     useAnimatedReaction(() => {
       try {
@@ -130,10 +160,6 @@ const ContainerView = forwardRef(
       }
     }, [config?.imageInfo]);
 
-    useEffect(() => {
-      fitInContainer()
-    }, [imageSize]);
-
     const gestureStyle = useAnimatedStyle(() => (
       {
         transform: [
@@ -149,6 +175,9 @@ const ContainerView = forwardRef(
       if (!size || !parentSize) {
         return 1.0
       }
+      if (!Utils.isPositiveNumber(imageSize.width) || !Utils.isPositiveNumber(imageSize.height)) {
+        return 1.0
+      }
       let scale = viewSize.height / imageSize.height
       if (size.width * scale > viewSize.width) {
         scale *= viewSize.width / (imageSize.width * scale)
@@ -156,29 +185,19 @@ const ContainerView = forwardRef(
       return scale
     }
 
-    const fitInContainer = (newScale = null) => {
-      if (!viewSize.width || !viewSize.height) {
-        return 1.0
-      }
-      const scale = newScale ?? scaleToFitInContainer.current
-      recenterWithScale(scale)
-    }
-
-    const recenterWithScale = (newScale = null) => {
-      setTransform(Transform(
-        0, 0, newScale ?? scale.value, 0
-      ));
-    }
 
     const toggleScale = () => {
+      'worklet';
+      console.log("toggleScale", scale.value);
       if (!(imageSize) || !(viewSize)) {
         return
       }
-      let newScale = scale.value
-      if (newScale === 1.0) {
+      if (scale.value === 1.0) {
         fitInContainer()
       } else {
-        recenterWithScale(1.0)
+        setTransform(Transform(
+          0, 0, 1.0, 0
+        ));
       }
     }
 
@@ -219,7 +238,7 @@ const ContainerView = forwardRef(
         isBeingInteracted.value = true;
       })
       .onEnd(() => {
-        runOnJS(toggleScale)();
+        toggleScale();
         isBeingInteracted.value = false;
       });
 
@@ -227,7 +246,7 @@ const ContainerView = forwardRef(
       .onStart((event) => {
         isBeingInteracted.value = true
         startX.value = translateX.value
-        startY.value = translateY.value  
+        startY.value = translateY.value
       })
       .onUpdate((event) => {
         isBeingInteracted.value = true
