@@ -20,14 +20,14 @@ export function Config(
   onSelectMetaDataItem,
   onTransformUpdated
 ) {
-  return Object.freeze(
+  return Object.freeze({
     imageInfo,
     comparisonImageInfo,
     onPressAddPictureButton,
     onPressCameraButton,
     onSelectMetaDataItem,
     onTransformUpdated
-  )
+  })
 }
 
 const ContainerView = forwardRef(
@@ -90,21 +90,30 @@ const ContainerView = forwardRef(
       }
     ));
 
+    const sendOnTransformUpdated = ({ x, y, scale, rotation }) => {
+        config?.onTransformUpdated(
+          forwardedRef,
+          {
+            x: translateX.value,
+            y: translateY.value,
+            scale: scale.value,
+            rotation: rotation.value
+          }
+        )
+    }
+
     const onAnimationReaction = (current, previous) => {
+      'worklet';
       console.log("onAnimationReaction: isBeingInteracted", id, isBeingInteracted.value);
       if (isBeingInteracted.value === false) {
         return;
       }
-
-      config?.onTransformUpdated?.(
-        forwardedRef,
-        {
-          x: current.x,
-          y: current.y,
-          scale: current.scale,
-          rotation: current.rotation
-        }
-      );
+      runOnJS(sendOnTransformUpdated)({
+        x: translateX.value,
+        y: translateY.value,
+        scale: scale.value,
+        rotation: rotation.value
+      });
     }
 
     console.log("BEFORE transform before", typeof Transform);
@@ -146,7 +155,7 @@ const ContainerView = forwardRef(
         console.log(error)
       }
     }, (current, previous) => {
-      runOnJS(onAnimationReaction)(current, previous);
+      onAnimationReaction(current, previous);
     });
 
     // imageInfo changed
@@ -188,7 +197,7 @@ const ContainerView = forwardRef(
 
     const toggleScale = () => {
       'worklet';
-      console.log("toggleScale", scale.value);
+      console.log("toggleScale current:", scale.value);
       if (!(imageSize) || !(viewSize)) {
         return
       }
@@ -263,9 +272,9 @@ const ContainerView = forwardRef(
     });
 
     const pinchGestureHandler = Gesture.Pinch().onStart((event) => {
-      startScale.current = scale.value
+      startScale.value = scale.value
     }).onUpdate((event) => {
-      let newScale = startScale.current * event.scale
+      let newScale = startScale.value * event.scale
       if (newScale < 0.2) {
         newScale = 0.2
       }
