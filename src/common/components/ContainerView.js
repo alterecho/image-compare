@@ -12,14 +12,14 @@ import MetaDataView from "./MetaDataView";
 import TestMetaData from "../../../tests/data/metadata-sample1.json"
 import { Config as ToolbarConfig } from "./Toolbar";
 
-export function Config(
+export function Config({
   imageInfo,
   comparisonImageInfo,
   onPressAddPictureButton,
   onPressCameraButton,
   onSelectMetaDataItem,
   onTransformUpdated
-) {
+}) {
   return Object.freeze({
     imageInfo,
     comparisonImageInfo,
@@ -58,7 +58,10 @@ const ContainerView = forwardRef(
     const rotation = useSharedValue(0);
     const startRotation = useSharedValue(0);
     const scaleToFitInContainer = useSharedValue(1.0)
-    const isBeingInteracted = useSharedValue(false);
+
+    const isPanned = useSharedValue(false);
+    const isRotated = useSharedValue(false);
+    const isDoubleTapped = useSharedValue(false);
 
     const setTransform = (transform) => {
       'worklet';
@@ -91,32 +94,47 @@ const ContainerView = forwardRef(
     ));
 
     const sendOnTransformUpdated = ({ x, y, scale, rotation }) => {
-        config?.onTransformUpdated(
-          forwardedRef,
-          {
-            x: translateX.value,
-            y: translateY.value,
-            scale: scale.value,
-            rotation: rotation.value
-          }
-        )
+      config?.onTransformUpdated(
+        forwardedRef,
+        {
+          x: translateX.value,
+          y: translateY.value,
+          scale: scale.value,
+          rotation: rotation.value
+        }
+      )
     }
 
-    const onAnimationReaction = (current, previous) => {
+    const onUserInteractionReaction = (current, previous) => {
       'worklet';
-      console.log("onAnimationReaction: isBeingInteracted", id, isBeingInteracted.value);
-      if (isBeingInteracted.value === false) {
+      const isBeingInteracted = (() => {
+        return current.isDoubleTapped === true ||
+        current.isPanning === true ||
+        current.isRotating === true
+      })()
+
+      console.log("onAnimationReaction: isBeingInteracted", id, isBeingInteracted, current, previous);
+
+      // check if user is interacting
+      if (isBeingInteracted == false) {
         return;
       }
-      runOnJS(sendOnTransformUpdated)({
-        x: translateX.value,
-        y: translateY.value,
-        scale: scale.value,
-        rotation: rotation.value
-      });
-    }
 
-    console.log("BEFORE transform before", typeof Transform);
+      // send transform to parent (CompareImageScreen)
+      runOnJS(sendOnTransformUpdated)(
+        {
+          x: translateX.value,
+          y: translateY.value,
+          scale: scale.value,
+          rotation: rotation.value
+        }
+      );
+
+      // reset double tap flag
+      if (current.isDoubleTapped) {
+        isDoubleTapped.value = false;
+      }
+    }
 
     const fitInContainer = () => {
       'worklet';
@@ -128,7 +146,6 @@ const ContainerView = forwardRef(
         scale = 1.0
       }
       const transform = Transform(0, 0, scale, 0)
-      console.log("fitInContainer transform:, scale", transform, scale);
       setTransform(transform);
     }
 
@@ -141,21 +158,18 @@ const ContainerView = forwardRef(
       }
     );
 
-
-
     useAnimatedReaction(() => {
       try {
         return {
-          x: translateX.value,
-          y: translateY.value,
-          scale: scale.value,
-          rotation: rotation.value
+          isPanned: isPanned.value,
+          isRotated: isRotated.value,
+          isDoubleTapped: isDoubleTapped.value
         }
       } catch (error) {
         console.log(error)
       }
     }, (current, previous) => {
-      onAnimationReaction(current, previous);
+      onUserInteractionReaction(current, previous);
     });
 
     // imageInfo changed
@@ -196,7 +210,6 @@ const ContainerView = forwardRef(
 
 
     const toggleScale = () => {
-      'worklet';
       console.log("toggleScale current:", scale.value);
       if (!(imageSize) || !(viewSize)) {
         return
@@ -240,35 +253,31 @@ const ContainerView = forwardRef(
 
     const tapGestureHandler = Gesture.Tap()
       .numberOfTaps(2)
-      .onBegin(() => {
-        isBeingInteracted.value = true
-      })
-      .onStart(() => {
-        isBeingInteracted.value = true;
-      })
       .onEnd(() => {
-        toggleScale();
-        isBeingInteracted.value = false;
+        isDoubleTapped.value = true
+        runOnJS(toggleScale)();
       });
 
     const panGestureHandler = Gesture.Pan()
       .onStart((event) => {
-        isBeingInteracted.value = true
         startX.value = translateX.value
         startY.value = translateY.value
       })
       .onUpdate((event) => {
-        isBeingInteracted.value = true
+        isPanned.value = true;
         onPanGestureUpdate(event);
       })
       .onEnd((event, success) => {
-        isBeingInteracted.value = false
+        isPanned.value = false;
       });
 
     const rotationGestureHandler = Gesture.Rotation().onStart((event) => {
       startRotation.value = rotation.value;
     }).onUpdate((event) => {
+      isRotated.value = true;
       rotation.value = startRotation.value + event.rotation * (180 / Math.PI);
+    }).onEnd((event) => {
+      isRotated.value = false;
     });
 
     const pinchGestureHandler = Gesture.Pinch().onStart((event) => {
