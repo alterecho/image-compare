@@ -44,7 +44,6 @@ const ContainerView = forwardRef(
 
     useEffect(() => {
       const calculatedScale = calculateScaleForSizeFittingInSize(imageSize, viewSize);
-      console.log("calculatedScale for", calculatedScale, imageSize, viewSize);
       scaleValueToFitInContainer.value = calculatedScale
     }, [viewSize, imageSize]);
 
@@ -93,14 +92,13 @@ const ContainerView = forwardRef(
     ));
 
     const sendOnTransformUpdated = ({ x, y, scale, rotation }) => {
-      console.log("sendOnTransformUpdated", x, y, scale, rotation);
       config?.onTransformUpdated(
         forwardedRef,
         {
-          x: translateX.value,
-          y: translateY.value,
-          scale: scale.value,
-          rotation: rotation.value
+          x: x,
+          y: y,
+          scale: scale,
+          rotation: rotation
         }
       )
     }
@@ -109,11 +107,9 @@ const ContainerView = forwardRef(
       'worklet';
       const isBeingInteracted = (() => {
         return current.isDoubleTapped === true ||
-        current.isPanning === true ||
-        current.isRotating === true
+        current.isPanned === true ||
+        current.isRotated === true
       })()
-
-      console.log("onAnimationReaction: isBeingInteracted", id, isBeingInteracted, current, previous);
 
       // check if user is interacting
       if (isBeingInteracted == false) {
@@ -214,7 +210,6 @@ const ContainerView = forwardRef(
 
 
     const toggleScale = () => {
-      console.log("toggleScale current:", scale.value);
       if (!(imageSize) || !(viewSize)) {
         return
       }

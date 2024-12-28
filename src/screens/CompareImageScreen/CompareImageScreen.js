@@ -80,7 +80,6 @@ const CompareImageScreen = ({ navigation }) => {
       const imageInfo = makeImageInfoFromsImagePickerResult(result, containerRef);
       setImageInfo(imageInfo, containerRef);
     } catch (error) {
-      console.log("[ERROR]:", error)
       if (containerRef === container2Ref) {
         setImageInfo1(null)
       } else {
@@ -208,15 +207,12 @@ const CompareImageScreen = ({ navigation }) => {
         scale: sourceContainerTransform.scale / sourceContainerImageScale * targetContainerRef.current.scaleValueToFitInContainer
       }
       
-      console.log("sourceContainerRef transform: ", sourceContainerTransform)
-      console.log("targetContainerRef transform ", targetContainerTransform)
       targetContainerRef.current.setTransform(targetContainerTransform);
     } catch (error) {
       console.log("error", error);
     }
   };
   const onTransformUpdated = (containerRef) => {
-console.log("onTransformUpdated");
     lastInteractedContainerRef.current = containerRef.current;
     if (!isLockEngaged) {
       return
