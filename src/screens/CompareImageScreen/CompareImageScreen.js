@@ -18,18 +18,21 @@ const CompareImageScreen = ({ navigation }) => {
   const [imageInfo1, setImageInfo1] = useState(null);
   const [imageInfo2, setImageInfo2] = useState(null);
   const [isLandscape, setIsLandscape] = useState(false);
+  let lastInteractedContainerRef = useRef(null);
 
   const [isLockEngaged, setIsLockEngaged] = useState(false);
   useEffect(() => {
     if (isLockEngaged === true) {
-      const container1 = container1Ref.current
-      const container2 = container2Ref.current
-      container1.setTransform(Transform(0.0, 0.0, container1.scaleToFitInContainer, 0));
-      container2.setTransform(Transform(0.0, 0.0, container2.scaleToFitInContainer, 0));
+      const otherContainerRefs = getOtherContainerRefs(lastInteractedContainerRef);
+      otherContainerRefs.forEach((containerRef) => {
+        copyTransform(lastInteractedContainerRef, containerRef);
+      });
     }
   }, [isLockEngaged]);
 
-  
+  const getOtherContainerRefs = (containerRef) => {
+    return [container1Ref, container2Ref].filter((ref) => ref.current !== containerRef.current);
+  }
 
   useEffect(() => {
     const handleOrientationChange = () => {
@@ -42,7 +45,7 @@ const CompareImageScreen = ({ navigation }) => {
       subscription.remove();
     }
   }, []);
-  
+
   const makeImageInfoFromsImagePickerResult = (result, containerRef) => {
     let pickedImageURI = result.assets[0].uri;
     const exifData = result.assets[0].exif;
@@ -77,7 +80,6 @@ const CompareImageScreen = ({ navigation }) => {
       const imageInfo = makeImageInfoFromsImagePickerResult(result, containerRef);
       setImageInfo(imageInfo, containerRef);
     } catch (error) {
-      console.log("[ERROR]:", error)
       if (containerRef === container2Ref) {
         setImageInfo1(null)
       } else {
@@ -192,14 +194,32 @@ const CompareImageScreen = ({ navigation }) => {
     setIsLockEngaged(!isLockEngaged);
   }
 
-  const onTransformUpdated = (containerRef, transform) => {
+  const getContainerID = (containerRef) => {
+    return containerRef.current === container1Ref.current ? "1" : "2";
+  }
+
+  const copyTransform = (sourceContainerRef, targetContainerRef) => {
+    try {
+      const sourceContainerImageScale = sourceContainerRef.current.scaleValueToFitInContainer ?? 1.0;
+      const sourceContainerTransform = sourceContainerRef.current.getTransform()
+      let targetContainerTransform = {
+        ...sourceContainerTransform,
+        scale: sourceContainerTransform.scale / sourceContainerImageScale * targetContainerRef.current.scaleValueToFitInContainer
+      }
+      
+      targetContainerRef.current.setTransform(targetContainerTransform);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+  const onTransformUpdated = (containerRef) => {
+    lastInteractedContainerRef.current = containerRef.current;
     if (!isLockEngaged) {
       return
     }
-    const containerToDispatchTo = containerRef === container1Ref ? container2Ref.current : container1Ref.current
-    const senderImageScale = containerRef.current.scaleToFitInContainer ?? 1.0;
-    transform.scale = transform.scale / senderImageScale * containerToDispatchTo.scaleToFitInContainer;
-    containerToDispatchTo.setTransform(transform);
+
+    const containerToDispatchToRef = containerRef.current === container1Ref.current ? container2Ref : container1Ref
+    copyTransform(containerRef, containerToDispatchToRef)
   }
 
   const container1Config = Config({
@@ -227,6 +247,7 @@ const CompareImageScreen = ({ navigation }) => {
       <SafeAreaProvider style={styles.container}>
         <SafeAreaView style={{ flex: 1 }}>
           <ContainerView
+            id="1"
             ref={container1Ref}
             config={container1Config}
           />
@@ -235,6 +256,7 @@ const CompareImageScreen = ({ navigation }) => {
             onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
           />
           <ContainerView
+            id='2'
             ref={container2Ref}
             config={container2Config}
           />
@@ -258,9 +280,9 @@ const CompareImageScreen = ({ navigation }) => {
           />
         </SafeAreaView>
         <LockButton
-            isEngaged={isLockEngaged}
-            onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
-          />
+          isEngaged={isLockEngaged}
+          onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
+        />
 
       </SafeAreaProvider>
     )

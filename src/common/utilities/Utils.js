@@ -1,6 +1,10 @@
 import { MetaDataItem } from "../../structs";
 import { DifferenceModel, DifferenceType, Model as MetaDataCellModel } from "../../common/components/MetaDataTable/MetaDataCell";
 
+
+export const isPositiveNumber = (number) => {
+  return (Number.isFinite(number) && number > 0)
+}
 export const getRandomColor = () => {
   let color = {
     r: Math.floor(Math.random() * 256),
