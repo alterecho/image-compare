@@ -45,8 +45,7 @@ const ContainerView = forwardRef(
     useEffect(() => {
       const calculatedScale = calculateScaleForSizeFittingInSize(imageSize, viewSize);
       console.log("calculatedScale for", calculatedScale, imageSize, viewSize);
-      scaleToFitInContainer.value = calculatedScale
-      console.log("scaleToFitInrContainer", scaleToFitInContainer.value);
+      scaleValueToFitInContainer.value = calculatedScale
     }, [viewSize, imageSize]);
 
     const translateX = useSharedValue(0);
@@ -57,7 +56,7 @@ const ContainerView = forwardRef(
     const startScale = useSharedValue(0);
     const rotation = useSharedValue(0);
     const startRotation = useSharedValue(0);
-    const scaleToFitInContainer = useSharedValue(1.0)
+    const scaleValueToFitInContainer = useSharedValue(1.0)
 
     const isPanned = useSharedValue(false);
     const isRotated = useSharedValue(false);
@@ -85,7 +84,7 @@ const ContainerView = forwardRef(
         scrollToIndex: (index) => {
           metaDataViewRef?.current?.scrollToIndex(index);
         },
-        scaleToFitInContainer: scaleToFitInContainer.value,
+        scaleValueToFitInContainer: scaleValueToFitInContainer.value,
         getTransform: () => {
           return Transform(translateX.value, translateY.value, scale.value, rotation.value)
         },
@@ -94,6 +93,7 @@ const ContainerView = forwardRef(
     ));
 
     const sendOnTransformUpdated = ({ x, y, scale, rotation }) => {
+      console.log("sendOnTransformUpdated", x, y, scale, rotation);
       config?.onTransformUpdated(
         forwardedRef,
         {
@@ -123,10 +123,10 @@ const ContainerView = forwardRef(
       // send transform to parent (CompareImageScreen)
       runOnJS(sendOnTransformUpdated)(
         {
-          x: translateX.value,
-          y: translateY.value,
-          scale: scale.value,
-          rotation: rotation.value
+          x: current.x,
+          y: current.y,
+          scale: current.scale,
+          rotation: current.rotation
         }
       );
 
@@ -141,7 +141,7 @@ const ContainerView = forwardRef(
       if (!viewSize.width || !viewSize.height) {
         return
       }
-      let scale = scaleToFitInContainer.value
+      let scale = scaleValueToFitInContainer.value
       if (scale <= 0.0) {
         scale = 1.0
       }
@@ -150,7 +150,7 @@ const ContainerView = forwardRef(
     }
 
     useAnimatedReaction(
-      () => scaleToFitInContainer.value,
+      () => scaleValueToFitInContainer.value,
       (current, previous) => {
         if (current !== previous) {
           fitInContainer()
@@ -161,6 +161,10 @@ const ContainerView = forwardRef(
     useAnimatedReaction(() => {
       try {
         return {
+          x: translateX.value,
+          y: translateY.value,
+          scale: scale.value,
+          rotation : rotation.value,
           isPanned: isPanned.value,
           isRotated: isRotated.value,
           isDoubleTapped: isDoubleTapped.value

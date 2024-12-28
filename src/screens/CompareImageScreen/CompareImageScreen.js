@@ -45,7 +45,7 @@ const CompareImageScreen = ({ navigation }) => {
       subscription.remove();
     }
   }, []);
-  
+
   const makeImageInfoFromsImagePickerResult = (result, containerRef) => {
     let pickedImageURI = result.assets[0].uri;
     const exifData = result.assets[0].exif;
@@ -201,23 +201,27 @@ const CompareImageScreen = ({ navigation }) => {
 
   const copyTransform = (sourceContainerRef, targetContainerRef) => {
     try {
-      const senderImageScale = sourceContainerRef.current.scaleToFitInContainer ?? 1.0;
-      const transform = sourceContainerRef.current.getTransform()
-      transform.scale = transform.scale / senderImageScale * targetContainerRef.current.scaleToFitInContainer;
-      targetContainerRef.current.setTransform(transform);
-  
+      const sourceContainerImageScale = sourceContainerRef.current.scaleValueToFitInContainer ?? 1.0;
+      const sourceContainerTransform = sourceContainerRef.current.getTransform()
+      let targetContainerTransform = {
+        ...sourceContainerTransform,
+        scale: sourceContainerTransform.scale / sourceContainerImageScale * targetContainerRef.current.scaleValueToFitInContainer
+      }
+      
+      console.log("sourceContainerRef transform: ", sourceContainerTransform)
+      console.log("targetContainerRef transform ", targetContainerTransform)
+      targetContainerRef.current.setTransform(targetContainerTransform);
     } catch (error) {
       console.log("error", error);
     }
-
   };
   const onTransformUpdated = (containerRef) => {
-
+console.log("onTransformUpdated");
     lastInteractedContainerRef.current = containerRef.current;
     if (!isLockEngaged) {
       return
-    }   
-    
+    }
+
     const containerToDispatchToRef = containerRef.current === container1Ref.current ? container2Ref : container1Ref
     copyTransform(containerRef, containerToDispatchToRef)
   }
@@ -247,7 +251,7 @@ const CompareImageScreen = ({ navigation }) => {
       <SafeAreaProvider style={styles.container}>
         <SafeAreaView style={{ flex: 1 }}>
           <ContainerView
-          id="1"
+            id="1"
             ref={container1Ref}
             config={container1Config}
           />
@@ -256,7 +260,7 @@ const CompareImageScreen = ({ navigation }) => {
             onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
           />
           <ContainerView
-          id='2'
+            id='2'
             ref={container2Ref}
             config={container2Config}
           />
@@ -280,9 +284,9 @@ const CompareImageScreen = ({ navigation }) => {
           />
         </SafeAreaView>
         <LockButton
-            isEngaged={isLockEngaged}
-            onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
-          />
+          isEngaged={isLockEngaged}
+          onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
+        />
 
       </SafeAreaProvider>
     )
