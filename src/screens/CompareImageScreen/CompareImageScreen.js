@@ -19,11 +19,12 @@ const CompareImageScreen = ({ navigation }) => {
   const [isLandscape, setIsLandscape] = useState(false);
   let lastInteractedContainerRef = useRef(null);
 
+  const isShowLockButton = imageInfo1 || imageInfo2;
   const [isLockEngaged, setIsLockEngaged] = useState(false);
   useEffect(() => {
     if (isLockEngaged === true) {
       const allContainerRefs = [
-        container1Ref, 
+        container1Ref,
         container2Ref
       ];
       allContainerRefs.forEach((containerRef) => {
@@ -232,15 +233,21 @@ const CompareImageScreen = ({ navigation }) => {
     return (
       <SafeAreaProvider style={styles.container}>
         <SafeAreaView style={{ flex: 1 }}>
+          {/* top container */}
           <ContainerView
             id="1"
             ref={container1Ref}
             config={container1Config}
           />
-          <LockButton
-            isEngaged={isLockEngaged}
-            onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
-          />
+          {/* lock button */}
+          {
+            isShowLockButton &&
+            <LockButton
+              isEngaged={isLockEngaged}
+              onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
+            />
+          }
+          {/* bottom container */}
           <ContainerView
             id='2'
             ref={container2Ref}
@@ -255,24 +262,29 @@ const CompareImageScreen = ({ navigation }) => {
     const styles = makeLandscapeStyleSheet(theme);
     return (
       <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-            {/* left container */}
-        <ContainerView
-        ref={container1Ref}
-        config={container1Config}
-        />
-            {/* separator */}
-        <View style={styles.separator} />
-            {/* right container */}
-        <ContainerView
-        ref={container2Ref}
-        config={container2Config}
-        />
-      </SafeAreaView>
-      <LockButton
-        isEngaged={isLockEngaged}
-        onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
-      />
+        <SafeAreaView style={styles.container}>
+          {/* left container */}
+          <ContainerView
+            ref={container1Ref}
+            config={container1Config}
+          />
+          {/* separator */}
+          <View style={styles.separator} />
+          {/* right container */}
+          <ContainerView
+            ref={container2Ref}
+            config={container2Config}
+          />
+        </SafeAreaView>
+        {/* lock button */}
+        {
+          isShowLockButton &&
+          <LockButton
+            isEngaged={isLockEngaged}
+            hidden={true}
+            onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
+          />
+        }
       </SafeAreaProvider>
     )
   }
