@@ -33,7 +33,7 @@ const MetaDataView = forwardRef(({ style, metaData, comparisonMetaData,  onSelec
             setCellModelArray(updatedModelArray)
         },
         scrollToIndex: (index) => {
-            if (index > cellModelArray.length - 1) {
+            if (index < 0 || index > cellModelArray.length - 1) {
                 return
             }
             try {

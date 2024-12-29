@@ -23,16 +23,18 @@ const CompareImageScreen = ({ navigation }) => {
   const [isLockEngaged, setIsLockEngaged] = useState(false);
   useEffect(() => {
     if (isLockEngaged === true) {
-      const otherContainerRefs = getOtherContainerRefs(lastInteractedContainerRef);
-      otherContainerRefs.forEach((containerRef) => {
-        copyTransform(lastInteractedContainerRef, containerRef);
+      const allContainerRefs = [
+        container1Ref, 
+        container2Ref
+      ];
+      allContainerRefs.forEach((containerRef) => {
+        // find containers other than the sender and copy sender's transform
+        if (containerRef.current !== lastInteractedContainerRef.current) {
+          containerRef.current.copyTransformOfContainer(lastInteractedContainerRef);
+        }
       });
     }
   }, [isLockEngaged]);
-
-  const getOtherContainerRefs = (containerRef) => {
-    return [container1Ref, container2Ref].filter((ref) => ref.current !== containerRef.current);
-  }
 
   useEffect(() => {
     const handleOrientationChange = () => {
@@ -198,28 +200,13 @@ const CompareImageScreen = ({ navigation }) => {
     return containerRef.current === container1Ref.current ? "1" : "2";
   }
 
-  const copyTransform = (sourceContainerRef, targetContainerRef) => {
-    try {
-      const sourceContainerImageScale = sourceContainerRef.current.scaleValueToFitInContainer ?? 1.0;
-      const sourceContainerTransform = sourceContainerRef.current.getTransform()
-      let targetContainerTransform = {
-        ...sourceContainerTransform,
-        scale: sourceContainerTransform.scale / sourceContainerImageScale * targetContainerRef.current.scaleValueToFitInContainer
-      }
-      
-      targetContainerRef.current.setTransform(targetContainerTransform);
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
-  const onTransformUpdated = (containerRef) => {
-    lastInteractedContainerRef.current = containerRef.current;
+  const onTransformUpdated = (sendingContainerRef) => {
+    lastInteractedContainerRef.current = sendingContainerRef.current;
     if (!isLockEngaged) {
       return
     }
-
-    const containerToDispatchToRef = containerRef.current === container1Ref.current ? container2Ref : container1Ref
-    copyTransform(containerRef, containerToDispatchToRef)
+    const containerToDispatchToRef = sendingContainerRef.current === container1Ref.current ? container2Ref : container1Ref
+    containerToDispatchToRef.current.copyTransformOfContainer(sendingContainerRef)
   }
 
   const container1Config = Config({
