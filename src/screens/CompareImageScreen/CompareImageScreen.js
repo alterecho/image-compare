@@ -1,10 +1,9 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
-import { Button, StyleSheet, Platform, Alert, Dimensions } from 'react-native';
+import { View, StyleSheet, Alert, Dimensions } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
 import ContainerView, { Config } from "../../common/components/ContainerView";
-import { ImageInfo, MetaDataItem, Transform } from "../../structs";
-import { Pages } from "../Constants";
+import { ImageInfo } from "../../structs";
 import LockButton from "./LockButton";
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import * as Utils from "../../common/utilities/Utils";
@@ -256,21 +255,24 @@ const CompareImageScreen = ({ navigation }) => {
     const styles = makeLandscapeStyleSheet(theme);
     return (
       <SafeAreaProvider>
-        <SafeAreaView style={styles.container}>
-          <ContainerView
-            ref={container1Ref}
-            config={container1Config}
-          />
-          <ContainerView
-            ref={container2Ref}
-            config={container2Config}
-          />
-        </SafeAreaView>
-        <LockButton
-          isEngaged={isLockEngaged}
-          onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
+      <SafeAreaView style={styles.container}>
+            {/* left container */}
+        <ContainerView
+        ref={container1Ref}
+        config={container1Config}
         />
-
+            {/* separator */}
+        <View style={styles.separator} />
+            {/* right container */}
+        <ContainerView
+        ref={container2Ref}
+        config={container2Config}
+        />
+      </SafeAreaView>
+      <LockButton
+        isEngaged={isLockEngaged}
+        onPress={imageInfo1 && imageInfo2 ? onClickLockButton : null}
+      />
       </SafeAreaProvider>
     )
   }
@@ -292,6 +294,10 @@ const makeLandscapeStyleSheet = (theme) => {
     container: {
       flex: 1,
       flexDirection: 'row',
+      backgroundColor: theme.secondaryColor
+    },
+    separator: {
+      width: 1,
       backgroundColor: theme.secondaryColor
     }
   })
