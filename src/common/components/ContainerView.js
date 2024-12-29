@@ -122,11 +122,10 @@ const ContainerView = forwardRef(
 
     const onUserInteractionReaction = (current, previous) => {
       'worklet';
-      const isBeingInteracted = (() => {
-        return current.isDoubleTapped === true ||
-        current.isPanned === true ||
-        current.isRotated === true
-      })()
+      const isBeingInteracted =
+        current.isDoubleTapped === true 
+        || current.isPanned === true ||
+        current.isRotated === true;
 
       // check if user is interacting
       if (isBeingInteracted == false) {
@@ -177,7 +176,7 @@ const ContainerView = forwardRef(
           x: translateX.value,
           y: translateY.value,
           scale: scale.value,
-          rotation : rotation.value,
+          rotation: rotation.value,
           isPanned: isPanned.value,
           isRotated: isRotated.value,
           isDoubleTapped: isDoubleTapped.value
@@ -227,6 +226,7 @@ const ContainerView = forwardRef(
 
 
     const toggleScale = () => {
+      'worklet';
       if (!(imageSize) || !(viewSize)) {
         return
       }
@@ -271,7 +271,7 @@ const ContainerView = forwardRef(
       .numberOfTaps(2)
       .onEnd(() => {
         isDoubleTapped.value = true
-        runOnJS(toggleScale)();
+        toggleScale();
       });
 
     const panGestureHandler = Gesture.Pan()
