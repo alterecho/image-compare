@@ -69,6 +69,22 @@ const ContainerView = forwardRef(
       rotation.value = transform.rotation;
     }
 
+    const copyTransformOfContainer = (sourceContainerRef) => {
+      try {
+        const sourceContaineraImageScaleToFitInContainer = sourceContainerRef.current.scaleValueToFitInContainer ?? 1.0;
+        const sourceContainerTransform = sourceContainerRef.current.getTransform()
+        const transformToSet = {
+          ...sourceContainerTransform,
+          scale: sourceContainerTransform.scale / sourceContaineraImageScaleToFitInContainer * scaleValueToFitInContainer.value
+        }
+        console.log(id, "copyTransformOfContainer", transformToSet, sourceContainerTransform, sourceContaineraImageScaleToFitInContainer)
+        setTransform(transformToSet);
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+
+
     useImperativeHandle(forwardedRef, () => (
       {
         imageInfo: config?.imageInfo,
@@ -87,7 +103,8 @@ const ContainerView = forwardRef(
         getTransform: () => {
           return Transform(translateX.value, translateY.value, scale.value, rotation.value)
         },
-        setTransform
+        setTransform,
+        copyTransformOfContainer
       }
     ));
 
