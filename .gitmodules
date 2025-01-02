@@ -1,0 +1,3 @@
+[submodule "assets-project"]
+	path = assets-project
+	url = git@github.com:alterecho/image-compare-assets.git
