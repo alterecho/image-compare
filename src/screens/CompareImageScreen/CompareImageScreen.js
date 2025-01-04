@@ -27,8 +27,8 @@ const CompareImageScreen = ({ navigation }) => {
         container1Ref,
         container2Ref
       ];
+      // find containers other than the sender and copy sender's transform
       allContainerRefs.forEach((containerRef) => {
-        // find containers other than the sender and copy sender's transform
         if (containerRef.current !== lastInteractedContainerRef.current) {
           containerRef.current.copyTransformOfContainer(lastInteractedContainerRef);
         }
@@ -193,6 +193,16 @@ const CompareImageScreen = ({ navigation }) => {
   }
 
   const onClickLockButton = () => {
+    // loop through all containers and hide the info overlays
+    const allContainerRefs = [
+      container1Ref,
+      container2Ref
+    ];
+    
+    allContainerRefs.forEach((containerRef) => {
+      containerRef.current.hideInfoOverlay();
+    });
+
     setIsLockEngaged(!isLockEngaged);
   }
 
