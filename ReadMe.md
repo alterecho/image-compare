@@ -11,5 +11,5 @@ Compare two images sie by side, and view it's meta data.
 ---
 
 ## Store links
-
+- Trailer: https://www.youtube.com/watch?v=TlpJueBa6Dk
 - Google Play store: https://play.google.com/store/apps/details?id=com.vjc.imagecompare
