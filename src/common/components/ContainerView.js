@@ -77,7 +77,6 @@ const ContainerView = forwardRef(
           ...sourceContainerTransform,
           scale: sourceContainerTransform.scale / sourceContaineraImageScaleToFitInContainer * scaleValueToFitInContainer.value
         }
-        console.log(id, "copyTransformOfContainer", transformToSet, sourceContainerTransform, sourceContaineraImageScaleToFitInContainer)
         setTransform(transformToSet);
       } catch (error) {
         console.log("error", error);
@@ -91,7 +90,9 @@ const ContainerView = forwardRef(
         showInfoOverlay: () => {
           setIsShowMetaData(true)
         },
-
+        hideInfoOverlay: () => {
+          setIsShowMetaData(false)
+        },
         selectIndices: (indices) => {
           metaDataViewRef?.current?.selectIndices(indices);
         },
