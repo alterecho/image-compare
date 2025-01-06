@@ -28,8 +28,8 @@
       "targetSdkVersion": 34,
       "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/app-icon-foreground.png",
+        "backgroundImage": "./assets/app-icon-background.png"
       },
       "package": "com.vjc.imagecompare",
       "permissions": [
