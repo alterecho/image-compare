@@ -25,7 +25,6 @@
       "bundleIdentifier": "com.vjc.imagecompare"
     },
     "android": {
-      "targetSdkVersion": 34,
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/app-icon-foreground.png",
